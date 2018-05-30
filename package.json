@@ -1,0 +1,96 @@
+{
+  "name": "critters-webpack-plugin",
+  "version": "1.0.0",
+  "description": "Webpack plugin to inline critical CSS and lazy-load the rest.",
+  "main": "dist/critters.js",
+  "source": "src/index.js",
+  "license": "Apache-2.0",
+  "author": "The Chromium Authors",
+  "contributors": [
+    {
+      "name": "Jason Miller",
+      "email": "developit@google.com"
+    }
+  ],
+  "keywords": [
+    "critical css",
+    "inline css",
+    "critical",
+    "critters",
+    "webpack plugin",
+    "performance"
+  ],
+  "repository": "GoogleChromeLabs/critters",
+  "scripts": {
+    "build": "microbundle -f cjs --no-compress --external all",
+    "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
+    "test": "jest --coverage"
+  },
+  "babel": {
+    "presets": [
+      "env"
+    ]
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "coverageReporters": [
+      "text"
+    ],
+    "collectCoverageFrom": [
+      "src/**/*"
+    ],
+    "watchPathIgnorePatterns": [
+      "node_modules",
+      "dist"
+    ]
+  },
+  "devDependencies": {
+    "babel-core": "^6.26.0",
+    "babel-jest": "^22.4.3",
+    "babel-preset-env": "^1.6.1",
+    "css-loader": "^0.28.11",
+    "documentation": "^6.3.2",
+    "eslint": "^4.19.1",
+    "eslint-config-standard": "^11.0.0",
+    "eslint-plugin-import": "^2.11.0",
+    "eslint-plugin-jest": "^21.15.1",
+    "eslint-plugin-node": "^6.0.1",
+    "eslint-plugin-promise": "^3.7.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "file-loader": "^1.1.11",
+    "html-webpack-plugin": "^3.2.0",
+    "jest": "^22.4.3",
+    "jsdom": "^11.9.0",
+    "microbundle": "^0.4.4",
+    "mini-css-extract-plugin": "^0.4.0",
+    "webpack": "^4.6.0"
+  },
+  "dependencies": {
+    "css": "^2.2.1",
+    "nwmatcher": "^1.4.4",
+    "parse5": "^4.0.0",
+    "pretty-bytes": "^4.0.2",
+    "webpack-sources": "^1.1.0"
+  },
+  "eslintConfig": {
+    "extends": [
+      "standard",
+      "plugin:jest/recommended"
+    ],
+    "rules": {
+      "indent": [
+        2,
+        2
+      ],
+      "semi": [
+        2,
+        "always"
+      ],
+      "prefer-const": 1
+    },
+    "globals": {
+      "document": 0,
+      "DOMParser": 1
+    }
+  }
+}

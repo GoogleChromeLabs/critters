@@ -1,0 +1,269 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`External CSS should match snapshot 1`] = `
+"<!DOCTYPE html><html><head>
+    <title>External CSS Demo</title>
+  <link href=\\"main.css\\" rel=\\"preload\\" as=\\"style\\"><style>body {
+  padding-left: 11em;
+  font-family: \\"Times New Roman\\", times, serif;
+  color: purple;
+  background-color: #d8da3d;
+}
+
+ul.navbar {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 2em;
+  left: 1em;
+  width: 9em;
+}
+
+h1 {
+  font-family: helvetica, arial, sans-serif;
+}
+
+ul.navbar li {
+  background: white;
+  margin: 0.5em 0;
+  padding: 0.3em;
+  border-right: 1em solid black;
+}
+
+ul.navbar a {
+  text-decoration: none;
+}
+
+a:link {
+  color: blue;
+}
+
+a:visited {
+  color: purple;
+}
+
+footer {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: thin dotted;
+}</style></head>
+  <body>
+    <ul class=\\"navbar\\">
+      <li>
+        <a href=\\"index.html\\">Home page</a>
+      </li>
+      <li>
+        <a href=\\"musings.html\\">Musings</a>
+      </li>
+    </ul>
+    <h1>My first styled page</h1>
+    <p>Welcome to my styled page!</p>
+    <footer>Made 5 April 2004</footer>
+  <script type=\\"text/javascript\\" src=\\"bundle.js\\"></script>
+
+<link rel=\\"stylesheet\\" href=\\"main.css\\"></body></html>"
+`;
+
+exports[`Inline <style> pruning should remove entire unused stylesheets 1`] = `
+"h1 {
+  color: green;
+}"
+`;
+
+exports[`Inline <style> pruning should remove unused rules 1`] = `
+"<!DOCTYPE html><html><head>
+    <title>Basic Demo</title>
+    <style>body {
+  padding-left: 11em;
+  font-family: \\"Times New Roman\\", times, serif;
+  color: purple;
+  background-color: #d8da3d;
+}
+
+ul.navbar {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 2em;
+  left: 1em;
+  width: 9em;
+}
+
+h1 {
+  font-family: helvetica, arial, sans-serif;
+}
+
+ul.navbar li {
+  background: white;
+  margin: 0.5em 0;
+  padding: 0.3em;
+  border-right: 1em solid black;
+}
+
+ul.navbar a {
+  text-decoration: none;
+}
+
+a:link {
+  color: blue;
+}
+
+a:visited {
+  color: purple;
+}
+
+footer {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: thin dotted;
+}</style>
+  </head>
+  <body>
+    <ul class=\\"navbar\\">
+      <li>
+        <a href=\\"index.html\\">Home page</a>
+      </li>
+      <li>
+        <a href=\\"musings.html\\">Musings</a>
+      </li>
+    </ul>
+    <h1>My first styled page</h1>
+    <p>Welcome to my styled page!</p>
+    <footer>Made 5 April 2004</footer>
+  <script type=\\"text/javascript\\" src=\\"bundle.js\\"></script>
+
+</body></html>"
+`;
+
+exports[`options { async:true } should match snapshot 1`] = `
+"<!DOCTYPE html><html><head>
+    <title>External CSS Demo</title>
+  <link href=\\"main.css\\" rel=\\"preload\\" as=\\"style\\"><style>body {
+  padding-left: 11em;
+  font-family: \\"Times New Roman\\", times, serif;
+  color: purple;
+  background-color: #d8da3d;
+}
+
+ul.navbar {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+  position: absolute;
+  top: 2em;
+  left: 1em;
+  width: 9em;
+}
+
+h1 {
+  font-family: helvetica, arial, sans-serif;
+}
+
+ul.navbar li {
+  background: white;
+  margin: 0.5em 0;
+  padding: 0.3em;
+  border-right: 1em solid black;
+}
+
+ul.navbar a {
+  text-decoration: none;
+}
+
+a:link {
+  color: blue;
+}
+
+a:visited {
+  color: purple;
+}
+
+footer {
+  margin-top: 1em;
+  padding-top: 1em;
+  border-top: thin dotted;
+}</style></head>
+  <body>
+    <ul class=\\"navbar\\">
+      <li>
+        <a href=\\"index.html\\">Home page</a>
+      </li>
+      <li>
+        <a href=\\"musings.html\\">Musings</a>
+      </li>
+    </ul>
+    <h1>My first styled page</h1>
+    <p>Welcome to my styled page!</p>
+    <footer>Made 5 April 2004</footer>
+  <script type=\\"text/javascript\\" src=\\"bundle.js\\"></script>
+
+<link rel=\\"stylesheet\\" href=\\"main.css\\"></body></html>"
+`;
+
+exports[`webpack compilation 1`] = `
+"<!DOCTYPE html>
+<html>
+  <head>
+    <title>Basic Demo</title>
+    <style>
+      body {
+        padding-left: 11em;
+        font-family: \\"Times New Roman\\", times, serif;
+        color: purple;
+        background-color: #d8da3d;
+      }
+      ul.navbar {
+        list-style-type: none;
+        padding: 0;
+        margin: 0;
+        position: absolute;
+        top: 2em;
+        left: 1em;
+        width: 9em;
+      }
+      h1 {
+        font-family: helvetica, arial, sans-serif;
+      }
+      ul.navbar li {
+        background: white;
+        margin: 0.5em 0;
+        padding: 0.3em;
+        border-right: 1em solid black;
+      }
+      ul.navbar a {
+        text-decoration: none;
+      }
+      a:link {
+        color: blue;
+      }
+      a:visited {
+        color: purple;
+      }
+      footer {
+        margin-top: 1em;
+        padding-top: 1em;
+        border-top: thin dotted;
+      }
+      .extra-style {
+        font-size: 200%;
+      }
+    </style>
+  </head>
+  <body>
+    <ul class=\\"navbar\\">
+      <li>
+        <a href=\\"index.html\\">Home page</a>
+      </li>
+      <li>
+        <a href=\\"musings.html\\">Musings</a>
+      </li>
+    </ul>
+    <h1>My first styled page</h1>
+    <p>Welcome to my styled page!</p>
+    <footer>Made 5 April 2004</footer>
+  <script type=\\"text/javascript\\" src=\\"bundle.js\\"></script></body>
+</html>
+"
+`;
