@@ -34,7 +34,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  * - **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. _[JS]_
  * - **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
  * @typedef {(default|'body'|'media'|'swap'|'js'|'js-lazy')} PreloadStrategy
- * @typedef {('critical'|'all'|'none')} CriticalKeyframes
+ * @typedef {('critical'|'all'|'none')} Keyframes
  * @public
  */
 
@@ -51,7 +51,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  *  - values:
  *  - `true` to inline critical font-face rules and preload the fonts
  *  - `false` to don't inline any font-face rules and don't preload fonts
- * @property {String} criticalKeyframes Which {@link CriticalKeyframes inline strategy} to use (default: `critical`)_
+ * @property {String}  keyframes     Which {@link Keyframes inline strategy} to use (default: `critical`)_
  * @property {Boolean} compress     Compress resulting critical CSS _(default: `true`)_
  */
 
@@ -251,7 +251,7 @@ export default class Critters {
     const options = this.options;
     const document = style.ownerDocument;
     const head = document.querySelector('head');
-    const criticalKeyframeMode = options.criticalKeyframes || 'critical'
+    const KeyframesMode = options.keyframes || 'critical'
 
     // basically `.textContent`
     let sheet = style.childNodes.length > 0 && style.childNodes.map(node => node.nodeValue).join('\n');
@@ -297,13 +297,13 @@ export default class Critters {
 
       if (rule.type === 'keyframes') {
         // keeping keyframes when set to 'critical' or 'all'
-        return criticalKeyframeMode !== 'none';
+        return KeyframesMode !== 'none';
       }
       // If there are no remaining rules, remove the whole rule:
       return !rule.rules || rule.rules.length !== 0;
     });
 
-    if (criticalKeyframeMode === 'critical') {
+    if (KeyframesMode === 'critical') {
       walkStyleRules(ast, (rule) => {
         if (rule.type === 'keyframes') {
           return this.isKeyframeUsed(rule, ast);
