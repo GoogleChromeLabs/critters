@@ -90,7 +90,7 @@ Type: [Object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Globa
 -   `fonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Shorthand for setting `inlineFonts`+`preloadFonts`-   values:
     -   `true` to inline critical font-face rules and preload the fonts
     -   `false` to don't inline any font-face rules and don't preload fonts
--   `keyframes` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [keyframes strategy](#criticalKeyframes) to use _(default: `critical`)_
+-   `keyframes` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [keyframes strategy](#keyframesstrategy) to use _(default: `critical`)_
 -   `compress` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Compress resulting critical CSS _(default: `true`)_
 
 ### PreloadStrategy
@@ -107,7 +107,7 @@ _[JS]_ indicates that a strategy requires JavaScript (falls back to `<noscript>`
 
 Type: (default | `"body"` \| `"media"` \| `"swap"` \| `"js"` \| `"js-lazy"`)
 
-### Critical Keyframes Strategy
+### KeyframesStrategy
 
 The strategy to use when inlining keyframes.
 
