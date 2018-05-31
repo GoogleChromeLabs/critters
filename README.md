@@ -43,7 +43,7 @@ module.exports = {
 }
 ```
 
-That's it! Now when you run Webpack, the CSS used by your HTML will be inlined and the imports for your full CSS will be converted to load asynchrnously.
+That's it! Now when you run Webpack, the CSS used by your HTML will be inlined and the imports for your full CSS will be converted to load asynchronously.
 
 ## Usage
 
