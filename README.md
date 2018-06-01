@@ -115,6 +115,7 @@ There are a number of other libraries that can inline Critical CSS, each with a 
 -   [webpack-critical](https://github.com/lukeed/webpack-critical)
 -   [webpack-plugin-critical](https://github.com/nrwl/webpack-plugin-critical)
 -   [html-critical-webpack-plugin](https://github.com/anthonygore/html-critical-webpack-plugin)
+-   [react-snap](https://github.com/stereobooster/react-snap)
 
 ## License
 
