@@ -19,6 +19,7 @@ import prettyBytes from 'pretty-bytes';
 import sources from 'webpack-sources';
 import { createDocument, serializeDocument } from './dom';
 import { parseStylesheet, serializeStylesheet, walkStyleRules } from './css';
+import { tap } from './util';
 
 // Used to annotate this plugin's hooks in Tappable invocations
 const PLUGIN_NAME = 'critters-webpack-plugin';
@@ -86,17 +87,17 @@ export default class Critters {
    */
   apply (compiler) {
     // hook into the compiler to get a Compilation instance...
-    compiler.hooks.compilation.tap(PLUGIN_NAME, compilation => {
+    tap(compiler, 'compilation', PLUGIN_NAME, false, compilation => {
       // ... which is how we get an "after" hook into html-webpack-plugin's HTML generation.
       if (compilation.hooks.htmlWebpackPluginAfterHtmlProcessing) {
-        compilation.hooks.htmlWebpackPluginAfterHtmlProcessing.tapAsync(PLUGIN_NAME, (htmlPluginData, callback) => {
+        tap(compilation, 'html-webpack-plugin-after-html-processing', PLUGIN_NAME, true, (htmlPluginData, callback) => {
           this.process(compiler, compilation, htmlPluginData.html)
             .then(html => { callback(null, { html }); })
             .catch(callback);
         });
       } else {
         // If html-webpack-plugin isn't used, process the first HTML asset as an optimize step
-        compilation.hooks.optimizeAssets.tapAsync(PLUGIN_NAME, (assets, callback) => {
+        tap(compilation, 'optimize-assets', PLUGIN_NAME, true, (assets, callback) => {
           let htmlAssetName;
           for (const name in assets) {
             if (name.match(/\.html$/)) {
