@@ -143,14 +143,14 @@ export default class Critters {
 
     // `external:false` skips processing of external sheets
     if (this.options.external !== false) {
-      const externalSheets = document.querySelectorAll('link[rel="stylesheet"]');
+      const externalSheets = [].slice.call(document.querySelectorAll('link[rel="stylesheet"]'));
       await Promise.all(externalSheets.map(
         link => this.embedLinkedStylesheet(link, compilation, outputPath)
       ));
     }
 
     // go through all the style tags in the document and reduce them to only critical CSS
-    const styles = document.querySelectorAll('style');
+    const styles = [].slice.call(document.querySelectorAll('style'));
     await Promise.all(styles.map(
       style => this.processStyle(style, document)
     ));
@@ -252,7 +252,7 @@ export default class Critters {
     const head = document.querySelector('head');
 
     // basically `.textContent`
-    let sheet = style.childNodes.length > 0 && style.childNodes.map(node => node.nodeValue).join('\n');
+    let sheet = style.childNodes.length > 0 && [].slice.call(style.childNodes).map(node => node.nodeValue).join('\n');
 
     // store a reference to the previous serialized stylesheet for reporting stats
     const before = sheet;
@@ -272,8 +272,12 @@ export default class Critters {
         rule.selectors = rule.selectors.filter(sel => {
           // Strip pseudo-elements and pseudo-classes, since we only care that their associated elements exist.
           // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
-          sel = sel.replace(/::?(?:[a-z-]+)([.[#~&^:*]|\s|\n|$)/gi, '$1');
-          return document.querySelector(sel, document) != null;
+          sel = sel.replace(/::?(?:[a-z-]+)([.[#~&^:*]|\s|\n|$)/gi, '$1').trim();
+          try {
+            return document.querySelector(sel, document) != null;
+          } catch (e) {
+            return null;
+          }
         });
         // If there are no matched selectors, remove the rule:
         if (rule.selectors.length === 0) {
@@ -353,3 +357,4 @@ export default class Critters {
     console.log('\u001b[32mCritters: inlined ' + prettyBytes(sheet.length) + ' (' + percent + '% of original ' + prettyBytes(before.length) + ') of ' + name + '.\u001b[39m');
   }
 }
+
