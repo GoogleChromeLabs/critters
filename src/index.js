@@ -252,7 +252,7 @@ export default class Critters {
     const head = document.querySelector('head');
 
     // basically `.textContent`
-    let sheet = style.childNodes.length > 0 && [].slice.call(style.childNodes).map(node => node.nodeValue).join('\n');
+    let sheet = style.childNodes.length > 0 && [].map.call(style.childNodes, node => node.nodeValue).join('\n');
 
     // store a reference to the previous serialized stylesheet for reporting stats
     const before = sheet;
