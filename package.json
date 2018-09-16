@@ -33,6 +33,7 @@
   },
   "jest": {
     "testEnvironment": "jsdom",
+    "testURL": "http://localhost",
     "coverageReporters": [
       "text"
     ],

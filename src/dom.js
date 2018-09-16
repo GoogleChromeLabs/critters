@@ -13,7 +13,7 @@
  * License for the specific language governing permissions and limitations under
  * the License.
  */
-import {JSDOM} from 'jsdom';
+import { JSDOM } from 'jsdom';
 
 /**
  * Parse HTML into a mutable, serializable DOM Document.
@@ -22,7 +22,7 @@ import {JSDOM} from 'jsdom';
  */
 export function createDocument (html) {
   const jsdom = new JSDOM(html, {
-    contentType: "text/html",
+    contentType: 'text/html'
   });
   const { window } = jsdom;
   const document = window.document;
@@ -36,4 +36,3 @@ export function createDocument (html) {
 export function serializeDocument (document) {
   return document.$jsdom.serialize();
 }
-
