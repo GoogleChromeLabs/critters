@@ -21,12 +21,12 @@ import {JSDOM} from 'jsdom';
  * @param {String} html   HTML to parse into a Document instance
  */
 export function createDocument (html) {
-  const { window } = new JSDOM(html, {
+  const jsdom = new JSDOM(html, {
     contentType: "text/html",
   });
-
+  const { window } = jsdom;
   const document = window.document;
-
+  document.$jsdom = jsdom;
   return document;
 }
 /**
@@ -34,6 +34,6 @@ export function createDocument (html) {
  * @param {Document} document   A Document, such as one created via `createDocument()`
  */
 export function serializeDocument (document) {
-  return document.querySelector('html').innerHTML;
+  return document.$jsdom.serialize();
 }
 
