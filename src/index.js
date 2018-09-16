@@ -264,6 +264,8 @@ export default class Critters {
 
     // a string to search for font names (very loose)
     let criticalFonts = '';
+    
+    const failedSelectors = [];
 
     // Walk all CSS rules, transforming unused rules to comments (which get removed)
     walkStyleRules(ast, rule => {
@@ -274,8 +276,9 @@ export default class Critters {
           // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
           sel = sel.replace(/::?(?:[a-z-]+)([.[#~&^:*]|\s|\n|$)/gi, '$1').trim();
           try {
-            return document.querySelector(sel, document) != null;
+            return document.querySelector(sel) != null;
           } catch (e) {
+            failedSelectors.push(sel + ' -> ' + e.message);
             return null;
           }
         });
@@ -300,6 +303,13 @@ export default class Critters {
       // If there are no remaining rules, remove the whole rule:
       return !rule.rules || rule.rules.length !== 0;
     });
+    
+    if (failedSelectors.length !== 0) {
+      console.warn(
+        `${failedSelectors.length} rules skipped due to selector errors:\n  `+
+        failedSelectors.join('\n  ')
+      );
+    }
 
     const shouldPreloadFonts = options.fonts === true || options.preloadFonts === true;
     const shouldInlineFonts = options.fonts !== false || options.inlineFonts === true;
