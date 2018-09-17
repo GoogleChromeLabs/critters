@@ -1,6 +1,8 @@
 {
   "name": "critters-webpack-plugin",
-  "version": "1.2.0",
+
+  "version": "1.2.1",
+
   "description": "Webpack plugin to inline critical CSS and lazy-load the rest.",
   "main": "dist/critters.js",
   "source": "src/index.js",
@@ -62,13 +64,13 @@
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^22.4.3",
-    "jsdom": "^11.12.0",
     "microbundle": "^0.4.4",
     "mini-css-extract-plugin": "^0.4.0",
     "webpack": "^4.6.0"
   },
   "dependencies": {
     "css": "^2.2.1",
+    "jsdom": "^12.0.0",
     "parse5": "^4.0.0",
     "pretty-bytes": "^4.0.2",
     "webpack-sources": "^1.1.0"
