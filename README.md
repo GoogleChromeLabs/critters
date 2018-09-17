@@ -3,7 +3,6 @@
   <h1 align="center">Critters</h1>
 </p>
 
-
 > Critters is a Webpack plugin that inlines your app's [critical CSS] and lazy-loads the rest.
 
 ## critters-webpack-plugin [![npm](https://img.shields.io/npm/v/critters-webpack-plugin.svg?style=flat)](https://www.npmjs.org/package/critters-webpack-plugin)
