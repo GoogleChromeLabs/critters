@@ -290,7 +290,7 @@ export default class Critters {
         if (rule.declarations) {
           for (let i = 0; i < rule.declarations.length; i++) {
             const decl = rule.declarations[i];
-            if (decl.property.match(/\bfont\b/i)) {
+            if (decl.property && decl.property.match(/\bfont\b/i)) {
               criticalFonts += ' ' + decl.value;
             }
           }
