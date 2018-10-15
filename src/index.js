@@ -35,6 +35,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  * - **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. _[JS]_
  * - **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
  * @typedef {(default|'body'|'media'|'swap'|'js'|'js-lazy')} PreloadStrategy
+ * @typedef {('critical'|'all'|'none')} Keyframes
  * @public
  */
 
@@ -51,6 +52,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  *  - values:
  *  - `true` to inline critical font-face rules and preload the fonts
  *  - `false` to don't inline any font-face rules and don't preload fonts
+ * @property {String}  keyframes     Which {@link Keyframes inline strategy} to use (default: `critical`)_
  * @property {Boolean} compress     Compress resulting critical CSS _(default: `true`)_
  */
 
@@ -250,6 +252,7 @@ export default class Critters {
     const options = this.options;
     const document = style.ownerDocument;
     const head = document.querySelector('head');
+    const KeyframesMode = options.keyframes || 'critical'
 
     // basically `.textContent`
     let sheet = style.childNodes.length > 0 && [].map.call(style.childNodes, node => node.nodeValue).join('\n');
@@ -300,6 +303,10 @@ export default class Critters {
       // keep font rules, they're handled in the second pass:
       if (rule.type === 'font-face') return;
 
+      if (rule.type === 'keyframes') {
+        // keeping keyframes when set to 'critical' or 'all'
+        return KeyframesMode !== 'none';
+      }
       // If there are no remaining rules, remove the whole rule:
       return !rule.rules || rule.rules.length !== 0;
     });
@@ -309,6 +316,14 @@ export default class Critters {
         `${failedSelectors.length} rules skipped due to selector errors:\n  `+
         failedSelectors.join('\n  ')
       );
+    }
+
+    if (KeyframesMode === 'critical') {
+      walkStyleRules(ast, (rule) => {
+        if (rule.type === 'keyframes') {
+          return this.isKeyframeUsed(rule, ast);
+        }
+      });
     }
 
     const shouldPreloadFonts = options.fonts === true || options.preloadFonts === true;
@@ -365,6 +380,29 @@ export default class Critters {
     const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
     const percent = sheet.length / before.length * 100 | 0;
     console.log('\u001b[32mCritters: inlined ' + prettyBytes(sheet.length) + ' (' + percent + '% of original ' + prettyBytes(before.length) + ') of ' + name + '.\u001b[39m');
+  }
+
+  isKeyframeUsed(keyframe, ast) {
+    let isUsed = false;
+
+    walkStyleRules(ast, rule => {
+      if (rule.declarations) {
+        for (var i = 0; i < rule.declarations.length; i++) {
+          var decl = rule.declarations[i];
+          if (decl.property === 'animation' || decl.property === 'animation-name') {
+            // better parser needed
+            if (decl.value.indexOf(keyframe.name) !== -1) {
+              isUsed = true;
+            }
+          }
+        }
+      }
+      if (rule.nodes) {
+        isUsed = isUsed || this.isKeyframeUsed(keyframe, rule);
+      }
+    })
+
+    return isUsed;
   }
 }
 
