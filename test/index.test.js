@@ -119,4 +119,27 @@ describe('options', () => {
       expect(output.html).toMatchSnapshot();
     });
   });
+
+  describe('keyframes', () => {
+    it('keyframes=critical (default)', async () => {
+      const output = await compileToHtml('keyframes', configure, {});
+      expect(output.html).toMatch(/@keyframes present/);
+      expect(output.html).not.toMatch(/@keyframes not-present/);
+    });
+
+    it('keyframes=all', async () => {
+      const output = await compileToHtml('keyframes', configure, {
+        keyframes: 'all'
+      });
+      expect(output.html).toMatch(/@keyframes present/);
+      expect(output.html).toMatch(/@keyframes not-present/);
+    });
+
+    it('keyframes=none', async () => {
+      const output = await compileToHtml('keyframes', configure, {
+        keyframes: 'none'
+      });
+      expect(output.html).not.toMatch(/@keyframes/);
+    });
+  });
 });

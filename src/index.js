@@ -35,24 +35,38 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  * - **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. _[JS]_
  * - **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
  * @typedef {(default|'body'|'media'|'swap'|'js'|'js-lazy')} PreloadStrategy
- * @typedef {('critical'|'all'|'none')} Keyframes
  * @public
+ */
+
+/**
+ * Controls which keyframes rules are inlined.
+ *
+ * - **"critical":** _(default)_ inline keyframes rules that are used by the critical CSS.
+ * - **"all":** Inline all keyframes rules.
+ * - **"none":** Remove all keyframes rules.
+ * @typedef {('critical'|'all'|'none')} KeyframeStrategy
+ * @private
+ * @property {String} keyframes     Which {@link KeyframeStrategy keyframe strategy} to use (default: `critical`)_
  */
 
 /**
  * All optional. Pass them to `new Critters({ ... })`.
  * @public
- * @typedef {Object} Options
+ * @typedef Options
  * @property {Boolean} external     Inline styles from external stylesheets _(default: `true`)_
  * @property {String} preload       Which {@link PreloadStrategy preload strategy} to use
  * @property {Boolean} noscriptFallback Add `<noscript>` fallback to JS-based strategies
  * @property {Boolean} inlineFonts  Inline critical font-face rules _(default: `false`)_
  * @property {Boolean} preloadFonts Preloads critical fonts _(default: `true`)_
  * @property {Boolean} fonts        Shorthand for setting `inlineFonts`+`preloadFonts`
- *  - values:
+ *  - Values:
  *  - `true` to inline critical font-face rules and preload the fonts
  *  - `false` to don't inline any font-face rules and don't preload fonts
- * @property {String}  keyframes     Which {@link Keyframes inline strategy} to use (default: `critical`)_
+ * @property {String} keyframes     Controls which keyframes rules are inlined.
+ *  - Values:
+ *  - `"critical"`: _(default)_ inline keyframes rules used by the critical CSS
+ *  - `"all"` inline all keyframes rules
+ *  - `"none"` remove all keyframes rules
  * @property {Boolean} compress     Compress resulting critical CSS _(default: `true`)_
  */
 
@@ -252,7 +266,10 @@ export default class Critters {
     const options = this.options;
     const document = style.ownerDocument;
     const head = document.querySelector('head');
-    const KeyframesMode = options.keyframes || 'critical';
+    let keyframesMode = options.keyframes || 'critical';
+    // we also accept a boolean value for options.keyframes
+    if (keyframesMode === true) keyframesMode = 'all';
+    if (keyframesMode === false) keyframesMode = 'none';
 
     // basically `.textContent`
     let sheet = style.childNodes.length > 0 && [].map.call(style.childNodes, node => node.nodeValue).join('\n');
@@ -270,7 +287,10 @@ export default class Critters {
 
     const failedSelectors = [];
 
+    const criticalKeyframeNames = [];
+
     // Walk all CSS rules, transforming unused rules to comments (which get removed)
+    // This pass is also used to collect information required by a second pruning pass.
     walkStyleRules(ast, rule => {
       if (rule.type === 'rule') {
         // Filter the selector list down to only those matche
@@ -293,8 +313,20 @@ export default class Critters {
         if (rule.declarations) {
           for (let i = 0; i < rule.declarations.length; i++) {
             const decl = rule.declarations[i];
+
+            // detect used fonts
             if (decl.property && decl.property.match(/\bfont\b/i)) {
               criticalFonts += ' ' + decl.value;
+            }
+
+            // detect used keyframes
+            if (decl.property === 'animation' || decl.property === 'animation-name') {
+              // @todo: parse animation declarations and extract only the name. for now we'll do a lazy match.
+              const names = decl.value.split(/\s+/);
+              for (let j = 0; j < names.length; j++) {
+                const name = names[i].trim();
+                if (name) criticalKeyframeNames.push(name);
+              }
             }
           }
         }
@@ -303,10 +335,6 @@ export default class Critters {
       // keep font rules, they're handled in the second pass:
       if (rule.type === 'font-face') return;
 
-      if (rule.type === 'keyframes') {
-        // keeping keyframes when set to 'critical' or 'all'
-        return KeyframesMode !== 'none';
-      }
       // If there are no remaining rules, remove the whole rule:
       return !rule.rules || rule.rules.length !== 0;
     });
@@ -318,47 +346,47 @@ export default class Critters {
       );
     }
 
-    if (KeyframesMode === 'critical') {
-      walkStyleRules(ast, (rule) => {
-        if (rule.type === 'keyframes') {
-          return this.isKeyframeUsed(rule, ast);
-        }
-      });
-    }
-
     const shouldPreloadFonts = options.fonts === true || options.preloadFonts === true;
     const shouldInlineFonts = options.fonts !== false || options.inlineFonts === true;
 
     const preloadedFonts = [];
+    // Second pass, using data picked up from the first
     walkStyleRules(ast, rule => {
-      // only process @font-face rules in the second pass
-      if (rule.type !== 'font-face') return;
-
-      let family, src;
-      for (let i = 0; i < rule.declarations.length; i++) {
-        const decl = rule.declarations[i];
-        if (decl.property === 'src') {
-          // @todo parse this properly and generate multiple preloads with type="font/woff2" etc
-          src = (decl.value.match(/url\s*\(\s*(['"]?)(.+?)\1\s*\)/) || [])[2];
-        } else if (decl.property === 'font-family') {
-          family = decl.value;
-        }
+      // prune @keyframes rules
+      if (rule.type === 'keyframes') {
+        if (keyframesMode === 'none') return false;
+        if (keyframesMode === 'all') return true;
+        return criticalKeyframeNames.indexOf(rule.name) !== -1;
       }
 
-      if (src && shouldPreloadFonts && preloadedFonts.indexOf(src) === -1) {
-        preloadedFonts.push(src);
-        const preload = document.createElement('link');
-        preload.setAttribute('rel', 'preload');
-        preload.setAttribute('as', 'font');
-        if (src.match(/:\/\//)) {
-          preload.setAttribute('crossorigin', 'anonymous');
+      // prune @font-face rules
+      if (rule.type === 'font-face') {
+        let family, src;
+        for (let i = 0; i < rule.declarations.length; i++) {
+          const decl = rule.declarations[i];
+          if (decl.property === 'src') {
+            // @todo parse this properly and generate multiple preloads with type="font/woff2" etc
+            src = (decl.value.match(/url\s*\(\s*(['"]?)(.+?)\1\s*\)/) || [])[2];
+          } else if (decl.property === 'font-family') {
+            family = decl.value;
+          }
         }
-        preload.setAttribute('href', src.trim());
-        head.appendChild(preload);
-      }
 
-      // if we're missing info, if the font is unused, or if critical font inlining is disabled, remove the rule:
-      if (!family || !src || criticalFonts.indexOf(family) === -1 || !shouldInlineFonts) return false;
+        if (src && shouldPreloadFonts && preloadedFonts.indexOf(src) === -1) {
+          preloadedFonts.push(src);
+          const preload = document.createElement('link');
+          preload.setAttribute('rel', 'preload');
+          preload.setAttribute('as', 'font');
+          if (src.match(/:\/\//)) {
+            preload.setAttribute('crossorigin', 'anonymous');
+          }
+          preload.setAttribute('href', src.trim());
+          head.appendChild(preload);
+        }
+
+        // if we're missing info, if the font is unused, or if critical font inlining is disabled, remove the rule:
+        if (!family || !src || criticalFonts.indexOf(family) === -1 || !shouldInlineFonts) return false;
+      }
     });
 
     sheet = serializeStylesheet(ast, { compress: this.options.compress !== false });
@@ -380,28 +408,5 @@ export default class Critters {
     const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
     const percent = sheet.length / before.length * 100 | 0;
     console.log('\u001b[32mCritters: inlined ' + prettyBytes(sheet.length) + ' (' + percent + '% of original ' + prettyBytes(before.length) + ') of ' + name + '.\u001b[39m');
-  }
-
-  isKeyframeUsed (keyframe, ast) {
-    let isUsed = false;
-
-    walkStyleRules(ast, rule => {
-      if (rule.declarations) {
-        for (var i = 0; i < rule.declarations.length; i++) {
-          var decl = rule.declarations[i];
-          if (decl.property === 'animation' || decl.property === 'animation-name') {
-            // better parser needed
-            if (decl.value.indexOf(keyframe.name) !== -1) {
-              isUsed = true;
-            }
-          }
-        }
-      }
-      if (rule.nodes) {
-        isUsed = isUsed || this.isKeyframeUsed(keyframe, rule);
-      }
-    });
-
-    return isUsed;
   }
 }

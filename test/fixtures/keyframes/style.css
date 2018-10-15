@@ -1,0 +1,17 @@
+.present {
+  animation: present 100ms ease forwards 1;
+}
+@keyframes present {
+  0% { opacity: 0; }
+}
+
+.not-present {
+  will-change: transform;
+  animation-duration: 5s;
+  animation-name: not-present;
+  animation-timing-function: ease;
+}
+@keyframes not-present {
+  from { transform: scale(0.001); }
+  to { transform: scale(1); }
+}
