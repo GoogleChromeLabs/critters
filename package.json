@@ -25,6 +25,7 @@
     "build": "microbundle -f cjs --no-compress --external all",
     "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
     "prepare": "npm run -s build",
+    "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "test": "jest --coverage"
   },
   "babel": {
