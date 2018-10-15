@@ -252,7 +252,7 @@ export default class Critters {
     const options = this.options;
     const document = style.ownerDocument;
     const head = document.querySelector('head');
-    const KeyframesMode = options.keyframes || 'critical'
+    const KeyframesMode = options.keyframes || 'critical';
 
     // basically `.textContent`
     let sheet = style.childNodes.length > 0 && [].map.call(style.childNodes, node => node.nodeValue).join('\n');
@@ -267,7 +267,7 @@ export default class Critters {
 
     // a string to search for font names (very loose)
     let criticalFonts = '';
-    
+
     const failedSelectors = [];
 
     // Walk all CSS rules, transforming unused rules to comments (which get removed)
@@ -310,10 +310,10 @@ export default class Critters {
       // If there are no remaining rules, remove the whole rule:
       return !rule.rules || rule.rules.length !== 0;
     });
-    
+
     if (failedSelectors.length !== 0) {
       console.warn(
-        `${failedSelectors.length} rules skipped due to selector errors:\n  `+
+        `${failedSelectors.length} rules skipped due to selector errors:\n  ` +
         failedSelectors.join('\n  ')
       );
     }
@@ -382,7 +382,7 @@ export default class Critters {
     console.log('\u001b[32mCritters: inlined ' + prettyBytes(sheet.length) + ' (' + percent + '% of original ' + prettyBytes(before.length) + ') of ' + name + '.\u001b[39m');
   }
 
-  isKeyframeUsed(keyframe, ast) {
+  isKeyframeUsed (keyframe, ast) {
     let isUsed = false;
 
     walkStyleRules(ast, rule => {
@@ -400,9 +400,8 @@ export default class Critters {
       if (rule.nodes) {
         isUsed = isUsed || this.isKeyframeUsed(keyframe, rule);
       }
-    })
+    });
 
     return isUsed;
   }
 }
-
