@@ -315,7 +315,7 @@ export default class Critters {
             const decl = rule.declarations[i];
 
             // detect used fonts
-            if (decl.property && decl.property.match(/\bfont\b/i)) {
+            if (decl.property && decl.property.match(/\bfont(-family)?\b/i)) {
               criticalFonts += ' ' + decl.value;
             }
 
