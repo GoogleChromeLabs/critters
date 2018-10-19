@@ -1,6 +1,6 @@
 {
   "name": "critters-webpack-plugin",
-  "version": "1.3.1",
+  "version": "1.3.2",
   "description": "Webpack plugin to inline critical CSS and lazy-load the rest.",
   "main": "dist/critters.js",
   "source": "src/index.js",
