@@ -139,12 +139,18 @@ export default class Critters {
   /**
    * Read the contents of a file from Webpack's input filesystem
    */
-  readFile (filename, encoding) {
+  readFile (compilation, filename) {
+    const fs = this.fs || compilation.outputFileSystem;
     return new Promise((resolve, reject) => {
-      this.fs.readFile(filename, encoding, (err, data) => {
+      const callback = (err, data) => {
         if (err) reject(err);
         else resolve(data);
-      });
+      };
+      if (fs && fs.readFile) {
+        fs.readFile(filename, callback);
+      } else {
+        require('fs').readFile(filename, 'utf8', callback);
+      }
     });
   }
 
@@ -192,10 +198,19 @@ export default class Critters {
     const filename = path.resolve(outputPath, href.replace(/^\//, ''));
 
     // try to find a matching asset by filename in webpack's output (not yet written to disk)
-    const asset = compilation.assets[path.relative(outputPath, filename).replace(/^\.\//, '')];
+    const relativePath = path.relative(outputPath, filename).replace(/^\.\//, '');
+    const asset = compilation.assets[relativePath];
 
     // Attempt to read from assets, falling back to a disk read
-    const sheet = asset ? asset.source() : await this.readFile(filename, 'utf8');
+    let sheet = asset && asset.source();
+    if (!sheet) {
+      try {
+        sheet = await this.readFile(compilation, filename);
+      } catch (e) {
+        console.warn(`Critters: unable to locate stylesheet: ${relativePath}`);
+        return;
+      }
+    }
 
     // CSS loader is only injected for the first sheet, then this becomes an empty string
     let cssLoaderPreamble = `function $loadcss(u,m,l){(l=document.createElement('link')).rel='stylesheet';l.href=u;document.head.appendChild(l)}`;
