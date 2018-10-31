@@ -298,11 +298,13 @@ export default class Critters {
           // Strip pseudo-elements and pseudo-classes, since we only care that their associated elements exist.
           // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
           sel = sel.replace(/::?[a-z-]+\s*(\{|$)/gi, '$1').trim();
+          if (!sel) return false;
+
           try {
             return document.querySelector(sel) != null;
           } catch (e) {
             failedSelectors.push(sel + ' -> ' + e.message);
-            return null;
+            return false;
           }
         });
         // If there are no matched selectors, remove the rule:
