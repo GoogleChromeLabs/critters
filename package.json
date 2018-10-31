@@ -12,6 +12,10 @@
       "email": "developit@google.com"
     }
   ],
+  "files": [
+    "src",
+    "dist"
+  ],
   "keywords": [
     "critical css",
     "inline css",
