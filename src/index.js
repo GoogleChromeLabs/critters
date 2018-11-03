@@ -206,6 +206,7 @@ export default class Critters {
     if (!sheet) {
       try {
         sheet = await this.readFile(compilation, filename);
+        console.warn(`Stylesheet "${relativePath}" not found in assets, but a file was located on disk.${this.options.pruneSource ? ' This means pruneSource will not be applied.' : ''}`);
       } catch (e) {
         console.warn(`Critters: unable to locate stylesheet: ${relativePath}`);
         return;
