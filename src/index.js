@@ -54,6 +54,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  * @public
  * @typedef Options
  * @property {Boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `true`)_
+ * @property {Number} inlineThreshold Inline stylesheets smaller than a given size _(default: `0`)_
  * @property {Boolean} external     Inline styles from external stylesheets _(default: `true`)_
  * @property {String} preload       Which {@link PreloadStrategy preload strategy} to use
  * @property {Boolean} noscriptFallback Add `<noscript>` fallback to JS-based strategies
@@ -227,6 +228,18 @@ export default class Critters {
     style.appendChild(document.createTextNode(sheet));
     link.parentNode.insertBefore(style, link.nextSibling);
 
+    if (this.options.inlineThreshold && sheet.length < this.options.inlineThreshold) {
+      style.$$reduce = false;
+      console.log(`\u001b[32mCritters: inlined all of ${href} (${sheet.length} was below the threshold of ${this.options.inlineThreshold})\u001b[39m`);
+      if (asset) {
+        delete compilation.assets[relativePath];
+      } else {
+        console.warn(`  > ${href} was not found in assets. the resource may still be emitted but will be unreferenced.`);
+      }
+      link.parentNode.removeChild(link);
+      return;
+    }
+
     // drop references to webpack asset locations onto the tag, used for later reporting and in-place asset updates
     style.$$name = href;
     style.$$asset = asset;
@@ -284,6 +297,8 @@ export default class Critters {
    * Parse the stylesheet within a <style> element, then reduce it to contain only rules used by the document.
    */
   async processStyle (style) {
+    if (style.$$reduce === false) return;
+
     const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
     const options = this.options;
     const document = style.ownerDocument;

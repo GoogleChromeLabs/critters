@@ -120,6 +120,16 @@ describe('options', () => {
     });
   });
 
+  describe('inlineThreshold', () => {
+    it('should fully inline sheets below the given size', async () => {
+      const { document, html } = await compileToHtml('inlineThreshold', configure, {
+        inlineThreshold: 1000
+      });
+      expect(document.querySelectorAll('style')).toHaveLength(1);
+      expect(html).toMatch(/\.extra-style/);
+    });
+  });
+
   describe('keyframes', () => {
     it('keyframes=critical (default)', async () => {
       const output = await compileToHtml('keyframes', configure, {});
