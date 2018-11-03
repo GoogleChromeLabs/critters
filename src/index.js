@@ -18,7 +18,7 @@ import path from 'path';
 import prettyBytes from 'pretty-bytes';
 import sources from 'webpack-sources';
 import { createDocument, serializeDocument } from './dom';
-import { parseStylesheet, serializeStylesheet, walkStyleRules } from './css';
+import { parseStylesheet, serializeStylesheet, walkStyleRules, walkStyleRulesWithReverseMirror, markOnly } from './css';
 import { tap } from './util';
 
 // Used to annotate this plugin's hooks in Tappable invocations
@@ -53,6 +53,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  * All optional. Pass them to `new Critters({ ... })`.
  * @public
  * @typedef Options
+ * @property {Boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `true`)_
  * @property {Boolean} external     Inline styles from external stylesheets _(default: `true`)_
  * @property {String} preload       Which {@link PreloadStrategy preload strategy} to use
  * @property {Boolean} noscriptFallback Add `<noscript>` fallback to JS-based strategies
@@ -91,7 +92,8 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
 export default class Critters {
   /** @private */
   constructor (options) {
-    this.options = options || {};
+    this.options = Object.assign({}, options || {});
+    this.options.pruneSource = this.options.pruneSource !== false;
     this.urlFilter = this.options.filter;
     if (this.urlFilter instanceof RegExp) {
       this.urlFilter = this.urlFilter.test.bind(this.urlFilter);
@@ -225,8 +227,11 @@ export default class Critters {
     style.appendChild(document.createTextNode(sheet));
     link.parentNode.insertBefore(style, link.nextSibling);
 
-    // drop a reference to the original URL onto the tag (used for reporting to console later)
+    // drop references to webpack asset locations onto the tag, used for later reporting and in-place asset updates
     style.$$name = href;
+    style.$$asset = asset;
+    style.$$assetName = relativePath;
+    style.$$assets = compilation.assets;
 
     // Allow disabling any mutation of the stylesheet link:
     if (preloadMode === false) return;
@@ -279,6 +284,7 @@ export default class Critters {
    * Parse the stylesheet within a <style> element, then reduce it to contain only rules used by the document.
    */
   async processStyle (style) {
+    const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
     const options = this.options;
     const document = style.ownerDocument;
     const head = document.querySelector('head');
@@ -297,6 +303,7 @@ export default class Critters {
     if (!sheet) return;
 
     const ast = parseStylesheet(sheet);
+    const astInverse = options.pruneSource ? parseStylesheet(sheet) : null;
 
     // a string to search for font names (very loose)
     let criticalFonts = '';
@@ -305,12 +312,12 @@ export default class Critters {
 
     const criticalKeyframeNames = [];
 
-    // Walk all CSS rules, transforming unused rules to comments (which get removed)
-    // This pass is also used to collect information required by a second pruning pass.
-    walkStyleRules(ast, rule => {
+    // Walk all CSS rules, marking unused rules with `.remove=true` for removal in the second pass.
+    // This first pass is also used to collect font and keyframe usage used in the second pass.
+    walkStyleRules(ast, markOnly(rule => {
       if (rule.type === 'rule') {
-        // Filter the selector list down to only those matche
-        rule.selectors = rule.selectors.filter(sel => {
+        // Filter the selector list down to only those match
+        rule.filterSelectors(sel => {
           // Strip pseudo-elements and pseudo-classes, since we only care that their associated elements exist.
           // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
           sel = sel.replace(/::?[a-z-]+\s*(\{|$)/gi, '$1').trim();
@@ -355,13 +362,10 @@ export default class Critters {
 
       // If there are no remaining rules, remove the whole rule:
       return !rule.rules || rule.rules.length !== 0;
-    });
+    }));
 
     if (failedSelectors.length !== 0) {
-      console.warn(
-        `${failedSelectors.length} rules skipped due to selector errors:\n  ` +
-        failedSelectors.join('\n  ')
-      );
+      console.warn(`${failedSelectors.length} rules skipped due to selector errors:\n  ${failedSelectors.join('\n  ')}`);
     }
 
     const shouldPreloadFonts = options.fonts === true || options.preloadFonts === true;
@@ -369,7 +373,10 @@ export default class Critters {
 
     const preloadedFonts = [];
     // Second pass, using data picked up from the first
-    walkStyleRules(ast, rule => {
+    walkStyleRulesWithReverseMirror(ast, astInverse, rule => {
+      // remove any rules marked in the first pass
+      if (rule.remove === true) return false;
+
       // prune @keyframes rules
       if (rule.type === 'keyframes') {
         if (keyframesMode === 'none') return false;
@@ -407,24 +414,37 @@ export default class Critters {
       }
     });
 
-    sheet = serializeStylesheet(ast, { compress: this.options.compress !== false });
+    sheet = serializeStylesheet(ast, { compress: this.options.compress !== false }).trim();
 
     // If all rules were removed, get rid of the style element entirely
     if (sheet.trim().length === 0) {
       if (style.parentNode) {
         style.parentNode.removeChild(style);
       }
-    } else {
-      // replace the inline stylesheet with its critical'd counterpart
-      while (style.lastChild) {
-        style.removeChild(style.lastChild);
+      return;
+    }
+
+    // replace the inline stylesheet with its critical'd counterpart
+    while (style.lastChild) {
+      style.removeChild(style.lastChild);
+    }
+    style.appendChild(document.createTextNode(sheet));
+
+    let afterText = '';
+    if (options.pruneSource) {
+      const sheetInverse = serializeStylesheet(astInverse, { compress: this.options.compress !== false });
+      const asset = style.$$asset;
+      if (asset) {
+        const percent = sheetInverse.length / before.length * 100;
+        afterText = `, reducing non-inlined size ${percent | 0}% to ${prettyBytes(before.length)}`;
+        style.$$assets[style.$$assetName] = new sources.LineToLineMappedSource(sheetInverse, style.$$assetName, before);
+      } else {
+        console.warn('pruneSource is enabaled, but a style (' + name + ') has no corresponding Webpack asset.');
       }
-      style.appendChild(document.createTextNode(sheet));
     }
 
     // output some stats
-    const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
     const percent = sheet.length / before.length * 100 | 0;
-    console.log('\u001b[32mCritters: inlined ' + prettyBytes(sheet.length) + ' (' + percent + '% of original ' + prettyBytes(before.length) + ') of ' + name + '.\u001b[39m');
+    console.log('\u001b[32mCritters: inlined ' + prettyBytes(sheet.length) + ' (' + percent + '% of original ' + prettyBytes(before.length) + ') of ' + name + afterText + '.\u001b[39m');
   }
 }
