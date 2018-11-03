@@ -18,6 +18,7 @@ Critters' design makes it a good fit when inlining critical CSS for prerendered/
 -   Works with `webpack-dev-server` / `webpack serve`
 -   Supports preloading and/or inlining critical fonts
 -   Prunes unused CSS keyframes and media queries
+-   Removes inlined CSS rules from lazy-loaded stylesheets
 
 ## Installation
 
