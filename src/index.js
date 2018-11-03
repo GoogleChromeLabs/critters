@@ -451,7 +451,7 @@ export default class Critters {
       const asset = style.$$asset;
       if (asset) {
         const percent = sheetInverse.length / before.length * 100;
-        afterText = `, reducing non-inlined size ${percent | 0}% to ${prettyBytes(before.length)}`;
+        afterText = `, reducing non-inlined size ${percent | 0}% to ${prettyBytes(sheetInverse.length)}`;
         style.$$assets[style.$$assetName] = new sources.LineToLineMappedSource(sheetInverse, style.$$assetName, before);
       } else {
         console.warn('pruneSource is enabaled, but a style (' + name + ') has no corresponding Webpack asset.');
