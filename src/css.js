@@ -40,7 +40,7 @@ export function serializeStylesheet (ast, options) {
 }
 
 /**
- * Converts a walkStyleRules() iterator to mark nodes with `.remove=true` instead of actually removing them.
+ * Converts a walkStyleRules() iterator to mark nodes with `.$$remove=true` instead of actually removing them.
  * This means they can be removed in a second pass, allowing the first pass to be nondestructive (eg: to preserve mirrored sheets).
  * @private
  * @param {Function} iterator   Invoked on each node in the tree. Return `false` to remove that node.
@@ -49,7 +49,7 @@ export function serializeStylesheet (ast, options) {
 export function markOnly (predicate) {
   return rule => {
     if (predicate(rule) === false) {
-      rule.remove = true;
+      rule.$$remove = true;
     }
   };
 }

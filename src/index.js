@@ -327,7 +327,7 @@ export default class Critters {
 
     const criticalKeyframeNames = [];
 
-    // Walk all CSS rules, marking unused rules with `.remove=true` for removal in the second pass.
+    // Walk all CSS rules, marking unused rules with `.$$remove=true` for removal in the second pass.
     // This first pass is also used to collect font and keyframe usage used in the second pass.
     walkStyleRules(ast, markOnly(rule => {
       if (rule.type === 'rule') {
@@ -376,7 +376,8 @@ export default class Critters {
       if (rule.type === 'font-face') return;
 
       // If there are no remaining rules, remove the whole rule:
-      return !rule.rules || rule.rules.length !== 0;
+      const rules = rule.rules && rule.rules.filter(rule => !rule.$$remove);
+      return !rules || rules.length !== 0;
     }));
 
     if (failedSelectors.length !== 0) {
@@ -390,7 +391,7 @@ export default class Critters {
     // Second pass, using data picked up from the first
     walkStyleRulesWithReverseMirror(ast, astInverse, rule => {
       // remove any rules marked in the first pass
-      if (rule.remove === true) return false;
+      if (rule.$$remove === true) return false;
 
       // prune @keyframes rules
       if (rule.type === 'keyframes') {
