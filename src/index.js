@@ -57,6 +57,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  * @typedef Options
  * @property {Boolean} external     Inline styles from external stylesheets _(default: `true`)_
  * @property {Number} inlineThreshold Inline external stylesheets smaller than a given size _(default: `0`)_
+ * @property {Number} minimumExternalSize If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
  * @property {Boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `true`)_
  * @property {Boolean} mergeStylesheets Merged inlined stylesheets into a single <style> tag _(default: `true`)_
  * @property {String} preload       Which {@link PreloadStrategy preload strategy} to use
@@ -271,6 +272,7 @@ export default class Critters {
     style.$$asset = asset;
     style.$$assetName = relativePath;
     style.$$assets = compilation.assets;
+    style.$$links = [link];
 
     // Allow disabling any mutation of the stylesheet link:
     if (preloadMode === false) return;
@@ -287,6 +289,7 @@ export default class Critters {
         const js = `${cssLoaderPreamble}$loadcss(${JSON.stringify(href)}${lazy ? (',' + JSON.stringify(media || 'all')) : ''})`;
         script.appendChild(document.createTextNode(js));
         link.parentNode.insertBefore(script, link.nextSibling);
+        style.$$links.push(script);
         cssLoaderPreamble = '';
         noscriptFallback = true;
       } else if (preloadMode === 'media') {
@@ -305,6 +308,7 @@ export default class Critters {
         if (media) bodyLink.setAttribute('media', media);
         bodyLink.setAttribute('href', href);
         document.body.appendChild(bodyLink);
+        style.$$links.push(bodyLink);
       }
     }
 
@@ -316,6 +320,7 @@ export default class Critters {
       if (media) noscriptLink.setAttribute('media', media);
       noscript.appendChild(noscriptLink);
       link.parentNode.insertBefore(noscript, link.nextSibling);
+      style.$$links.push(noscript);
     }
   }
 
@@ -466,14 +471,28 @@ export default class Critters {
       return;
     }
 
-    // replace the inline stylesheet with its critical'd counterpart
-    setNodeText(style, sheet);
-
     let afterText = '';
     if (options.pruneSource) {
       const sheetInverse = serializeStylesheet(astInverse, { compress: this.options.compress !== false });
       const asset = style.$$asset;
       if (asset) {
+        // if external stylesheet would be below minimum size, just inline everything
+        const minSize = this.options.minimumExternalSize;
+        if (minSize && sheetInverse.length < minSize) {
+          console.log(`\u001b[32mCritters: inlined all of ${name} (non-critical external stylesheet would have been ${sheetInverse.length}b, which was below the threshold of ${minSize})\u001b[39m`);
+          setNodeText(style, before);
+          // remove any associated external resources/loaders:
+          if (style.$$links) {
+            for (const link of style.$$links) {
+              const parent = link.parentNode;
+              if (parent) parent.removeChild(link);
+            }
+          }
+          // delete the webpack asset:
+          delete style.$$assets[style.$$assetName];
+          return;
+        }
+
         const percent = sheetInverse.length / before.length * 100;
         afterText = `, reducing non-inlined size ${percent | 0}% to ${prettyBytes(sheetInverse.length)}`;
         style.$$assets[style.$$assetName] = new sources.LineToLineMappedSource(sheetInverse, style.$$assetName, before);
@@ -482,7 +501,10 @@ export default class Critters {
       }
     }
 
-    // output some stats
+    // replace the inline stylesheet with its critical'd counterpart
+    setNodeText(style, sheet);
+
+    // output stats
     const percent = sheet.length / before.length * 100 | 0;
     console.log('\u001b[32mCritters: inlined ' + prettyBytes(sheet.length) + ' (' + percent + '% of original ' + prettyBytes(before.length) + ') of ' + name + afterText + '.\u001b[39m');
   }

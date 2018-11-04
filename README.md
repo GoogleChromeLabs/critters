@@ -86,6 +86,7 @@ All optional. Pass them to `new Critters({ ... })`.
 
 -   `external` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline styles from external stylesheets _(default: `true`)_
 -   `inlineThreshold` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Inline external stylesheets smaller than a given size _(default: `0`)_
+-   `minimumExternalSize` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
 -   `pruneSource` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Remove inlined rules from the external stylesheet _(default: `true`)_
 -   `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merged inlined stylesheets into a single <style> tag _(default: `true`)_
 -   `preload` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [preload strategy](#preloadstrategy) to use
