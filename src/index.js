@@ -17,7 +17,9 @@
 import path from 'path';
 import prettyBytes from 'pretty-bytes';
 import sources from 'webpack-sources';
-import { createDocument, serializeDocument } from './dom';
+import postcss from 'postcss';
+import cssnano from 'cssnano';
+import { createDocument, serializeDocument, setNodeText } from './dom';
 import { parseStylesheet, serializeStylesheet, walkStyleRules, walkStyleRulesWithReverseMirror, markOnly } from './css';
 import { tap } from './util';
 
@@ -53,9 +55,10 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  * All optional. Pass them to `new Critters({ ... })`.
  * @public
  * @typedef Options
- * @property {Boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `true`)_
- * @property {Number} inlineThreshold Inline stylesheets smaller than a given size _(default: `0`)_
  * @property {Boolean} external     Inline styles from external stylesheets _(default: `true`)_
+ * @property {Number} inlineThreshold Inline external stylesheets smaller than a given size _(default: `0`)_
+ * @property {Boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `true`)_
+ * @property {Boolean} mergeStylesheets Merged inlined stylesheets into a single <style> tag _(default: `true`)_
  * @property {String} preload       Which {@link PreloadStrategy preload strategy} to use
  * @property {Boolean} noscriptFallback Add `<noscript>` fallback to JS-based strategies
  * @property {Boolean} inlineFonts  Inline critical font-face rules _(default: `false`)_
@@ -180,8 +183,31 @@ export default class Critters {
       style => this.processStyle(style, document)
     ));
 
+    if (this.options.mergeStylesheets !== false) {
+      await this.mergeStylesheets(document);
+    }
+
     // serialize the document back to HTML and we're done
     return serializeDocument(document);
+  }
+
+  async mergeStylesheets (document) {
+    const styles = [].slice.call(document.querySelectorAll('style'));
+    const first = styles[0];
+    let sheet = first.textContent;
+    for (let i = 1; i < styles.length; i++) {
+      const node = styles[i];
+      sheet += node.textContent;
+      node.remove();
+    }
+    if (this.options.compress !== false) {
+      const before = sheet;
+      const processor = postcss([cssnano()]);
+      const result = await processor.process(before, { from: undefined });
+      // @todo sourcemap support (elsewhere first)
+      sheet = result.css;
+    }
+    setNodeText(first, sheet);
   }
 
   /**
@@ -441,10 +467,7 @@ export default class Critters {
     }
 
     // replace the inline stylesheet with its critical'd counterpart
-    while (style.lastChild) {
-      style.removeChild(style.lastChild);
-    }
-    style.appendChild(document.createTextNode(sheet));
+    setNodeText(style, sheet);
 
     let afterText = '';
     if (options.pruneSource) {
