@@ -366,7 +366,7 @@ export default class Critters {
         rule.filterSelectors(sel => {
           // Strip pseudo-elements and pseudo-classes, since we only care that their associated elements exist.
           // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
-          sel = sel.replace(/::?[a-z-]+\s*(\{|$)/gi, '$1').trim();
+          sel = sel.replace(/(>\s*)?::?[a-z-]+\s*(\{|$)/gi, '$2').trim();
           if (!sel) return false;
 
           try {
