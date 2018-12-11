@@ -3,7 +3,7 @@
 exports[`External CSS should match snapshot 1`] = `
 "<!DOCTYPE html><html><head>
     <title>External CSS Demo</title>
-  <link href=\\"main.css\\" rel=\\"preload\\" as=\\"style\\"><style>body {
+  <style>body {
   padding-left: 11em;
   font-family: \\"Times New Roman\\", times, serif;
   color: purple;
@@ -47,7 +47,7 @@ footer {
   margin-top: 1em;
   padding-top: 1em;
   border-top: thin dotted;
-}</style></head>
+}</style><link href=\\"main.css\\" rel=\\"preload\\" as=\\"style\\"></head>
   <body>
     <ul class=\\"navbar\\">
       <li>
@@ -140,7 +140,7 @@ footer {
 exports[`options { async:true } should match snapshot 1`] = `
 "<!DOCTYPE html><html><head>
     <title>External CSS Demo</title>
-  <link href=\\"main.css\\" rel=\\"preload\\" as=\\"style\\"><style>body {
+  <style>body {
   padding-left: 11em;
   font-family: \\"Times New Roman\\", times, serif;
   color: purple;
@@ -184,7 +184,7 @@ footer {
   margin-top: 1em;
   padding-top: 1em;
   border-top: thin dotted;
-}</style></head>
+}</style><link href=\\"main.css\\" rel=\\"preload\\" as=\\"style\\"></head>
   <body>
     <ul class=\\"navbar\\">
       <li>

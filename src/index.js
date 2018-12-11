@@ -253,7 +253,7 @@ export default class Critters {
     // the reduced critical CSS gets injected into a new <style> tag
     const style = document.createElement('style');
     style.appendChild(document.createTextNode(sheet));
-    link.parentNode.insertBefore(style, link.nextSibling);
+    link.parentNode.insertBefore(style, link);
 
     if (this.options.inlineThreshold && sheet.length < this.options.inlineThreshold) {
       style.$$reduce = false;
@@ -394,7 +394,7 @@ export default class Critters {
             if (decl.property === 'animation' || decl.property === 'animation-name') {
               // @todo: parse animation declarations and extract only the name. for now we'll do a lazy match.
               const names = decl.value.split(/\s+/);
-              for (let j=0; j < names.length; j++) {
+              for (let j = 0; j < names.length; j++) {
                 const name = names[j].trim();
                 if (name) criticalKeyframeNames.push(name);
               }
