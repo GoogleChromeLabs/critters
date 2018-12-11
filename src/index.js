@@ -394,8 +394,8 @@ export default class Critters {
             if (decl.property === 'animation' || decl.property === 'animation-name') {
               // @todo: parse animation declarations and extract only the name. for now we'll do a lazy match.
               const names = decl.value.split(/\s+/);
-              for (let j = 0; j < names.length; j++) {
-                const name = names[i].trim();
+              for (let j=0; j < names.length; j++) {
+                const name = names[j].trim();
                 if (name) criticalKeyframeNames.push(name);
               }
             }
