@@ -449,9 +449,7 @@ export default class Critters {
           const preload = document.createElement('link');
           preload.setAttribute('rel', 'preload');
           preload.setAttribute('as', 'font');
-          if (src.match(/:\/\//)) {
-            preload.setAttribute('crossorigin', 'anonymous');
-          }
+          preload.setAttribute('crossorigin', 'anonymous');
           preload.setAttribute('href', src.trim());
           head.appendChild(preload);
         }
