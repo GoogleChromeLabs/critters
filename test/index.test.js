@@ -86,6 +86,12 @@ describe('External CSS', () => {
   it('should match snapshot', () => {
     expect(output.html).toMatchSnapshot();
   });
+
+  it('should prune external sheet', async () => {
+    const externalCss = await readFile('fixtures/external/dist/main.css');
+    expect(externalCss).toMatch(/\.extra-style\s*\{/);
+    expect(externalCss).toMatchSnapshot();
+  });
 });
 
 describe('options', () => {

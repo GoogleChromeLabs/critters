@@ -65,6 +65,12 @@ footer {
 <link rel=\\"stylesheet\\" href=\\"main.css\\"></body></html>"
 `;
 
+exports[`External CSS should prune external sheet 1`] = `
+".extra-style {
+  font-size: 200%;
+}"
+`;
+
 exports[`Inline <style> pruning should remove entire unused stylesheets 1`] = `
 "h1 {
   color: green;
