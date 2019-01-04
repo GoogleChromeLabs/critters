@@ -9,8 +9,18 @@
       }
     </style>
     <style id="used">
-      h1 {
+      h1, h2 {
         color: green;
+      }
+      @media (screen) {
+        h2 {
+          /* In the above rule, the h1 will be preserved as it is used, the h2 stripped from this rule's selector */
+          color: blue;
+        }
+      }
+      h3, h4 {
+        /* This rule will be removed entirely */
+        color: red;
       }
     </style>
   </head>
