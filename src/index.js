@@ -184,7 +184,7 @@ export default class Critters {
       style => this.processStyle(style, document)
     ));
 
-    if (this.options.mergeStylesheets !== false) {
+    if (this.options.mergeStylesheets !== false && styles.length !== 0) {
       await this.mergeStylesheets(document);
     }
 
