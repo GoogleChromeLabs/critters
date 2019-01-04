@@ -20,7 +20,7 @@ import sources from 'webpack-sources';
 import postcss from 'postcss';
 import cssnano from 'cssnano';
 import { createDocument, serializeDocument, setNodeText } from './dom';
-import { parseStylesheet, serializeStylesheet, walkStyleRules, walkStyleRulesWithReverseMirror, markOnly } from './css';
+import { parseStylesheet, serializeStylesheet, walkStyleRules, walkStyleRulesWithReverseMirror, markOnly, applyMarkedSelectors } from './css';
 import { tap } from './util';
 
 // Used to annotate this plugin's hooks in Tappable invocations
@@ -423,6 +423,8 @@ export default class Critters {
     walkStyleRulesWithReverseMirror(ast, astInverse, rule => {
       // remove any rules marked in the first pass
       if (rule.$$remove === true) return false;
+
+      applyMarkedSelectors(rule);
 
       // prune @keyframes rules
       if (rule.type === 'keyframes') {

@@ -52,8 +52,26 @@ export function markOnly (predicate) {
     if (predicate(rule) === false) {
       rule.$$remove = true;
     }
+    rule.$$markedSelectors = rule.selectors;
+    if (rule._other) {
+      rule._other.$$markedSelectors = rule._other.selectors;
+    }
     rule.selectors = sel;
   };
+}
+
+/**
+ * Apply filtered selectors to a rule from a previous markOnly run.
+ * @private
+ * @param {css.Rule} rule The Rule to apply marked selectors to (if they exist).
+*/
+export function applyMarkedSelectors (rule) {
+  if (rule.$$markedSelectors) {
+    rule.selectors = rule.$$markedSelectors;
+  }
+  if (rule._other) {
+    applyMarkedSelectors(rule._other);
+  }
 }
 
 /**
