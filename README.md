@@ -101,6 +101,22 @@ All optional. Pass them to `new Critters({ ... })`.
     -   `"all"` inline all keyframes rules
     -   `"none"` remove all keyframes rules
 -   `compress` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Compress resulting critical CSS _(default: `true`)_
+-   `logLevel` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Controls [log level](#loglevel) of the plugin _(default: `"info"`)_
+
+### LogLevel
+
+Controls log level of the plugin. Specifies the level the logger should use. A logger will
+not produce output for any log level beneath the specified level. Available levels and order
+are:
+
+-   **"info"** _(default)_
+-   **"warn"**
+-   **"error"**
+-   **"trace"**
+-   **"debug"**
+-   **"silent"**
+
+Type: (`"info"` \| `"warn"` \| `"error"` \| `"trace"` \| `"debug"` \| `"silent"`)
 
 ### PreloadStrategy
 
