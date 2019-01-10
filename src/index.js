@@ -19,6 +19,7 @@ import prettyBytes from 'pretty-bytes';
 import sources from 'webpack-sources';
 import postcss from 'postcss';
 import cssnano from 'cssnano';
+import log from 'webpack-log';
 import { createDocument, serializeDocument, setNodeText } from './dom';
 import { parseStylesheet, serializeStylesheet, walkStyleRules, walkStyleRulesWithReverseMirror, markOnly, applyMarkedSelectors } from './css';
 import { tap } from './util';
@@ -52,6 +53,21 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  */
 
 /**
+ * Controls log level of the plugin. Specifies the level the logger should use. A logger will
+ * not produce output for any log level beneath the specified level. Available levels and order
+ * are:
+ *
+ * - **"info"** _(default)_
+ * - **"warn"**
+ * - **"error"**
+ * - **"trace"**
+ * - **"debug"**
+ * - **"silent"**
+ * @typedef {('info'|'warn'|'error'|'trace'|'debug'|'silent')} LogLevel
+ * @public
+ */
+
+/**
  * All optional. Pass them to `new Critters({ ... })`.
  * @public
  * @typedef Options
@@ -74,6 +90,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  *  - `"all"` inline all keyframes rules
  *  - `"none"` remove all keyframes rules
  * @property {Boolean} compress     Compress resulting critical CSS _(default: `true`)_
+ * @property {String} logLevel      Controls {@link LogLevel log level} of the plugin _(default: `"info"`)_
  */
 
 /**
@@ -97,12 +114,13 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
 export default class Critters {
   /** @private */
   constructor (options) {
-    this.options = Object.assign({}, options || {});
+    this.options = Object.assign({ logLevel: 'info' }, options || {});
     this.options.pruneSource = this.options.pruneSource !== false;
     this.urlFilter = this.options.filter;
     if (this.urlFilter instanceof RegExp) {
       this.urlFilter = this.urlFilter.test.bind(this.urlFilter);
     }
+    this.logger = log({ name: 'Critters', unique: true, level: this.options.logLevel });
   }
 
   /**
@@ -236,9 +254,9 @@ export default class Critters {
     if (!sheet) {
       try {
         sheet = await this.readFile(compilation, filename);
-        console.warn(`Stylesheet "${relativePath}" not found in assets, but a file was located on disk.${this.options.pruneSource ? ' This means pruneSource will not be applied.' : ''}`);
+        this.logger.warn(`Stylesheet "${relativePath}" not found in assets, but a file was located on disk.${this.options.pruneSource ? ' This means pruneSource will not be applied.' : ''}`);
       } catch (e) {
-        console.warn(`Critters: unable to locate stylesheet: ${relativePath}`);
+        this.logger.warn(`Unable to locate stylesheet: ${relativePath}`);
         return;
       }
     }
@@ -257,11 +275,11 @@ export default class Critters {
 
     if (this.options.inlineThreshold && sheet.length < this.options.inlineThreshold) {
       style.$$reduce = false;
-      console.log(`\u001b[32mCritters: inlined all of ${href} (${sheet.length} was below the threshold of ${this.options.inlineThreshold})\u001b[39m`);
+      this.logger.info(`\u001b[32mInlined all of ${href} (${sheet.length} was below the threshold of ${this.options.inlineThreshold})\u001b[39m`);
       if (asset) {
         delete compilation.assets[relativePath];
       } else {
-        console.warn(`  > ${href} was not found in assets. the resource may still be emitted but will be unreferenced.`);
+        this.logger.warn(`  > ${href} was not found in assets. the resource may still be emitted but will be unreferenced.`);
       }
       link.parentNode.removeChild(link);
       return;
@@ -412,7 +430,7 @@ export default class Critters {
     }));
 
     if (failedSelectors.length !== 0) {
-      console.warn(`${failedSelectors.length} rules skipped due to selector errors:\n  ${failedSelectors.join('\n  ')}`);
+      this.logger.warn(`${failedSelectors.length} rules skipped due to selector errors:\n  ${failedSelectors.join('\n  ')}`);
     }
 
     const shouldPreloadFonts = options.fonts === true || options.preloadFonts === true;
@@ -479,7 +497,7 @@ export default class Critters {
         // if external stylesheet would be below minimum size, just inline everything
         const minSize = this.options.minimumExternalSize;
         if (minSize && sheetInverse.length < minSize) {
-          console.log(`\u001b[32mCritters: inlined all of ${name} (non-critical external stylesheet would have been ${sheetInverse.length}b, which was below the threshold of ${minSize})\u001b[39m`);
+          this.logger.info(`\u001b[32mInlined all of ${name} (non-critical external stylesheet would have been ${sheetInverse.length}b, which was below the threshold of ${minSize})\u001b[39m`);
           setNodeText(style, before);
           // remove any associated external resources/loaders:
           if (style.$$links) {
@@ -497,7 +515,7 @@ export default class Critters {
         afterText = `, reducing non-inlined size ${percent | 0}% to ${prettyBytes(sheetInverse.length)}`;
         style.$$assets[style.$$assetName] = new sources.LineToLineMappedSource(sheetInverse, style.$$assetName, before);
       } else {
-        console.warn('pruneSource is enabaled, but a style (' + name + ') has no corresponding Webpack asset.');
+        this.logger.warn('pruneSource is enabaled, but a style (' + name + ') has no corresponding Webpack asset.');
       }
     }
 
@@ -506,6 +524,6 @@ export default class Critters {
 
     // output stats
     const percent = sheet.length / before.length * 100 | 0;
-    console.log('\u001b[32mCritters: inlined ' + prettyBytes(sheet.length) + ' (' + percent + '% of original ' + prettyBytes(before.length) + ') of ' + name + afterText + '.\u001b[39m');
+    this.logger.info('\u001b[32mInlined ' + prettyBytes(sheet.length) + ' (' + percent + '% of original ' + prettyBytes(before.length) + ') of ' + name + afterText + '.\u001b[39m');
   }
 }

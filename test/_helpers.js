@@ -66,6 +66,7 @@ export async function compileToHtml (fixture, configDecorator, crittersOptions =
     config.plugins.push(
       new Critters({
         compress: false,
+        logLevel: 'silent',
         ...crittersOptions
       })
     );
