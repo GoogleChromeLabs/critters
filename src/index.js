@@ -130,7 +130,7 @@ export default class Critters {
     // hook into the compiler to get a Compilation instance...
     tap(compiler, 'compilation', PLUGIN_NAME, false, compilation => {
       // ... which is how we get an "after" hook into html-webpack-plugin's HTML generation.
-      if (compilation.hooks.htmlWebpackPluginAfterHtmlProcessing) {
+      if (compilation.hooks && compilation.hooks.htmlWebpackPluginAfterHtmlProcessing) {
         tap(compilation, 'html-webpack-plugin-after-html-processing', PLUGIN_NAME, true, (htmlPluginData, callback) => {
           this.process(compiler, compilation, htmlPluginData.html)
             .then(html => { callback(null, { html }); })
