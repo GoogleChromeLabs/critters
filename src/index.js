@@ -184,6 +184,7 @@ export default class Critters {
    */
   async process (compiler, compilation, html) {
     const outputPath = compiler.options.output.path;
+    const publicPath = compiler.options.output.publicPath;
 
     // Parse the generated HTML in a DOM we can mutate
     const document = createDocument(html);
@@ -192,7 +193,7 @@ export default class Critters {
     if (this.options.external !== false) {
       const externalSheets = [].slice.call(document.querySelectorAll('link[rel="stylesheet"]'));
       await Promise.all(externalSheets.map(
-        link => this.embedLinkedStylesheet(link, compilation, outputPath)
+        link => this.embedLinkedStylesheet(link, compilation, outputPath, publicPath)
       ));
     }
 
@@ -236,7 +237,7 @@ export default class Critters {
   /**
    * Inline the target stylesheet referred to by a <link rel="stylesheet"> (assuming it passes `options.filter`)
    */
-  async embedLinkedStylesheet (link, compilation, outputPath) {
+  async embedLinkedStylesheet (link, compilation, outputPath, publicPath) {
     const href = link.getAttribute('href');
     const media = link.getAttribute('media');
     const document = link.ownerDocument;
@@ -246,8 +247,13 @@ export default class Critters {
     // skip filtered resources, or network resources if no filter is provided
     if (this.urlFilter ? this.urlFilter(href) : href.match(/^(https?:)?\/\//)) return Promise.resolve();
 
-    // path on disk
-    const filename = path.resolve(outputPath, href.replace(/^\//, ''));
+    // path on disk (with output.publicPath removed)
+    let normalizedPath = href.replace(/^\//, '');
+    const pathPrefix = (publicPath || '').replace(/(^\/|\/$)/g, '') + '/';
+    if (normalizedPath.indexOf(pathPrefix) === 0) {
+      normalizedPath = normalizedPath.substring(pathPrefix.length).replace(/^\//, '');
+    }
+    const filename = path.resolve(outputPath, normalizedPath);
 
     // try to find a matching asset by filename in webpack's output (not yet written to disk)
     const relativePath = path.relative(outputPath, filename).replace(/^\.\//, '');
