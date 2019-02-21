@@ -213,6 +213,10 @@ export default class Critters {
 
   async mergeStylesheets (document) {
     const styles = [].slice.call(document.querySelectorAll('style'));
+    if (styles.length === 0) {
+      this.logger.warn('Merging inline stylesheets into a single <style> tag skipped, no inline stylesheets to merge');
+      return;
+    }
     const first = styles[0];
     let sheet = first.textContent;
     for (let i = 1; i < styles.length; i++) {
