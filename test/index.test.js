@@ -73,6 +73,10 @@ describe('External CSS', () => {
     output = await compileToHtml('external', configure);
   });
 
+  it('should inline critical styles', () => {
+    expect(output.html).toMatch(/ul\.navbar\s*\{/);
+  });
+
   it('should omit non-critical styles', () => {
     expect(output.html).not.toMatch(/\.extra-style/);
   });
@@ -81,6 +85,46 @@ describe('External CSS', () => {
     const link = output.document.querySelector('link[rel="stylesheet"]');
     expect(link).not.toBeNull();
     expect(link).toHaveProperty('href', 'main.css');
+  });
+
+  it('should match snapshot', () => {
+    expect(output.html).toMatchSnapshot();
+  });
+
+  it('should prune external sheet', async () => {
+    const externalCss = await readFile('fixtures/external/dist/main.css');
+    expect(externalCss).toMatch(/\.extra-style\s*\{/);
+    expect(externalCss).toMatchSnapshot();
+  });
+});
+
+describe('publicPath', () => {
+  let output;
+  beforeAll(async () => {
+    output = await compileToHtml('external', config => {
+      configure(config);
+      config.output.publicPath = '/_public/';
+    });
+  });
+
+  it('should inline critical styles', () => {
+    expect(output.html).toMatch(/ul\.navbar\s*\{/);
+  });
+
+  it('should omit non-critical styles', () => {
+    expect(output.html).not.toMatch(/\.extra-style/);
+  });
+
+  it('should reference from publicPath', () => {
+    const link = output.document.querySelector('link[rel="stylesheet"]');
+    expect(link).not.toBeNull();
+    expect(link).toHaveProperty('href', '/_public/main.css');
+  });
+
+  it('should preload from publicPath', () => {
+    const link = output.document.querySelector('link[rel="preload"]');
+    expect(link).not.toBeNull();
+    expect(link).toHaveProperty('href', '/_public/main.css');
   });
 
   it('should match snapshot', () => {
