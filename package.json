@@ -67,7 +67,7 @@
     "file-loader": "^1.1.11",
     "html-webpack-plugin": "^3.2.0",
     "jest": "^22.4.3",
-    "microbundle": "^0.4.4",
+    "microbundle": "^0.11.0",
     "mini-css-extract-plugin": "^0.4.0",
     "webpack": "^4.6.0"
   },

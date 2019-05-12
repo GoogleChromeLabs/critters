@@ -189,6 +189,13 @@ export default class Critters {
     // Parse the generated HTML in a DOM we can mutate
     const document = createDocument(html);
 
+    // Loop through the lookup HTML files, read them and store the generated HTML in a DOM
+    const lookupHtmlFiles = this.options.lookupHtmlFiles || [];
+    const lookupDocuments = await Promise.all(lookupHtmlFiles.map(async filename => {
+      const html = await this.readFile(compilation, filename);
+      return createDocument(html);
+    }));
+
     // `external:false` skips processing of external sheets
     if (this.options.external !== false) {
       const externalSheets = [].slice.call(document.querySelectorAll('link[rel="stylesheet"]'));
@@ -200,7 +207,7 @@ export default class Critters {
     // go through all the style tags in the document and reduce them to only critical CSS
     const styles = [].slice.call(document.querySelectorAll('style'));
     await Promise.all(styles.map(
-      style => this.processStyle(style, document)
+      style => this.processStyle(style, [document, ...lookupDocuments])
     ));
 
     if (this.options.mergeStylesheets !== false && styles.length !== 0) {
@@ -355,7 +362,7 @@ export default class Critters {
   /**
    * Parse the stylesheet within a <style> element, then reduce it to contain only rules used by the document.
    */
-  async processStyle (style) {
+  async processStyle (style, lookupDocuments) {
     if (style.$$reduce === false) return;
 
     const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
@@ -398,7 +405,7 @@ export default class Critters {
           if (!sel) return false;
 
           try {
-            return document.querySelector(sel) != null;
+            return lookupDocuments.some(doc => doc.querySelector(sel) != null);
           } catch (e) {
             failedSelectors.push(sel + ' -> ' + e.message);
             return false;
