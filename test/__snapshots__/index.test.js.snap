@@ -3,7 +3,11 @@
 exports[`External CSS should match snapshot 1`] = `
 "<!DOCTYPE html><html><head>
     <title>External CSS Demo</title>
-  <style>body {
+  <style>:root {
+  font-size: 10px;
+}
+
+body {
   padding-left: 11em;
   font-family: \\"Times New Roman\\", times, serif;
   color: purple;
@@ -224,7 +228,11 @@ exports[`Lookup HTML Files should prune external sheet 1`] = `
 exports[`options { async:true } should match snapshot 1`] = `
 "<!DOCTYPE html><html><head>
     <title>External CSS Demo</title>
-  <style>body {
+  <style>:root {
+  font-size: 10px;
+}
+
+body {
   padding-left: 11em;
   font-family: \\"Times New Roman\\", times, serif;
   color: purple;
@@ -289,7 +297,11 @@ footer {
 exports[`publicPath should match snapshot 1`] = `
 "<!DOCTYPE html><html><head>
     <title>External CSS Demo</title>
-  <style>body {
+  <style>:root {
+  font-size: 10px;
+}
+
+body {
   padding-left: 11em;
   font-family: \\"Times New Roman\\", times, serif;
   color: purple;
