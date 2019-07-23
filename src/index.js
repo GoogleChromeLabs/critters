@@ -324,7 +324,7 @@ export default class Critters {
         // @see https://github.com/filamentgroup/loadCSS/blob/af1106cfe0bf70147e22185afa7ead96c01dec48/src/loadCSS.js#L26
         link.setAttribute('rel', 'stylesheet');
         link.removeAttribute('as');
-        link.setAttribute('media', 'only x');
+        link.setAttribute('media', 'print');
         link.setAttribute('onload', `this.media='${media || 'all'}'`);
         noscriptFallback = true;
       } else if (preloadMode === 'swap') {
