@@ -98,6 +98,45 @@ describe('External CSS', () => {
   });
 });
 
+describe('Lookup HTML Files', () => {
+  let output;
+  beforeAll(async () => {
+    const lookupHtmlFiles = [
+      'test/fixtures/lookup/lookup1.html',
+      'test/fixtures/lookup/lookup2.html'
+    ];
+    output = await compileToHtml('lookup', configure, { lookupHtmlFiles });
+  });
+
+  it('should inline critical styles', () => {
+    expect(output.html).toMatch(/ul\.navbar\s*\{/);
+    expect(output.html).toMatch(/\.lookup-style-1\s*\{/);
+    expect(output.html).toMatch(/\.lookup-style-2\s*\{/);
+  });
+
+  it('should omit non-critical styles', () => {
+    expect(output.html).not.toMatch(/\.extra-style/);
+  });
+
+  it('should replace rel="stylesheet" with a preload', () => {
+    const link = output.document.querySelector('link[rel="stylesheet"]');
+    expect(link).not.toBeNull();
+    expect(link).toHaveProperty('href', 'main.css');
+  });
+
+  it('should match snapshot', () => {
+    expect(output.html).toMatchSnapshot();
+  });
+
+  it('should prune external sheet', async () => {
+    const externalCss = await readFile('fixtures/lookup/dist/main.css');
+    expect(externalCss).toMatch(/\.extra-style\s*\{/);
+    expect(externalCss).not.toMatch(/\.lookup-style-1\s*\{/);
+    expect(externalCss).not.toMatch(/\.lookup-style-2\s*\{/);
+    expect(externalCss).toMatchSnapshot();
+  });
+});
+
 describe('publicPath', () => {
   let output;
   beforeAll(async () => {
