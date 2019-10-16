@@ -18,6 +18,7 @@ Critters' design makes it a good fit when inlining critical CSS for prerendered/
 -   Works with `webpack-dev-server` / `webpack serve`
 -   Supports preloading and/or inlining critical fonts
 -   Prunes unused CSS keyframes and media queries
+-   Removes inlined CSS rules from lazy-loaded stylesheets
 
 ## Installation
 
@@ -84,6 +85,10 @@ All optional. Pass them to `new Critters({ ... })`.
 **Properties**
 
 -   `external` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline styles from external stylesheets _(default: `true`)_
+-   `inlineThreshold` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Inline external stylesheets smaller than a given size _(default: `0`)_
+-   `minimumExternalSize` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
+-   `pruneSource` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Remove inlined rules from the external stylesheet _(default: `true`)_
+-   `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merged inlined stylesheets into a single <style> tag _(default: `true`)_
 -   `preload` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [preload strategy](#preloadstrategy) to use
 -   `noscriptFallback` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Add `<noscript>` fallback to JS-based strategies
 -   `inlineFonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline critical font-face rules _(default: `false`)_
@@ -96,6 +101,22 @@ All optional. Pass them to `new Critters({ ... })`.
     -   `"all"` inline all keyframes rules
     -   `"none"` remove all keyframes rules
 -   `compress` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Compress resulting critical CSS _(default: `true`)_
+-   `logLevel` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Controls [log level](#loglevel) of the plugin _(default: `"info"`)_
+
+### LogLevel
+
+Controls log level of the plugin. Specifies the level the logger should use. A logger will
+not produce output for any log level beneath the specified level. Available levels and order
+are:
+
+-   **"info"** _(default)_
+-   **"warn"**
+-   **"error"**
+-   **"trace"**
+-   **"debug"**
+-   **"silent"**
+
+Type: (`"info"` \| `"warn"` \| `"error"` \| `"trace"` \| `"debug"` \| `"silent"`)
 
 ### PreloadStrategy
 

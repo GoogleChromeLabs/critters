@@ -16,8 +16,8 @@
 import { JSDOM } from 'jsdom';
 
 /**
- * Parse HTML into a mutable, serializable DOM Document.
- * The DOM implementation is an htmlparser2 DOM enhanced with basic DOM mutation methods.
+ * Parse HTML into a mutable, serializable DOM Document, provided by JSDOM.
+ * @private
  * @param {String} html   HTML to parse into a Document instance
  */
 export function createDocument (html) {
@@ -31,8 +31,17 @@ export function createDocument (html) {
 }
 /**
  * Serialize a Document to an HTML String
+ * @private
  * @param {Document} document   A Document, such as one created via `createDocument()`
  */
 export function serializeDocument (document) {
   return document.$jsdom.serialize();
+}
+
+/** Like node.textContent, except it works */
+export function setNodeText (node, text) {
+  while (node.lastChild) {
+    node.removeChild(node.lastChild);
+  }
+  node.appendChild(node.ownerDocument.createTextNode(text));
 }
