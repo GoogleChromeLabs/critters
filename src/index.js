@@ -20,6 +20,7 @@ import sources from 'webpack-sources';
 import postcss from 'postcss';
 import cssnano from 'cssnano';
 import log from 'webpack-log';
+import minimatch from 'minimatch';
 import { createDocument, serializeDocument, setNodeText } from './dom';
 import { parseStylesheet, serializeStylesheet, walkStyleRules, walkStyleRulesWithReverseMirror, markOnly, applyMarkedSelectors } from './css';
 import { tap } from './util';
@@ -76,6 +77,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  * @property {Number} minimumExternalSize If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
  * @property {Boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `true`)_
  * @property {Boolean} mergeStylesheets Merged inlined stylesheets into a single <style> tag _(default: `true`)_
+ * @property {String} includeMatchingStylesheets Glob for matching other stylesheets to be used while looking for critical CSS _(default: ``)_.
  * @property {String} preload       Which {@link PreloadStrategy preload strategy} to use
  * @property {Boolean} noscriptFallback Add `<noscript>` fallback to JS-based strategies
  * @property {Boolean} inlineFonts  Inline critical font-face rules _(default: `false`)_
@@ -114,7 +116,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
 export default class Critters {
   /** @private */
   constructor (options) {
-    this.options = Object.assign({ logLevel: 'info' }, options || {});
+    this.options = Object.assign({ logLevel: 'info', externalStylesheets: [] }, options || {});
     this.options.pruneSource = this.options.pruneSource !== false;
     this.urlFilter = this.options.filter;
     if (this.urlFilter instanceof RegExp) {
@@ -188,6 +190,15 @@ export default class Critters {
 
     // Parse the generated HTML in a DOM we can mutate
     const document = createDocument(html);
+
+    if (this.options.includeMatchingStylesheets) {
+      const webpackCssAssets = Object.keys(compilation.assets).filter(file => minimatch(file, this.options.includeMatchingStylesheets));
+      webpackCssAssets.map(asset => {
+        const tag = document.createElement('style');
+        tag.innerHTML = compilation.assets[asset].source();
+        document.head.appendChild(tag);
+      });
+    }
 
     // `external:false` skips processing of external sheets
     if (this.options.external !== false) {
