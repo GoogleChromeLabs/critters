@@ -90,7 +90,7 @@ All optional. Pass them to `new Critters({ ... })`.
 -   `pruneSource` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Remove inlined rules from the external stylesheet _(default: `true`)_
 -   `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merged inlined stylesheets into a
 single <style> tag _(default: `true`)_
--   `includeMatchingStylesheets` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Glob for matching other stylesheets which should be used to evaluate critical CSS _(default: '')_
+-   `additionalStylesheets` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Glob for matching other stylesheets which should be used to evaluate critical CSS _(default: '')_
 -   `preload` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [preload strategy](#preloadstrategy) to use
 -   `noscriptFallback` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Add `<noscript>` fallback to JS-based strategies
 -   `inlineFonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline critical font-face rules _(default: `false`)_
