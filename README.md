@@ -80,7 +80,7 @@ All optional. Pass them to `new Critters({ ... })`.
 
 **Parameters**
 
--   `options`  
+-   `options`
 
 **Properties**
 
@@ -88,7 +88,9 @@ All optional. Pass them to `new Critters({ ... })`.
 -   `inlineThreshold` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Inline external stylesheets smaller than a given size _(default: `0`)_
 -   `minimumExternalSize` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
 -   `pruneSource` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Remove inlined rules from the external stylesheet _(default: `true`)_
--   `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merged inlined stylesheets into a single <style> tag _(default: `true`)_
+-   `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merged inlined stylesheets into a
+single <style> tag _(default: `true`)_
+-   `additionalStylesheets` **[String[]](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Glob for matching other stylesheets which should be used to evaluate critical CSS _(default: '')_
 -   `preload` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [preload strategy](#preloadstrategy) to use
 -   `noscriptFallback` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Add `<noscript>` fallback to JS-based strategies
 -   `inlineFonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline critical font-face rules _(default: `false`)_
