@@ -293,7 +293,7 @@ export default class Critters {
     let cssLoaderPreamble = `function $loadcss(u,m,l){(l=document.createElement('link')).rel='stylesheet';l.href=u;document.head.appendChild(l)}`;
     const lazy = preloadMode === 'js-lazy';
     if (lazy) {
-      cssLoaderPreamble = cssLoaderPreamble.replace('l.href', `l.media='only x';l.onload=function(){l.media=m};l.href`);
+      cssLoaderPreamble = cssLoaderPreamble.replace('l.href', `l.media='print';l.onload=function(){l.media=m};l.href`);
     }
 
     // the reduced critical CSS gets injected into a new <style> tag
