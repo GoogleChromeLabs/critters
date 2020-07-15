@@ -293,7 +293,7 @@ export default class Critters {
     let cssLoaderPreamble = `function $loadcss(u,m,l){(l=document.createElement('link')).rel='stylesheet';l.href=u;document.head.appendChild(l)}`;
     const lazy = preloadMode === 'js-lazy';
     if (lazy) {
-      cssLoaderPreamble = cssLoaderPreamble.replace('l.href', `l.media='only x';l.onload=function(){l.media=m};l.href`);
+      cssLoaderPreamble = cssLoaderPreamble.replace('l.href', `l.media='print';l.onload=function(){l.media=m};l.href`);
     }
 
     // the reduced critical CSS gets injected into a new <style> tag
@@ -342,7 +342,7 @@ export default class Critters {
         // @see https://github.com/filamentgroup/loadCSS/blob/af1106cfe0bf70147e22185afa7ead96c01dec48/src/loadCSS.js#L26
         link.setAttribute('rel', 'stylesheet');
         link.removeAttribute('as');
-        link.setAttribute('media', 'only x');
+        link.setAttribute('media', 'print');
         link.setAttribute('onload', `this.media='${media || 'all'}'`);
         noscriptFallback = true;
       } else if (preloadMode === 'swap') {
