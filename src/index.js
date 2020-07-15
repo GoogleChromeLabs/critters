@@ -131,9 +131,18 @@ export default class Critters {
   apply (compiler) {
     // hook into the compiler to get a Compilation instance...
     tap(compiler, 'compilation', PLUGIN_NAME, false, compilation => {
+      let HtmlWebpackPlugin;
+      try {
+        HtmlWebpackPlugin = require('html-webpack-plugin');
+      } catch (e) {}
+      
+      if (HtmlWebpackPlugin && !HtmlWebpackPlugin.getHooks) {
+        console.warn('Critters: detected html-webpack-plugin v3 or lower, falling back to processing Webpack .html assets.');
+      }
+
       // ... which is how we get an "after" hook into html-webpack-plugin's HTML generation.
-      if (compilation.hooks && compilation.hooks.htmlWebpackPluginAfterHtmlProcessing) {
-        tap(compilation, 'html-webpack-plugin-after-html-processing', PLUGIN_NAME, true, (htmlPluginData, callback) => {
+      if (HtmlWebpackPlugin) {
+        HtmlWebpackPlugin.getHooks(compilation).beforeEmit.tapAsync(PLUGIN_NAME, (htmlPluginData, callback) => {
           this.process(compiler, compilation, htmlPluginData.html)
             .then(html => { callback(null, { html }); })
             .catch(callback);
