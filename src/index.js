@@ -73,6 +73,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
  * @public
  * @typedef Options
  * @property {Boolean} external     Inline styles from external stylesheets _(default: `true`)_
+ * @property {Boolean} reduceInlineStyles  Reduce inline style tags to their critical rules _(default: `true`)_
  * @property {Number} inlineThreshold Inline external stylesheets smaller than a given size _(default: `0`)_
  * @property {Number} minimumExternalSize If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
  * @property {Boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `true`)_
@@ -201,6 +202,7 @@ export default class Critters {
         const webpackCssAssets = Object.keys(compilation.assets).filter(file => minimatch(file, cssFile));
         webpackCssAssets.map(asset => {
           const tag = document.createElement('style');
+          tag.$$external = true;
           tag.innerHTML = compilation.assets[asset].source();
           document.head.appendChild(tag);
         });
@@ -216,7 +218,7 @@ export default class Critters {
     }
 
     // go through all the style tags in the document and reduce them to only critical CSS
-    const styles = [].slice.call(document.querySelectorAll('style'));
+    const styles = this.getAffectedStyleTags(document);
     await Promise.all(styles.map(
       style => this.processStyle(style, document)
     ));
@@ -228,9 +230,18 @@ export default class Critters {
     // serialize the document back to HTML and we're done
     return serializeDocument(document);
   }
+  
+  getAffectedStyleTags(document) {
+    let styles = [].slice.call(document.querySelectorAll('style'));
+    // `inline:false` skips processing of inline stylesheets
+    if (this.options.reduceInlineStyles === false) {
+      return styles.filter(style => style.$$external);
+    }
+    return styles;
+  }
 
   async mergeStylesheets (document) {
-    const styles = [].slice.call(document.querySelectorAll('style'));
+    const styles = this.getAffectedStyleTags(document);
     if (styles.length === 0) {
       this.logger.warn('Merging inline stylesheets into a single <style> tag skipped, no inline stylesheets to merge');
       return;
@@ -298,6 +309,7 @@ export default class Critters {
 
     // the reduced critical CSS gets injected into a new <style> tag
     const style = document.createElement('style');
+    style.$$external = true;
     style.appendChild(document.createTextNode(sheet));
     link.parentNode.insertBefore(style, link);
 
