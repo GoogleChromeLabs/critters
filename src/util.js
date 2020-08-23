@@ -1,8 +1,19 @@
-export function tap (inst, hook, pluginName, async, callback) {
-  if (inst.hooks) {
-    const camel = hook.replace(/-([a-z])/g, (s, i) => i.toUpperCase());
-    inst.hooks[camel][async ? 'tapAsync' : 'tap'](pluginName, callback);
-  } else {
-    inst.plugin(hook, callback);
-  }
-}
+import chalk from 'chalk';
+
+export const logger = {
+  warn(msg) {
+    console.error(chalk.yellow(msg));
+  },
+
+  error(msg) {
+    console.error(chalk.bold.red(msg));
+  },
+
+  log(msg) {
+    console.log(msg);
+  },
+
+  info(msg) {
+    console.log(chalk.bold.blue(msg));
+  },
+};

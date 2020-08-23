@@ -1,9 +1,12 @@
 :root {
   font-size: 10px;
 }
+html {
+  height: 100%;
+}
 body {
   padding-left: 11em;
-  font-family: "Times New Roman", times, serif;
+  font-family: 'Times New Roman', times, serif;
   color: purple;
   background-color: #d8da3d;
 }
@@ -42,4 +45,3 @@ footer {
 .extra-style {
   font-size: 200%;
 }
-

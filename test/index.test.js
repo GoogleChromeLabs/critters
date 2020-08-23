@@ -18,25 +18,23 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { compile, compileToHtml, readFile } from './_helpers';
 
-function configure (config) {
+function configure(config) {
   config.module.rules.push({
     test: /\.css$/,
-    use: [
-      MiniCssExtractPlugin.loader,
-      'css-loader'
-    ]
+    use: [MiniCssExtractPlugin.loader, 'css-loader'],
   });
 
   config.plugins.push(
     new MiniCssExtractPlugin({
       filename: '[name].css',
-      chunkFilename: '[name].chunk.css'
+      chunkFilename: '[name].chunk.css',
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'index.html',
       inject: true,
-      compile: true
+      compile: true,
+      minify: false,
     })
   );
 }
@@ -101,7 +99,7 @@ describe('External CSS', () => {
 describe('publicPath', () => {
   let output;
   beforeAll(async () => {
-    output = await compileToHtml('external', config => {
+    output = await compileToHtml('external', (config) => {
       configure(config);
       config.output.publicPath = '/_public/';
     });
@@ -143,7 +141,7 @@ describe('options', () => {
     let output;
     beforeAll(async () => {
       output = await compileToHtml('external', configure, {
-        async: true
+        async: true,
       });
     });
 
@@ -172,9 +170,13 @@ describe('options', () => {
 
   describe('inlineThreshold', () => {
     it('should fully inline sheets below the given size', async () => {
-      const { document, html } = await compileToHtml('inlineThreshold', configure, {
-        inlineThreshold: 1000
-      });
+      const { document, html } = await compileToHtml(
+        'inlineThreshold',
+        configure,
+        {
+          inlineThreshold: 1000,
+        }
+      );
       expect(document.querySelectorAll('style')).toHaveLength(1);
       expect(html).toMatch(/\.extra-style/);
     });
@@ -189,7 +191,7 @@ describe('options', () => {
 
     it('keyframes=all', async () => {
       const output = await compileToHtml('keyframes', configure, {
-        keyframes: 'all'
+        keyframes: 'all',
       });
       expect(output.html).toMatch(/@keyframes present/);
       expect(output.html).toMatch(/@keyframes not-present/);
@@ -197,7 +199,7 @@ describe('options', () => {
 
     it('keyframes=none', async () => {
       const output = await compileToHtml('keyframes', configure, {
-        keyframes: 'none'
+        keyframes: 'none',
       });
       expect(output.html).not.toMatch(/@keyframes/);
     });
