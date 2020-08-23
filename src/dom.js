@@ -90,14 +90,11 @@ const ElementExtensions = {
 
   textContent: {
     get() {
-      return this.children.map((node) => node.nodeValue).join('\n');
+      return getText(this);
     },
 
     set(text) {
-      if (this.children) {
-        this.children.slice().forEach((child) => child.remove());
-      }
-      this.children.length = 0;
+      this.children = [];
       treeAdapter.insertText(this, text);
     }
   },
@@ -240,4 +237,17 @@ function reflectedProperty(attributeName) {
       this.setAttribute(attributeName, value);
     }
   };
+}
+
+/**
+ * Helper to get the text content of a node
+ * https://github.com/fb55/domutils/blob/master/src/stringify.ts#L21
+ * @private
+ */
+function getText(node) {
+  if (Array.isArray(node)) return node.map(getText).join('');
+  if (treeAdapter.isElementNode(node))
+    return node.name === 'br' ? '\n' : getText(node.children);
+  if (treeAdapter.isTextNode(node)) return node.data;
+  return '';
 }
