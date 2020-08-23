@@ -27,17 +27,36 @@ First, install Critters as a development dependency:
 npm i -D critters
 ```
 
-Then, import Critters into your Webpack configuration and add it to your list of plugins:
+or
+
+```sh
+yarn add -D critters
+```
+
+## Usage
 
 ```diff
-// webpack.config.js
 +    const Critters = require('critters');
-
 
 +    const c = new Critters({
 +      // optional configuration (see below)
 +    })
 +    const res = c.process(html)
+```
+
+## Usage with webpack
+
+```diff
+// webpack.config.js
++const Critters = require('critters-webpack-plugin');
+
+module.exports = {
+  plugins: [
++    new Critters({
++      // optional configuration (see below)
++    })
+  ]
+}
 ```
 
 That's it! The resultant html will have its critical CSS inlined and the stylesheets lazy-loaded.

@@ -21,7 +21,7 @@ import select from 'css-select';
 const treeAdapter = require('parse5-htmlparser2-tree-adapter');
 
 const PARSE5_OPTS = {
-  treeAdapter,
+  treeAdapter
 };
 
 /**
@@ -62,7 +62,7 @@ const ElementExtensions = {
   nodeName: {
     get() {
       return this.tagName.toUpperCase();
-    },
+    }
   },
 
   id: reflectedProperty('id'),
@@ -94,9 +94,12 @@ const ElementExtensions = {
     },
 
     set(text) {
-      this.children = [];
+      if (this.children) {
+        this.children.slice().forEach((child) => child.remove());
+      }
+      this.children.length = 0;
       treeAdapter.insertText(this, text);
-    },
+    }
   },
 
   setAttribute(name, value) {
@@ -107,7 +110,7 @@ const ElementExtensions = {
 
   removeAttribute(name) {
     if (this.attribs != null) {
-      delete this.attribs[name];
+      this.attribs[name] = null;
     }
   },
 
@@ -122,7 +125,7 @@ const ElementExtensions = {
   getAttributeNode(name) {
     const value = this.getAttribute(name);
     if (value != null) return { specified: true, value };
-  },
+  }
 };
 
 /**
@@ -137,19 +140,19 @@ const DocumentExtensions = {
   nodeType: {
     get() {
       return 9;
-    },
+    }
   },
 
   contentType: {
     get() {
       return 'text/html';
-    },
+    }
   },
 
   nodeName: {
     get() {
       return '#document';
-    },
+    }
   },
 
   documentElement: {
@@ -158,7 +161,7 @@ const DocumentExtensions = {
       return this.childNodes.filter(
         (child) => String(child.tagName).toLowerCase() === 'html'
       );
-    },
+    }
   },
 
   compatMode: {
@@ -166,16 +169,16 @@ const DocumentExtensions = {
       const compatMode = {
         'no-quirks': 'CSS1Compat',
         quirks: 'BackCompat',
-        'limited-quirks': 'CSS1Compat',
+        'limited-quirks': 'CSS1Compat'
       };
       return compatMode[treeAdapter.getDocumentMode(this)];
-    },
+    }
   },
 
   body: {
     get() {
       return this.querySelector('body');
-    },
+    }
   },
 
   createElement(name) {
@@ -190,23 +193,23 @@ const DocumentExtensions = {
       data: text,
       parent: null,
       prev: null,
-      next: null,
+      next: null
     });
   },
 
   querySelector(sel) {
     if (sel === ':root') {
-      return this.type === 'root';
+      return this;
     }
     return select.selectOne(sel, this.documentElement);
   },
 
   querySelectorAll(sel) {
     if (sel === ':root') {
-      return this.type === 'root';
+      return this;
     }
     return select(sel, this.documentElement);
-  },
+  }
 };
 
 /**
@@ -235,6 +238,6 @@ function reflectedProperty(attributeName) {
     },
     set(value) {
       this.setAttribute(attributeName, value);
-    },
+    }
   };
 }

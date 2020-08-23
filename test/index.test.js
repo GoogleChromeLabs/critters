@@ -21,20 +21,20 @@ import { compile, compileToHtml, readFile } from './_helpers';
 function configure(config) {
   config.module.rules.push({
     test: /\.css$/,
-    use: [MiniCssExtractPlugin.loader, 'css-loader'],
+    use: [MiniCssExtractPlugin.loader, 'css-loader']
   });
 
   config.plugins.push(
     new MiniCssExtractPlugin({
       filename: '[name].css',
-      chunkFilename: '[name].chunk.css',
+      chunkFilename: '[name].chunk.css'
     }),
     new HtmlWebpackPlugin({
       filename: 'index.html',
       template: 'index.html',
       inject: true,
       compile: true,
-      minify: false,
+      minify: false
     })
   );
 }
@@ -141,7 +141,7 @@ describe('options', () => {
     let output;
     beforeAll(async () => {
       output = await compileToHtml('external', configure, {
-        async: true,
+        async: true
       });
     });
 
@@ -174,7 +174,7 @@ describe('options', () => {
         'inlineThreshold',
         configure,
         {
-          inlineThreshold: 1000,
+          inlineThreshold: 1000
         }
       );
       expect(document.querySelectorAll('style')).toHaveLength(1);
@@ -191,7 +191,7 @@ describe('options', () => {
 
     it('keyframes=all', async () => {
       const output = await compileToHtml('keyframes', configure, {
-        keyframes: 'all',
+        keyframes: 'all'
       });
       expect(output.html).toMatch(/@keyframes present/);
       expect(output.html).toMatch(/@keyframes not-present/);
@@ -199,7 +199,7 @@ describe('options', () => {
 
     it('keyframes=none', async () => {
       const output = await compileToHtml('keyframes', configure, {
-        keyframes: 'none',
+        keyframes: 'none'
       });
       expect(output.html).not.toMatch(/@keyframes/);
     });

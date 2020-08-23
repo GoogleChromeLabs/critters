@@ -15,5 +15,5 @@ export const logger = {
 
   info(msg) {
     console.log(chalk.bold.blue(msg));
-  },
+  }
 };

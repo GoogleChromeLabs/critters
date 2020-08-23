@@ -20,11 +20,11 @@ function configure(config) {
   config.module.rules.push(
     {
       test: /\.css$/,
-      loader: 'css-loader',
+      loader: 'css-loader'
     },
     {
       test: /\.html$/,
-      loader: 'file-loader?name=[name].[ext]',
+      loader: 'file-loader?name=[name].[ext]'
     }
   );
 }

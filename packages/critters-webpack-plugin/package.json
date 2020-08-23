@@ -34,12 +34,12 @@
     "directory": "packages/critters-webpack-plugin"
   },
   "scripts": {
-    "build": "microbundle --no-compress",
+    "build": "microbundle --target node --alias critters=../../src/index.js",
     "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
     "prepare": "npm run -s build"
   },
   "dependencies": {
-    "critters": "../../src",
+    "critters": "^3.0.0",
     "webpack-log": "^3.0.1",
     "webpack-sources": "^1.3.0"
   }

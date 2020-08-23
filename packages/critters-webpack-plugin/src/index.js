@@ -50,7 +50,7 @@ export default class CrittersWebpackPlugin extends Critters {
     this.logger = log({
       name: 'Critters',
       unique: true,
-      level: this.options.logLevel,
+      level: this.options.logLevel
     });
   }
 

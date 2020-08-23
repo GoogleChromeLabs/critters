@@ -25,7 +25,7 @@ import {
   walkStyleRules,
   walkStyleRulesWithReverseMirror,
   markOnly,
-  applyMarkedSelectors,
+  applyMarkedSelectors
 } from './css';
 import { logger } from './util';
 
@@ -108,7 +108,7 @@ export default class Critters {
         reduceInlineStyles: true,
         pruneSource: false,
         additionalStylesheets: [],
-        ssrMode: false,
+        ssrMode: false
       },
       options || {}
     );
@@ -159,7 +159,7 @@ export default class Critters {
       );
 
       await Promise.all(
-        externalSheets.map((link) => this.embedLinkedStylesheet(link))
+        externalSheets.map((link) => this.embedLinkedStylesheet(link, document))
       );
     }
 
@@ -295,10 +295,9 @@ export default class Critters {
   /**
    * Inline the target stylesheet referred to by a <link rel="stylesheet"> (assuming it passes `options.filter`)
    */
-  async embedLinkedStylesheet(link) {
+  async embedLinkedStylesheet(link, document) {
     const href = link.getAttribute('href');
     const media = link.getAttribute('media');
-    const document = link.ownerDocument;
 
     const preloadMode = this.options.preload;
 
@@ -575,7 +574,7 @@ export default class Critters {
     });
 
     sheet = serializeStylesheet(ast, {
-      compress: this.options.compress !== false,
+      compress: this.options.compress !== false
     }).trim();
 
     // If all rules were removed, get rid of the style element entirely
@@ -590,7 +589,7 @@ export default class Critters {
     let styleInlinedCompletely = false;
     if (options.pruneSource) {
       const sheetInverse = serializeStylesheet(astInverse, {
-        compress: this.options.compress !== false,
+        compress: this.options.compress !== false
       });
 
       styleInlinedCompletely = this.pruneSource(style, before, sheetInverse);

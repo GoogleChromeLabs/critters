@@ -31,7 +31,7 @@
   "repository": "GoogleChromeLabs/critters",
   "scripts": {
     "build": "npm run -s build:main && npm run -s build:webpack",
-    "build:main": "microbundle --no-compress",
+    "build:main": "microbundle --target node",
     "build:webpack": "cd packages/critters-webpack-plugin && npm run -s build",
     "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
     "prepare": "npm run -s build",
