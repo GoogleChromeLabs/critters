@@ -39,15 +39,15 @@ export function compile(entry, configDecorator) {
       output: {
         path: path.resolve(__dirname, path.resolve(context, 'dist')),
         filename: 'bundle.js',
-        chunkFilename: '[name].chunk.js',
+        chunkFilename: '[name].chunk.js'
       },
       resolveLoader: {
-        modules: [path.resolve(__dirname, '../node_modules')],
+        modules: [path.resolve(__dirname, '../node_modules')]
       },
       module: {
-        rules: [],
+        rules: []
       },
-      plugins: [],
+      plugins: []
     };
     if (configDecorator) {
       config = configDecorator(config) || config;
@@ -75,7 +75,7 @@ export async function compileToHtml(
         pruneSource: true,
         compress: false,
         logLevel: 'silent',
-        ...crittersOptions,
+        ...crittersOptions
       })
     );
   });
