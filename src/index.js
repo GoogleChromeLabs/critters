@@ -103,7 +103,7 @@ export default class Critters {
       {
         logLevel: 'info',
         externalStylesheets: [],
-        outputPath: '',
+        path: '',
         publicPath: '',
         reduceInlineStyles: true,
         pruneSource: false,
@@ -225,7 +225,7 @@ export default class Critters {
    * Given href, find the corresponding CSS asset
    */
   async getCssAsset(href) {
-    const outputPath = this.options.outputPath;
+    const outputPath = this.options.path;
     const publicPath = this.options.publicPath;
 
     // CHECK - the output path

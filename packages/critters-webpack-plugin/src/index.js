@@ -60,7 +60,7 @@ export default class CrittersWebpackPlugin extends Critters {
   apply(compiler) {
     // hook into the compiler to get a Compilation instance...
     tap(compiler, 'compilation', PLUGIN_NAME, false, (compilation) => {
-      this.options.outputPath = compiler.options.output.path;
+      this.options.path = compiler.options.output.path;
       this.options.publicPath = compiler.options.output.publicPath;
       // ... which is how we get an "after" hook into html-webpack-plugin's HTML generation.
       if (
@@ -122,7 +122,7 @@ export default class CrittersWebpackPlugin extends Critters {
    * Given href, find the corresponding CSS asset
    */
   async getCssAsset(href, style) {
-    const outputPath = this.options.outputPath;
+    const outputPath = this.options.path;
     const publicPath = this.options.publicPath;
 
     // CHECK - the output path
