@@ -138,6 +138,12 @@ export default class Critters {
             .then(html => { callback(null, { html }); })
             .catch(callback);
         });
+      } else if (compilation.options.plugins.find(item => item.constructor && item.constructor.name === 'HtmlWebpackPlugin')) {
+        require('html-webpack-plugin').getHooks(compilation).beforeEmit.tapAsync(PLUGIN_NAME, (htmlPluginData, callback) => {
+          this.process(compiler, compilation, htmlPluginData.html)
+          .then(html => { callback(null, { html }); })
+          .catch(callback);
+        });
       } else {
         // If html-webpack-plugin isn't used, process the first HTML asset as an optimize step
         tap(compilation, 'optimize-assets', PLUGIN_NAME, true, (assets, callback) => {
