@@ -36,7 +36,8 @@ function configure (config) {
       filename: 'index.html',
       template: 'index.html',
       inject: true,
-      compile: true
+      compile: true,
+      minify: false
     })
   );
 }
