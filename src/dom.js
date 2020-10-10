@@ -107,7 +107,7 @@ const ElementExtensions = {
 
   removeAttribute(name) {
     if (this.attribs != null) {
-      this.attribs[name] = null;
+      delete this.attribs[name];
     }
   },
 

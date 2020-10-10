@@ -73,6 +73,8 @@ import { logger } from './util';
  * All optional. Pass them to `new Critters({ ... })`.
  * @public
  * @typedef Options
+ * @property {String} path     Base path location of the CSS files _(default: `''`)_
+ * @property {String} publicPath     Public path of the CSS resources. This prefix is removed from the href _(default: `''`)_
  * @property {Boolean} external     Inline styles from external stylesheets _(default: `true`)_
  * @property {Number} inlineThreshold Inline external stylesheets smaller than a given size _(default: `0`)_
  * @property {Number} minimumExternalSize If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
@@ -94,6 +96,7 @@ import { logger } from './util';
  *  - `"none"` remove all keyframes rules
  * @property {Boolean} compress     Compress resulting critical CSS _(default: `true`)_
  * @property {String} logLevel      Controls {@link LogLevel log level} of the plugin _(default: `"info"`)_
+ * @property {Boolean} ssrMode      Optimizes for SSR _(default: `false`)_
  */
 
 export default class Critters {
@@ -102,7 +105,6 @@ export default class Critters {
     this.options = Object.assign(
       {
         logLevel: 'info',
-        externalStylesheets: [],
         path: '',
         publicPath: '',
         reduceInlineStyles: true,
