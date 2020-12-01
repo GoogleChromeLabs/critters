@@ -214,7 +214,7 @@ export default class Critters {
     }
     if (!this.options.ssrMode && this.options.compress !== false) {
       const before = sheet;
-      const processor = postcss([cssnano()]);
+      const processor = postcss([cssnano({ preset: 'lite' })]);
       const result = await processor.process(before, { from: undefined });
       // @todo sourcemap support (elsewhere first)
       sheet = result.css;
