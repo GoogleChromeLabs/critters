@@ -56,6 +56,14 @@ ul.navbar a {
   text-decoration: none;
 }
 
+ul.navbar:not(.hidden) li:hover a {
+  color: black;
+}
+
+ul.navbar li:hover a {
+  color: red;
+}
+
 a:link {
   color: blue;
 }

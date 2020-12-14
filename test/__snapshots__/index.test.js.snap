@@ -120,6 +120,14 @@ ul.navbar a {
   text-decoration: none;
 }
 
+ul.navbar:not(.hidden) li:hover a {
+  color: black;
+}
+
+ul.navbar li:hover a {
+  color: red;
+}
+
 a:link {
   color: blue;
 }
@@ -336,12 +344,19 @@ exports[`webpack compilation 1`] = `
       ul.navbar a {
         text-decoration: none;
       }
+      ul.navbar:not(.hidden) li:hover a {
+        color: black;
+      }
+      ul.navbar li:hover a {
+        color: red;
+      }
       a:link {
         color: blue;
       }
       a:visited {
         color: purple;
       }
+
       footer {
         margin-top: 1em;
         padding-top: 1em;
@@ -349,6 +364,9 @@ exports[`webpack compilation 1`] = `
       }
       .extra-style {
         font-size: 200%;
+      }
+      .hidden {
+        visibility: hidden;
       }
     </style>
   </head>
