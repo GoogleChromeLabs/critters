@@ -33,6 +33,9 @@
       ul.navbar:not(.hidden) li:hover a {
         color: black;
       }
+      ul.navbar:not(:hover) li:hover a {
+        color: black;
+      }
       ul.navbar li:hover a {
         color: red;
       }
@@ -54,10 +57,14 @@
       .hidden {
         visibility: hidden;
       }
+
+      .clazz\:colon {
+        color: green;
+      }
     </style>
   </head>
   <body>
-    <ul class="navbar">
+    <ul class="navbar clazz:colon">
       <li>
         <a href="index.html">Home page</a>
       </li>

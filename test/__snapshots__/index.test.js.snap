@@ -124,6 +124,10 @@ ul.navbar:not(.hidden) li:hover a {
   color: black;
 }
 
+ul.navbar:not(:hover) li:hover a {
+  color: black;
+}
+
 ul.navbar li:hover a {
   color: red;
 }
@@ -140,10 +144,14 @@ footer {
   margin-top: 1em;
   padding-top: 1em;
   border-top: thin dotted;
+}
+
+.clazz\\\\:colon {
+  color: green;
 }</style>
   </head>
   <body>
-    <ul class=\\"navbar\\">
+    <ul class=\\"navbar clazz:colon\\">
       <li>
         <a href=\\"index.html\\">Home page</a>
       </li>
@@ -347,6 +355,9 @@ exports[`webpack compilation 1`] = `
       ul.navbar:not(.hidden) li:hover a {
         color: black;
       }
+      ul.navbar:not(:hover) li:hover a {
+        color: black;
+      }
       ul.navbar li:hover a {
         color: red;
       }
@@ -368,10 +379,14 @@ exports[`webpack compilation 1`] = `
       .hidden {
         visibility: hidden;
       }
+
+      .clazz\\\\:colon {
+        color: green;
+      }
     </style>
   </head>
   <body>
-    <ul class=\\"navbar\\">
+    <ul class=\\"navbar clazz:colon\\">
       <li>
         <a href=\\"index.html\\">Home page</a>
       </li>
