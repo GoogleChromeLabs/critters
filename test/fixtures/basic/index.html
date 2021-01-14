@@ -30,12 +30,22 @@
       ul.navbar a {
         text-decoration: none;
       }
+      ul.navbar:not(.hidden) li:hover a {
+        color: black;
+      }
+      ul.navbar:not(:hover) li:hover a {
+        color: black;
+      }
+      ul.navbar li:hover a {
+        color: red;
+      }
       a:link {
         color: blue;
       }
       a:visited {
         color: purple;
       }
+
       footer {
         margin-top: 1em;
         padding-top: 1em;
@@ -44,10 +54,17 @@
       .extra-style {
         font-size: 200%;
       }
+      .hidden {
+        visibility: hidden;
+      }
+
+      .clazz\:colon {
+        color: green;
+      }
     </style>
   </head>
   <body>
-    <ul class="navbar">
+    <ul class="navbar clazz:colon">
       <li>
         <a href="index.html">Home page</a>
       </li>

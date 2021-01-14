@@ -460,7 +460,7 @@ export default class Critters {
             // Strip pseudo-elements and pseudo-classes, since we only care that their associated elements exist.
             // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
             if (sel !== ':root') {
-              sel = sel.replace(/(?:>\s*)?::?[a-z-]+\s*(\{|$)/gi, '$1').trim();
+              sel = sel.replace(/(?<!\\)::?[a-z-]+(?![a-z-(])/gi, '').replace(/::?not\(\s*\)/g, '').trim();
             }
             if (!sel) return false;
 
