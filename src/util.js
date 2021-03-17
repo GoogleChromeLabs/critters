@@ -1,19 +1,39 @@
 import chalk from 'chalk';
 
-export const logger = {
+const LOG_LEVELS = ['trace', 'debug', 'info', 'warn', 'error', 'silent'];
+
+export const defaultLogger = {
+  trace(msg) {
+    console.trace(msg);
+  },
+
+  debug(msg) {
+    console.debug(msg);
+  },
+
   warn(msg) {
-    console.error(chalk.yellow(msg));
+    console.warn(chalk.yellow(msg));
   },
 
   error(msg) {
     console.error(chalk.bold.red(msg));
   },
 
-  log(msg) {
-    console.log(msg);
+  info(msg) {
+    console.info(chalk.bold.blue(msg));
   },
 
-  info(msg) {
-    console.log(chalk.bold.blue(msg));
-  }
+  silent() {}
 };
+
+export function createLogger(logLevel) {
+  const logLevelIdx = LOG_LEVELS.indexOf(logLevel);
+
+  return LOG_LEVELS.reduce((logger, type, index) => {
+    if (index >= logLevelIdx) {
+      logger[type] = defaultLogger[type];
+    } else {
+      logger[type] = defaultLogger.silent;
+    }
+  }, {});
+}

@@ -18,6 +18,12 @@ body {
   background-color: #d8da3d;
 }
 
+*,
+:after,
+:before {
+  box-sizing: inherit;
+}
+
 ul.navbar {
   list-style-type: none;
   padding: 0;
@@ -185,6 +191,12 @@ body {
   background-color: #d8da3d;
 }
 
+*,
+:after,
+:before {
+  box-sizing: inherit;
+}
+
 ul.navbar {
   list-style-type: none;
   padding: 0;
@@ -256,6 +268,12 @@ body {
   font-family: 'Times New Roman', times, serif;
   color: purple;
   background-color: #d8da3d;
+}
+
+*,
+:after,
+:before {
+  box-sizing: inherit;
 }
 
 ul.navbar {

@@ -15,8 +15,6 @@
  */
 
 import path from 'path';
-import postcss from 'postcss';
-import cssnano from 'cssnano';
 import prettyBytes from 'pretty-bytes';
 import { createDocument, serializeDocument } from './dom';
 import {
@@ -27,7 +25,7 @@ import {
   markOnly,
   applyMarkedSelectors
 } from './css';
-import { logger } from './util';
+import { createLogger } from './util';
 
 /**
  * The mechanism to use for lazy-loading stylesheets.
@@ -120,7 +118,7 @@ export default class Critters {
       this.urlFilter = this.urlFilter.test.bind(this.urlFilter);
     }
 
-    this.logger = this.options.logger || logger;
+    this.logger = this.options.logger || createLogger(this.options.logLevel);
   }
 
   /**
@@ -179,7 +177,7 @@ export default class Critters {
     // serialize the document back to HTML and we're done
     const output = serializeDocument(document);
     const end = process.hrtime.bigint();
-    this.logger.log('Time ' + parseFloat(end - start) / 1000000.0);
+    this.logger.info('Time ' + parseFloat(end - start) / 1000000.0);
     return output;
   }
 
@@ -206,18 +204,11 @@ export default class Critters {
     }
     const first = styles[0];
     let sheet = first.textContent;
-    // console.log(sheet);
+
     for (let i = 1; i < styles.length; i++) {
       const node = styles[i];
       sheet += node.textContent;
       node.remove();
-    }
-    if (!this.options.ssrMode && this.options.compress !== false) {
-      const before = sheet;
-      const processor = postcss([cssnano()]);
-      const result = await processor.process(before, { from: undefined });
-      // @todo sourcemap support (elsewhere first)
-      sheet = result.css;
     }
 
     first.textContent = sheet;
@@ -459,9 +450,13 @@ export default class Critters {
           rule.filterSelectors((sel) => {
             // Strip pseudo-elements and pseudo-classes, since we only care that their associated elements exist.
             // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
-            if (sel !== ':root') {
-              sel = sel.replace(/(?<!\\)::?[a-z-]+(?![a-z-(])/gi, '').replace(/::?not\(\s*\)/g, '').trim();
+            if (sel === ':root' || sel.match(/^::?(before|after)$/)) {
+              return true;
             }
+            sel = sel
+              .replace(/(?<!\\)::?[a-z-]+(?![a-z-(])/gi, '')
+              .replace(/::?not\(\s*\)/g, '')
+              .trim();
             if (!sel) return false;
 
             try {

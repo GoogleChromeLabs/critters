@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "critters": "^3.0.0",
+    "minimatch": "^3.0.4",
     "webpack-log": "^3.0.1",
     "webpack-sources": "^1.3.0"
   }
