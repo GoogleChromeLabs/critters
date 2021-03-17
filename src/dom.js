@@ -195,9 +195,6 @@ const DocumentExtensions = {
   },
 
   querySelector(sel) {
-    if (sel === ':root') {
-      return this;
-    }
     return select.selectOne(sel, this.documentElement);
   },
 

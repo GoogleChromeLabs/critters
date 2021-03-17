@@ -35,5 +35,6 @@ export function createLogger(logLevel) {
     } else {
       logger[type] = defaultLogger.silent;
     }
+    return logger;
   }, {});
 }
