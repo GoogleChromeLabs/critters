@@ -68,6 +68,17 @@ import { createLogger } from './util';
  */
 
 /**
+ * Custom logger interface:
+ * @typedef {object} Logger
+ * @public
+ * @property {function(String)} trace - Prints a trace message
+ * @property {function(String)} debug - Prints a debug message
+ * @property {function(String)} info - Prints an information message
+ * @property {function(String)} warn - Prints a warning message
+ * @property {function(String)} error - Prints an error message
+ */
+
+/**
  * All optional. Pass them to `new Critters({ ... })`.
  * @public
  * @typedef Options
@@ -94,7 +105,7 @@ import { createLogger } from './util';
  *  - `"none"` remove all keyframes rules
  * @property {Boolean} compress     Compress resulting critical CSS _(default: `true`)_
  * @property {String} logLevel      Controls {@link LogLevel log level} of the plugin _(default: `"info"`)_
- * @property {Boolean} ssrMode      Optimizes for SSR _(default: `false`)_
+ * @property {object} logger        Provide a custom logger interface {@link Logger logger}
  */
 
 export default class Critters {
@@ -108,7 +119,6 @@ export default class Critters {
         reduceInlineStyles: true,
         pruneSource: false,
         additionalStylesheets: [],
-        ssrMode: false
       },
       options || {}
     );
