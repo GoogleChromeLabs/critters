@@ -15,7 +15,7 @@
  */
 
 declare module 'critters' {
-  interface Options {
+  export interface Options {
     path?: string;
     publicPath?: string;
     external?: boolean;
@@ -24,16 +24,24 @@ declare module 'critters' {
     pruneSource?: boolean;
     mergeStylesheets?: boolean;
     additionalStylesheets?: string[];
-    preload?: string;
+    preload?: 'body' | 'media' | 'swap' | 'js' | 'js-lazy';
     noscriptFallback?: boolean;
     inlineFonts?: boolean;
     preloadFonts?: boolean;
     fonts?: boolean;
     keyframes?: string;
     compress?: boolean;
-    logLevel?: string;
-    ssrMode?: boolean;
+    logLevel?: 'info' | 'warn' | 'error' | 'trace' | 'debug' | 'silent';
     reduceInlineStyles?: boolean;
+    logger?: Logger;
+  }
+
+  export interface Logger {
+    trace?: (message: string) => void;
+    debug?: (message: string) => void;
+    info?: (message: string) => void;
+    warn?: (message: string) => void;
+    error?: (message: string) => void;
   }
 
   class Critters {
