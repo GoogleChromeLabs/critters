@@ -464,7 +464,7 @@ export default class Critters {
     }
 
     const shouldPreloadFonts = options.fonts === true || options.preloadFonts === true;
-    const shouldInlineFonts = options.fonts !== false && options.inlineFonts === true;
+    const shouldInlineFonts = options.fonts === true || options.inlineFonts === true;
 
     const preloadedFonts = [];
     // Second pass, using data picked up from the first
