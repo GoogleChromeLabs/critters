@@ -16,7 +16,7 @@
 
 import { compile, compileToHtml, readFile } from './_helpers';
 
-function configure (config) {
+function configure(config) {
   config.module.rules.push(
     {
       test: /\.css$/,

@@ -18,13 +18,10 @@ import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
 import { compile, compileToHtml, readFile } from './_helpers';
 
-function configure (config) {
+function configure(config) {
   config.module.rules.push({
     test: /\.css$/,
-    use: [
-      MiniCssExtractPlugin.loader,
-      'css-loader'
-    ]
+    use: [MiniCssExtractPlugin.loader, 'css-loader']
   });
 
   config.plugins.push(
@@ -36,7 +33,8 @@ function configure (config) {
       filename: 'index.html',
       template: 'index.html',
       inject: true,
-      compile: true
+      compile: true,
+      minify: false
     })
   );
 }
@@ -101,7 +99,7 @@ describe('External CSS', () => {
 describe('publicPath', () => {
   let output;
   beforeAll(async () => {
-    output = await compileToHtml('external', config => {
+    output = await compileToHtml('external', (config) => {
       configure(config);
       config.output.publicPath = '/_public/';
     });
@@ -172,9 +170,13 @@ describe('options', () => {
 
   describe('inlineThreshold', () => {
     it('should fully inline sheets below the given size', async () => {
-      const { document, html } = await compileToHtml('inlineThreshold', configure, {
-        inlineThreshold: 1000
-      });
+      const { document, html } = await compileToHtml(
+        'inlineThreshold',
+        configure,
+        {
+          inlineThreshold: 1000
+        }
+      );
       expect(document.querySelectorAll('style')).toHaveLength(1);
       expect(html).toMatch(/\.extra-style/);
     });

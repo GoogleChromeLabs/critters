@@ -1,0 +1,13 @@
+{
+  "extends": ["standard", "plugin:jest/recommended", "prettier"],
+  "globals": {
+    "document": "readonly",
+    "DOMParser": "readonly"
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "jsx": true,
+      "modules": true
+    }
+  }
+}
