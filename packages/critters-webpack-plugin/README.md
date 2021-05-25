@@ -1,11 +1,11 @@
 <p align="center">
   <img src="https://i.imgur.com/J0jv1Sz.png" width="240" height="240" alt="critters-webpack-plugin">
-  <h1 align="center">Critters</h1>
+  <h1 align="center">Critters Webpack plugin</h1>
 </p>
 
-> Critters is a plugin that inlines your app's [critical CSS] and lazy-loads the rest.
+> critters-webpack-plugin inlines your app's [critical CSS] and lazy-loads the rest.
 
-## critters [![npm](https://img.shields.io/npm/v/critters-webpack-plugin.svg?style=flat)](https://www.npmjs.org/package/critters)
+## critters-webpack-plugin [![npm](https://img.shields.io/npm/v/critters-webpack-plugin.svg?style=flat)](https://www.npmjs.org/package/critters-webpack-plugin)
 
 It's a little different from [other options](#similar-libraries), because it **doesn't use a headless browser** to render content. This tradeoff allows Critters to be very **fast and lightweight**. It also means Critters inlines all CSS rules used by your document, rather than only those needed for above-the-fold content. For alternatives, see [Similar Libraries](#similar-libraries).
 
@@ -14,7 +14,8 @@ Critters' design makes it a good fit when inlining critical CSS for prerendered/
 ## Features
 
 - Fast - no browser, few dependencies
-- Integrates with Webpack [critters-webpack-plugin]
+- Integrates with [html-webpack-plugin]
+- Works with `webpack-dev-server` / `webpack serve`
 - Supports preloading and/or inlining critical fonts
 - Prunes unused CSS keyframes and media queries
 - Removes inlined CSS rules from lazy-loaded stylesheets
@@ -24,27 +25,10 @@ Critters' design makes it a good fit when inlining critical CSS for prerendered/
 First, install Critters as a development dependency:
 
 ```sh
-npm i -D critters
+npm i -D critters-webpack-plugin
 ```
 
-or
-
-```sh
-yarn add -D critters
-```
-
-## Usage
-
-```diff
-+    const Critters = require('critters');
-
-+    const c = new Critters({
-+      // optional configuration (see below)
-+    })
-+    const res = c.process(html)
-```
-
-## Usage with webpack
+Then, import Critters into your Webpack configuration and add it to your list of plugins:
 
 ```diff
 // webpack.config.js
@@ -59,7 +43,7 @@ module.exports = {
 }
 ```
 
-That's it! The resultant html will have its critical CSS inlined and the stylesheets lazy-loaded.
+That's it! Now when you run Webpack, the CSS used by your HTML will be inlined and the imports for your full CSS will be converted to load asynchronously.
 
 ## Usage
 
@@ -104,7 +88,7 @@ All optional. Pass them to `new Critters({ ... })`.
 - `inlineThreshold` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Inline external stylesheets smaller than a given size _(default: `0`)_
 - `minimumExternalSize` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
 - `pruneSource` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Remove inlined rules from the external stylesheet _(default: `true`)_
-- `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merged inlined stylesheets into a
+- `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merges inlined stylesheets into a
   single \<style\> tag _(default: `true`)_
 - `additionalStylesheets` **[String[]](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Glob for matching other stylesheets which should be used to evaluate critical CSS _(default: '')_
 - `preload` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [preload strategy](#preloadstrategy) to use

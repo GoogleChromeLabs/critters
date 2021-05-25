@@ -1,3 +1,7 @@
 /node_modules
 dist
 package-lock.json
+.DS_store
+yarn.lock
+next_sites
+coverage
