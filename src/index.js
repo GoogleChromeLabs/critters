@@ -242,7 +242,7 @@ export default class Critters {
     }
 
     // Ignore remote stylesheets
-    if (/^https:\/\//.test(normalizedPath) || href.startsWith('//')) {
+    if (/^https?:\/\//.test(normalizedPath) || href.startsWith('//')) {
       return undefined;
     }
 
