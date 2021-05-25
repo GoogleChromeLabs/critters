@@ -24,6 +24,9 @@ exports[`Usage without html-webpack-plugin should process the first html asset 2
 exports[`webpack compilation 1`] = `
 "<!DOCTYPE html><html><head>
     <title>Basic Demo</title>
+    <link rel=\\"stylesheet\\" href=\\"//cdn.com/styles.css\\">
+    <link rel=\\"stylesheet\\" href=\\"http://cdn.com/styles.css\\">
+    <link rel=\\"stylesheet\\" href=\\"https://cdn.com/styles.css\\">
     <style>body {
   padding-left: 11em;
   font-family: \\"Times New Roman\\", times, serif;
