@@ -1,10 +1,7 @@
 {
-  "name": "critters",
-  "version": "0.0.9",
-  "description": "Plugin to inline critical CSS and lazy-load the rest.",
-  "main": "dist/critters.js",
-  "source": "src/index.js",
-  "typings": "src/index.d.ts",
+  "name": "critters-root",
+  "private": true,
+  "description": "Inline critical CSS and lazy-load the rest.",
   "license": "Apache-2.0",
   "author": "The Chromium Authors",
   "contributors": [
@@ -17,47 +14,70 @@
       "email": "janicklas@google.com"
     }
   ],
-  "files": [
-    "src",
-    "dist"
-  ],
-  "keywords": [
-    "critical css",
-    "inline css",
-    "critical",
-    "critters",
-    "webpack plugin",
-    "performance"
-  ],
-  "repository": "GoogleChromeLabs/critters",
+  "workspaces": {
+    "packages": [
+      "./packages/*"
+    ],
+    "nohoist": [
+      "**/css-loader",
+      "**/file-loader",
+      "**/mini-css-extract-plugin",
+      "**/webpack"
+    ]
+  },
   "scripts": {
     "build": "npm run -s build:main && npm run -s build:webpack",
-    "build:main": "microbundle --target node",
+    "build:main": "cd packages/critters && npm run -s build",
     "build:webpack": "cd packages/critters-webpack-plugin && npm run -s build",
-    "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
-    "prepare": "npm run -s build",
     "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "test": "jest --coverage"
   },
   "jest": {
-    "testEnvironment": "jsdom",
-    "testURL": "http://localhost",
+    "testEnvironment": "node",
     "coverageReporters": [
       "text"
     ],
+    "moduleNameMapper": {
+      "^critters$": "<rootDir>/packages/critters/src/index.js"
+    },
     "collectCoverageFrom": [
-      "src/**/*.js"
+      "packages/*/src/**/*.js"
+    ],
+    "modulePaths": [
+      "<rootDir>/packages/critters-webpack-plugin/node_modules",
+      "<rootDir>/packages/critters/node_modules"
     ],
     "watchPathIgnorePatterns": [
       "node_modules",
       "dist"
     ]
   },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "none"
+  },
+  "eslintConfig": {
+    "extends": [
+      "standard",
+      "plugin:jest/recommended",
+      "prettier"
+    ],
+    "globals": {
+      "document": "readonly",
+      "DOMParser": "readonly"
+    },
+    "parserOptions": {
+      "ecmaFeatures": {
+        "jsx": true,
+        "modules": true
+      }
+    }
+  },
   "devDependencies": {
     "@babel/preset-env": "^7.11.0",
+    "@types/jest": "^26.0.23",
     "babel-core": "^6.26.0",
     "babel-jest": "^26.3.0",
-    "css-loader": "^4.2.1",
     "documentation": "^13.0.2",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
@@ -67,19 +87,8 @@
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1",
     "eslint-plugin-standard": "^4.0.1",
-    "file-loader": "^6.0.0",
-    "html-webpack-plugin": "^3.2.0",
     "jest": "^26.3.0",
-    "microbundle": "^0.12.3",
-    "mini-css-extract-plugin": "^0.10.0",
-    "webpack": "^4.6.0",
-    "webpack-log": "^3.0.2"
-  },
-  "dependencies": {
-    "chalk": "^4.1.0",
-    "css": "^3.0.0",
-    "parse5": "^6.0.1",
-    "parse5-htmlparser2-tree-adapter": "^6.0.1",
-    "pretty-bytes": "^5.3.0"
+    "jsdom": "^16.6.0",
+    "microbundle": "^0.12.3"
   }
 }

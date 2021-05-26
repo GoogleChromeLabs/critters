@@ -16,7 +16,7 @@
 
 import MiniCssExtractPlugin from 'mini-css-extract-plugin';
 import HtmlWebpackPlugin from 'html-webpack-plugin';
-import { compile, compileToHtml, readFile } from './_helpers';
+import { compile, compileToHtml, readFile } from './_helpers.js';
 
 function configure(config) {
   config.module.rules.push({

@@ -18,11 +18,14 @@ import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
 import webpack from 'webpack';
-import CrittersWebpackPlugin from '../packages/critters-webpack-plugin/src';
+import { JSDOM } from 'jsdom';
+import CrittersWebpackPlugin from '../src/index.js';
+
+const { window } = new JSDOM();
 
 // parse a string into a JSDOM Document
 export const parseDom = (html) =>
-  new DOMParser().parseFromString(html, 'text/html');
+  new window.DOMParser().parseFromString(html, 'text/html');
 
 // returns a promise resolving to the contents of a file
 export const readFile = (file) =>

@@ -14,7 +14,7 @@
  * the License.
  */
 
-import { compile, compileToHtml, readFile } from './_helpers';
+import { compile, compileToHtml, readFile } from './_helpers.js';
 
 function configure(config) {
   config.module.rules.push(

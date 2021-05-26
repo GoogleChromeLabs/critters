@@ -16,10 +16,9 @@
 
 import parse5 from 'parse5';
 import select from 'css-select';
+import treeAdapter from 'parse5-htmlparser2-tree-adapter';
 
 // htmlparser2 has a relatively DOM-like tree format, which we'll massage into a DOM elsewhere
-const treeAdapter = require('parse5-htmlparser2-tree-adapter');
-
 const PARSE5_OPTS = {
   treeAdapter
 };

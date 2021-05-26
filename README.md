@@ -84,9 +84,9 @@ module.exports = {
       preload: 'swap',
 
       // Don't inline critical font-face rules, but preload the font URLs:
-      preloadFonts: true,
-    }),
-  ],
+      preloadFonts: true
+    })
+  ]
 };
 ```
 
@@ -167,5 +167,6 @@ There are a number of other libraries that can inline Critical CSS, each with a 
 
 This is not an official Google product.
 
+[critters-webpack-plugin]: https://github.com/GoogleChromeLabs/critters/tree/main/packages/critters-webpack-plugin
 [critical css]: https://www.smashingmagazine.com/2015/08/understanding-critical-css/
 [html-webpack-plugin]: https://github.com/jantimon/html-webpack-plugin
