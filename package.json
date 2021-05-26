@@ -89,6 +89,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^26.3.0",
     "jsdom": "^16.6.0",
-    "microbundle": "^0.12.3"
+    "microbundle": "^0.12.3",
+    "prettier": "^2.3.0"
   }
 }
