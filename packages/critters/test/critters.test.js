@@ -16,7 +16,7 @@
 
 import Critters from '../src/index';
 
-const trim = (s) => s[0].trim().replaceAll(s[0].match(/^( {2}|\t)+/m)[0], '');
+const trim = (s) => s[0].trim().replace(new RegExp('^' + s[0].match(/^( {2}|\t)+/m)[0], 'gm'), '');
 
 describe('Critters', () => {
   test('Basic Usage', async () => {
