@@ -16,7 +16,7 @@
 
 import path from 'path';
 import prettyBytes from 'pretty-bytes';
-import { createDocument, serializeDocument } from './dom';
+import { createDocument, serializeDocument } from './dom.js';
 import {
   parseStylesheet,
   serializeStylesheet,
@@ -24,32 +24,30 @@ import {
   walkStyleRulesWithReverseMirror,
   markOnly,
   applyMarkedSelectors
-} from './css';
-import { createLogger } from './util';
+} from './css.js';
+import { createLogger } from './util.js';
 
 /**
  * The mechanism to use for lazy-loading stylesheets.
  * _[JS]_ indicates that a strategy requires JavaScript (falls back to `<noscript>`).
  *
- * - **default:** Move stylesheet links to the end of the document and insert preload meta tags in their place.
+ * - **null:** (default) Move stylesheet links to the end of the document and insert preload meta tags in their place.
  * - **"body":** Move all external stylesheet links to the end of the document.
  * - **"media":** Load stylesheets asynchronously by adding `media="not x"` and removing once loaded. _[JS]_
  * - **"swap":** Convert stylesheet links to preloads that swap to `rel="stylesheet"` once loaded. _[JS]_
  * - **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. _[JS]_
  * - **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
- * @typedef {(default|'body'|'media'|'swap'|'js'|'js-lazy')} PreloadStrategy
+ * @typedef {(null|'body'|'media'|'swap'|'js'|'js-lazy')} PreloadStrategy
  * @public
  */
 
 /**
  * Controls which keyframes rules are inlined.
- *
  * - **"critical":** _(default)_ inline keyframes rules that are used by the critical CSS.
  * - **"all":** Inline all keyframes rules.
  * - **"none":** Remove all keyframes rules.
  * @typedef {('critical'|'all'|'none')} KeyframeStrategy
  * @private
- * @property {String} keyframes     Which {@link KeyframeStrategy keyframe strategy} to use (default: `critical`)_
  */
 
 /**
@@ -69,45 +67,53 @@ import { createLogger } from './util';
 
 /**
  * Custom logger interface:
- * @typedef {object} Logger
+ * @typedef Logger
+ * @property {(msg: string) => void} trace - Prints a trace message
+ * @property {(msg: string) => void} debug - Prints a debug message
+ * @property {(msg: string) => void} info - Prints an information message
+ * @property {(msg: string) => void} warn - Prints a warning message
+ * @property {(msg: string) => void} error - Prints an error message
  * @public
- * @property {function(String)} trace - Prints a trace message
- * @property {function(String)} debug - Prints a debug message
- * @property {function(String)} info - Prints an information message
- * @property {function(String)} warn - Prints a warning message
- * @property {function(String)} error - Prints an error message
  */
 
 /**
  * All optional. Pass them to `new Critters({ ... })`.
  * @public
  * @typedef Options
- * @property {String} path     Base path location of the CSS files _(default: `''`)_
- * @property {String} publicPath     Public path of the CSS resources. This prefix is removed from the href _(default: `''`)_
- * @property {Boolean} external     Inline styles from external stylesheets _(default: `true`)_
- * @property {Number} inlineThreshold Inline external stylesheets smaller than a given size _(default: `0`)_
- * @property {Number} minimumExternalSize If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
- * @property {Boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `false`)_
- * @property {Boolean} mergeStylesheets Merged inlined stylesheets into a single <style> tag _(default: `true`)_
- * @property {String[]} additionalStylesheets Glob for matching other stylesheets to be used while looking for critical CSS _(default: ``)_.
- * @property {String} preload       Which {@link PreloadStrategy preload strategy} to use
+ * @property {string} [path=''] Base path location of the CSS files _(default: `''`)_
+ * @property {string} [publicPath=''] Public path of the CSS resources. This prefix is removed from the href _(default: `''`)_
+ * @property {boolean} [external=true] Inline styles from external stylesheets _(default: `true`)_
+ * @property {number} [inlineThreshold=0] Inline external stylesheets smaller than a given size _(default: `0`)_
+ * @property {number} [minimumExternalSize=0] If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
+ * @property {boolean} [pruneSource=false] Remove inlined rules from the external stylesheet _(default: `false`)_
+ * @property {boolean} [mergeStylesheets=true] Merged inlined stylesheets into a single <style> tag _(default: `true`)_
+ * @property {string[]} [additionalStylesheets=[]] Glob for matching other stylesheets to be used while looking for critical CSS
+ * @property {PreloadStrategy} [preload=null] Which preload strategy to use for stylesheets
  * @property {Boolean} noscriptFallback Add `<noscript>` fallback to JS-based strategies
- * @property {Boolean} inlineFonts  Inline critical font-face rules _(default: `false`)_
- * @property {Boolean} preloadFonts Preloads critical fonts _(default: `true`)_
- * @property {Boolean} fonts        Shorthand for setting `inlineFonts`+`preloadFonts`
+ * @property {boolean} [inlineFonts=false] Inline critical font-face rules _(default: `false`)_
+ * @property {boolean} [preloadFonts=true] Preloads critical fonts _(default: `true`)_
+ * @property {boolean|undefined} [fonts] Shorthand for setting `inlineFonts`+`preloadFonts`
  *  - Values:
  *  - `true` to inline critical font-face rules and preload the fonts
  *  - `false` to don't inline any font-face rules and don't preload fonts
- * @property {String} keyframes     Controls which keyframes rules are inlined.
- *  - Values:
- *  - `"critical"`: _(default)_ inline keyframes rules used by the critical CSS
- *  - `"all"` inline all keyframes rules
- *  - `"none"` remove all keyframes rules
- * @property {Boolean} compress     Compress resulting critical CSS _(default: `true`)_
- * @property {String} logLevel      Controls {@link LogLevel log level} of the plugin _(default: `"info"`)_
- * @property {object} logger        Provide a custom logger interface {@link Logger logger}
+ * @property {KeyframeStrategy} [keyframes='critical'] Controls which keyframes rules are inlined (default: 'critical')
+ * @property {Boolean} [compress=true] Compress resulting critical CSS (defaults to true)
+ * @property {LogLevel} [logLevel="info"] Controls the log level of the plugin (defaults to "info")
+ * @property {Logger} [logger] Provide a custom logger interface
  */
 
+/**
+ * @typedef {{
+ *   readFile(f: string): Promise<string>,
+ *   readFile(f: string, callback: (err: any, data: string) => void): void,
+ * }} FileSystem
+ */
+
+/**
+ * Create an instance of Critters with custom options.
+ * The `.process()` method can be called repeatedly to re-use this instance and its cache.
+ * @param {Options} [options]
+ */
 export default class Critters {
   /** @private */
   constructor(options) {
@@ -118,10 +124,13 @@ export default class Critters {
         publicPath: '',
         reduceInlineStyles: true,
         pruneSource: false,
-        additionalStylesheets: [],
+        additionalStylesheets: []
       },
       options || {}
     );
+
+    /** @type {FileSystem | null} */
+    this.fs = null;
 
     this.urlFilter = this.options.filter;
     if (this.urlFilter instanceof RegExp) {
@@ -132,25 +141,9 @@ export default class Critters {
   }
 
   /**
-   * Read the contents of a file from the specified filesystem or disk
-   */
-  readFile(filename) {
-    const fs = this.fs;
-    return new Promise((resolve, reject) => {
-      const callback = (err, data) => {
-        if (err) reject(err);
-        else resolve(data);
-      };
-      if (fs && fs.readFile) {
-        fs.readFile(filename, callback);
-      } else {
-        require('fs').readFile(filename, 'utf8', callback);
-      }
-    });
-  }
-
-  /**
-   * Apply critical CSS processing to the html
+   * Process an HTML document to inline critical CSS from its stylesheets.
+   * @param {string} html String containing a full HTML document to be parsed.
+   * @returns {Promise<string>} A modified copy of the provided HTML with critical CSS inlined.
    */
   async process(html) {
     const start = process.hrtime.bigint();
@@ -192,7 +185,32 @@ export default class Critters {
   }
 
   /**
+   * Read the contents of a file from the specified filesystem or disk.
+   * Override this method to customize how stylesheets are loaded.
+   */
+  readFile(filename) {
+    const fs = this.fs;
+    return new Promise((resolve, reject) => {
+      const callback = (err, data) => {
+        if (err) reject(err);
+        else resolve(data);
+      };
+      if (fs && fs.readFile) {
+        const ret = fs.readFile(filename, callback);
+        if (ret && ret.then) resolve(ret);
+      } else {
+        import('fs')
+          .then((fs) => {
+            fs.readFile(filename, 'utf-8', callback);
+          })
+          .catch(callback);
+      }
+    });
+  }
+
+  /**
    * Get the style tags that need processing
+   * @private
    */
   getAffectedStyleTags(document) {
     const styles = [].slice.call(document.querySelectorAll('style'));
@@ -204,6 +222,7 @@ export default class Critters {
     return styles;
   }
 
+  /** @private */
   async mergeStylesheets(document) {
     const styles = this.getAffectedStyleTags(document);
     if (styles.length === 0) {
@@ -225,7 +244,8 @@ export default class Critters {
   }
 
   /**
-   * Given href, find the corresponding CSS asset
+   * Given a stylesheet URL, returns the corresponding CSS asset.
+   * Overriding this method requires doing your own URL normalization, so it's generally better to override `readFile()`.
    */
   async getCssAsset(href) {
     const outputPath = this.options.path;
@@ -253,6 +273,7 @@ export default class Critters {
     return sheet;
   }
 
+  /** @private */
   checkInlineThreshold(link, style, sheet) {
     if (
       this.options.inlineThreshold &&
@@ -272,6 +293,7 @@ export default class Critters {
 
   /**
    * Inline the stylesheets from options.additionalStylesheets (assuming it passes `options.filter`)
+   * @private
    */
   async embedAdditionalStylesheet(document) {
     const styleSheetsIncluded = [];
@@ -297,6 +319,7 @@ export default class Critters {
 
   /**
    * Inline the target stylesheet referred to by a <link rel="stylesheet"> (assuming it passes `options.filter`)
+   * @private
    */
   async embedLinkedStylesheet(link, document) {
     const href = link.getAttribute('href');
@@ -393,6 +416,7 @@ export default class Critters {
 
   /**
    * Prune the source CSS files
+   * @private
    */
   pruneSource(style, before, sheetInverse) {
     // if external stylesheet would be below minimum size, just inline everything
@@ -419,6 +443,7 @@ export default class Critters {
 
   /**
    * Parse the stylesheet within a <style> element, then reduce it to contain only rules used by the document.
+   * @private
    */
   async processStyle(style, document) {
     if (style.$$reduce === false) return;

@@ -14,7 +14,7 @@
  * the License.
  */
 
-import Critters from '../src/index';
+import Critters from '../src/index.js';
 
 const trim = (s) =>
   s[0]
