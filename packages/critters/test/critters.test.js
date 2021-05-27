@@ -16,7 +16,10 @@
 
 import Critters from '../src/index';
 
-const trim = (s) => s[0].trim().replace(new RegExp('^' + s[0].match(/^( {2}|\t)+/m)[0], 'gm'), '');
+const trim = (s) =>
+  s[0]
+    .trim()
+    .replace(new RegExp('^' + s[0].match(/^( {2}|\t)+/m)[0], 'gm'), '');
 
 describe('Critters', () => {
   test('Basic Usage', async () => {
@@ -45,15 +48,7 @@ describe('Critters', () => {
       </html>
     `);
     expect(result).toMatch('<style>h1{color:blue;}p{color:purple;}</style>');
-    expect(result).toMatchInlineSnapshot(`
-      "<html><head>
-          <style>h1{color:blue;}p{color:purple;}</style><link rel=\\"preload\\" href=\\"/style.css\\" as=\\"style\\">
-        </head>
-        <body>
-          <h1>Hello World!</h1>
-          <p>This is a paragraph</p>
-
-      <link rel=\\"stylesheet\\" href=\\"/style.css\\"></body></html>"
-    `);
+    expect(result).toMatch('<link rel="stylesheet" href="/style.css">');
+    expect(result).toMatchSnapshot();
   });
 });
