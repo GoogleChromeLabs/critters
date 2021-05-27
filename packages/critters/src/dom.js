@@ -29,7 +29,9 @@ const PARSE5_OPTS = {
  * @param {String} html   HTML to parse into a Document instance
  */
 export function createDocument(html) {
-  const document = parse5.parse(html, PARSE5_OPTS);
+  const document = /** @type {HTMLDocument} */ (
+    parse5.parse(html, PARSE5_OPTS)
+  );
 
   defineProperties(document, DocumentExtensions);
 
@@ -46,17 +48,20 @@ export function createDocument(html) {
 
 /**
  * Serialize a Document to an HTML String
- * @param {Document} document   A Document, such as one created via `createDocument()`
+ * @param {HTMLDocument} document   A Document, such as one created via `createDocument()`
  */
 export function serializeDocument(document) {
   return parse5.serialize(document, PARSE5_OPTS);
 }
 
+/** @typedef {treeAdapter.Document & typeof ElementExtensions} HTMLDocument */
+
 /**
  * Methods and descriptors to mix into Element.prototype
+ * @private
  */
 const ElementExtensions = {
-  /** @extends htmlparser2.Element.prototype */
+  /** @extends treeAdapter.Element.prototype */
 
   nodeName: {
     get() {
@@ -129,7 +134,7 @@ const ElementExtensions = {
  * @private
  */
 const DocumentExtensions = {
-  /** @extends htmlparser2.Document.prototype */
+  /** @extends treeAdapter.Document.prototype */
 
   // document is just an Element in htmlparser2, giving it a nodeType of ELEMENT_NODE.
   // TODO: verify if these are needed for css-select
