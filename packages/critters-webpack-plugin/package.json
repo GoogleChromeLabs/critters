@@ -2,13 +2,14 @@
   "name": "critters-webpack-plugin",
   "version": "3.0.0",
   "description": "Webpack plugin to inline critical CSS and lazy-load the rest.",
-  "main": "dist/critters-webpack-plugin.js",
-  "module": "dist/critters-webpack-plugin.mjs",
+  "main": "dist/critters-webpack-plugin.cjs",
+  "module": "dist/critters-webpack-plugin.js",
   "source": "src/index.js",
+  "type": "module",
   "exports": {
-    "import": "./dist/critters-webpack-plugin.mjs",
-    "require": "./dist/critters-webpack-plugin.js",
-    "default": "./dist/critters-webpack-plugin.mjs"
+    "import": "./dist/critters-webpack-plugin.js",
+    "require": "./dist/critters-webpack-plugin.cjs",
+    "default": "./dist/critters-webpack-plugin.js"
   },
   "files": [
     "src",

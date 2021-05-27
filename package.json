@@ -30,7 +30,7 @@
     "build:main": "cd packages/critters && npm run -s build",
     "build:webpack": "cd packages/critters-webpack-plugin && npm run -s build",
     "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
-    "test": "jest --coverage"
+    "test": "NODE_OPTIONS=--experimental-vm-modules jest --coverage"
   },
   "jest": {
     "testEnvironment": "node",
@@ -74,10 +74,7 @@
     }
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.11.0",
     "@types/jest": "^26.0.23",
-    "babel-core": "^6.26.0",
-    "babel-jest": "^26.3.0",
     "documentation": "^13.0.2",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
@@ -89,7 +86,7 @@
     "eslint-plugin-standard": "^4.0.1",
     "jest": "^26.3.0",
     "jsdom": "^16.6.0",
-    "microbundle": "^0.12.3",
+    "microbundle": "^0.13.1",
     "prettier": "^2.3.0"
   }
 }

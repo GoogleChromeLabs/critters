@@ -19,7 +19,7 @@ import minimatch from 'minimatch';
 import sources from 'webpack-sources';
 import log from 'webpack-log';
 import Critters from 'critters';
-import { tap } from './util';
+import { tap } from './util.js';
 
 // Used to annotate this plugin's hooks in Tappable invocations
 const PLUGIN_NAME = 'critters-webpack-plugin';
@@ -195,9 +195,9 @@ export default class CrittersWebpackPlugin extends Critters {
         return;
       }
       styleSheetsIncluded.push(cssFile);
-      const webpackCssAssets = Object.keys(
-        this.compilation.assets
-      ).filter((file) => minimatch(file, cssFile));
+      const webpackCssAssets = Object.keys(this.compilation.assets).filter(
+        (file) => minimatch(file, cssFile)
+      );
       webpackCssAssets.map((asset) => {
         const style = document.createElement('style');
         style.$$external = true;
@@ -223,13 +223,12 @@ export default class CrittersWebpackPlugin extends Critters {
         delete this.compilation.assets[style.$$assetName];
         return true;
       }
-      this.compilation.assets[
-        style.$$assetName
-      ] = new sources.LineToLineMappedSource(
-        sheetInverse,
-        style.$$assetName,
-        before
-      );
+      this.compilation.assets[style.$$assetName] =
+        new sources.LineToLineMappedSource(
+          sheetInverse,
+          style.$$assetName,
+          before
+        );
     } else {
       this.logger.warn(
         'pruneSource is enabled, but a style (' +

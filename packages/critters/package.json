@@ -2,13 +2,14 @@
   "name": "critters",
   "version": "0.0.10",
   "description": "Inline critical CSS and lazy-load the rest.",
-  "main": "dist/critters.js",
-  "module": "dist/critters.mjs",
+  "module": "dist/critters.js",
+  "main": "dist/critters.cjs",
   "source": "src/index.js",
+  "type": "module",
   "exports": {
-    "import": "./dist/critters.mjs",
-    "require": "./dist/critters.js",
-    "default": "./dist/critters.mjs"
+    "import": "./dist/critters.js",
+    "require": "./dist/critters.cjs",
+    "default": "./dist/critters.js"
   },
   "typings": "src/index.d.ts",
   "files": [
@@ -41,7 +42,7 @@
     "directory": "packages/critters"
   },
   "scripts": {
-    "build": "microbundle --target node --no-sourcemap -f cjs,esm",
+    "build": "microbundle --target node --no-sourcemap -f esm,cjs --no-generateTypes",
     "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
     "prepare": "npm run -s build"
   },
