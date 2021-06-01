@@ -1,3 +1,5 @@
-/node_modules
+node_modules
 dist
-package-lock.json
+.DS_store
+next_sites
+coverage

@@ -1,0 +1,56 @@
+{
+  "name": "critters",
+  "version": "0.0.10",
+  "description": "Inline critical CSS and lazy-load the rest.",
+  "main": "dist/critters.js",
+  "module": "dist/critters.mjs",
+  "source": "src/index.js",
+  "exports": {
+    "import": "./dist/critters.mjs",
+    "require": "./dist/critters.js",
+    "default": "./dist/critters.mjs"
+  },
+  "typings": "src/index.d.ts",
+  "files": [
+    "src",
+    "dist"
+  ],
+  "license": "Apache-2.0",
+  "author": "The Chromium Authors",
+  "contributors": [
+    {
+      "name": "Jason Miller",
+      "email": "developit@google.com"
+    },
+    {
+      "name": "Janicklas Ralph",
+      "email": "janicklas@google.com"
+    }
+  ],
+  "keywords": [
+    "critical css",
+    "inline css",
+    "critical",
+    "critters",
+    "webpack plugin",
+    "performance"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GoogleChromeLabs/critters",
+    "directory": "packages/critters"
+  },
+  "scripts": {
+    "build": "microbundle --target node --no-sourcemap -f cjs,esm",
+    "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
+    "prepare": "npm run -s build"
+  },
+  "dependencies": {
+    "chalk": "^4.1.0",
+    "css": "^3.0.0",
+    "css-select": "^1.2.0",
+    "parse5": "^6.0.1",
+    "parse5-htmlparser2-tree-adapter": "^6.0.1",
+    "pretty-bytes": "^5.3.0"
+  }
+}

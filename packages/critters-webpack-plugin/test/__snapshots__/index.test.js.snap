@@ -7,11 +7,21 @@ exports[`External CSS should match snapshot 1`] = `
   font-size: 10px;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   padding-left: 11em;
-  font-family: \\"Times New Roman\\", times, serif;
+  font-family: 'Times New Roman', times, serif;
   color: purple;
   background-color: #d8da3d;
+}
+
+*,
+:after,
+:before {
+  box-sizing: inherit;
 }
 
 ul.navbar {
@@ -116,6 +126,18 @@ ul.navbar a {
   text-decoration: none;
 }
 
+ul.navbar:not(.hidden) li:hover a {
+  color: black;
+}
+
+ul.navbar:not(:hover) li:hover a {
+  color: black;
+}
+
+ul.navbar li:hover a {
+  color: red;
+}
+
 a:link {
   color: blue;
 }
@@ -128,10 +150,14 @@ footer {
   margin-top: 1em;
   padding-top: 1em;
   border-top: thin dotted;
+}
+
+.clazz\\\\:colon {
+  color: green;
 }</style>
   </head>
   <body>
-    <ul class=\\"navbar\\">
+    <ul class=\\"navbar clazz:colon\\">
       <li>
         <a href=\\"index.html\\">Home page</a>
       </li>
@@ -154,11 +180,21 @@ exports[`options { async:true } should match snapshot 1`] = `
   font-size: 10px;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   padding-left: 11em;
-  font-family: \\"Times New Roman\\", times, serif;
+  font-family: 'Times New Roman', times, serif;
   color: purple;
   background-color: #d8da3d;
+}
+
+*,
+:after,
+:before {
+  box-sizing: inherit;
 }
 
 ul.navbar {
@@ -223,11 +259,21 @@ exports[`publicPath should match snapshot 1`] = `
   font-size: 10px;
 }
 
+html {
+  height: 100%;
+}
+
 body {
   padding-left: 11em;
-  font-family: \\"Times New Roman\\", times, serif;
+  font-family: 'Times New Roman', times, serif;
   color: purple;
   background-color: #d8da3d;
+}
+
+*,
+:after,
+:before {
+  box-sizing: inherit;
 }
 
 ul.navbar {
@@ -324,12 +370,22 @@ exports[`webpack compilation 1`] = `
       ul.navbar a {
         text-decoration: none;
       }
+      ul.navbar:not(.hidden) li:hover a {
+        color: black;
+      }
+      ul.navbar:not(:hover) li:hover a {
+        color: black;
+      }
+      ul.navbar li:hover a {
+        color: red;
+      }
       a:link {
         color: blue;
       }
       a:visited {
         color: purple;
       }
+
       footer {
         margin-top: 1em;
         padding-top: 1em;
@@ -338,10 +394,17 @@ exports[`webpack compilation 1`] = `
       .extra-style {
         font-size: 200%;
       }
+      .hidden {
+        visibility: hidden;
+      }
+
+      .clazz\\\\:colon {
+        color: green;
+      }
     </style>
   </head>
   <body>
-    <ul class=\\"navbar\\">
+    <ul class=\\"navbar clazz:colon\\">
       <li>
         <a href=\\"index.html\\">Home page</a>
       </li>
