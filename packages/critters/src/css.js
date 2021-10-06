@@ -116,7 +116,7 @@ export function applyMarkedSelectors(rule) {
  */
 export function walkStyleRules(node, iterator) {
   node.nodes = node.nodes.filter((rule) => {
-    if (rule.nodes) {
+    if (hasNestedRules(rule)) {
       walkStyleRules(rule, iterator);
     }
     rule._other = undefined;
@@ -140,13 +140,23 @@ export function walkStyleRulesWithReverseMirror(node, node2, iterator) {
     node2.nodes,
     (rule, index, rules, rules2) => {
       const rule2 = rules2[index];
-      if (rule.nodes) {
+      if (hasNestedRules(rule)) {
         walkStyleRulesWithReverseMirror(rule, rule2, iterator);
       }
       rule._other = rule2;
       rule.filterSelectors = filterSelectors;
       return iterator(rule) !== false;
     }
+  );
+}
+
+// Checks if a node has nested rules, like @media
+// @keyframes are an exception since they are evaluated as a whole
+function hasNestedRules(rule) {
+  return (
+    rule.nodes.length &&
+    rule.nodes.every((n) => n.type === 'rule') &&
+    rule.name !== 'keyframes'
   );
 }
 
