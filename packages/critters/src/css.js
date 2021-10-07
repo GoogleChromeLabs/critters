@@ -154,6 +154,7 @@ export function walkStyleRulesWithReverseMirror(node, node2, iterator) {
 // @keyframes are an exception since they are evaluated as a whole
 function hasNestedRules(rule) {
   return (
+    rule.nodes &&
     rule.nodes.length &&
     rule.nodes.every((n) => n.type === 'rule') &&
     rule.name !== 'keyframes'
