@@ -156,7 +156,7 @@ function hasNestedRules(rule) {
   return (
     rule.nodes &&
     rule.nodes.length &&
-    rule.nodes.every((n) => n.type === 'rule') &&
+    rule.nodes.some((n) => n.type === 'rule' || n.type === 'atrule') &&
     rule.name !== 'keyframes'
   );
 }
