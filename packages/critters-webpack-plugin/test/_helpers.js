@@ -17,11 +17,14 @@
 import { promisify } from 'util';
 import fs from 'fs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 import webpack from 'webpack';
 import { JSDOM } from 'jsdom';
 import CrittersWebpackPlugin from '../src/index.js';
 
 const { window } = new JSDOM();
+
+const __dirname = path.dirname(fileURLToPath(new URL(import.meta.url)));
 
 // parse a string into a JSDOM Document
 export const parseDom = (html) =>
