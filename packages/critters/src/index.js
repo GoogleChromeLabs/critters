@@ -240,6 +240,12 @@ export default class Critters {
         .substring(pathPrefix.length)
         .replace(/^\//, '');
     }
+
+    // Ignore remote stylesheets
+    if (/^https:\/\//.test(normalizedPath) || href.startsWith('//')) {
+      return undefined;
+    }
+
     const filename = path.resolve(outputPath, normalizedPath);
 
     let sheet;
