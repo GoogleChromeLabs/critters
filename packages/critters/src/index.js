@@ -29,15 +29,17 @@ import { createLogger } from './util';
 
 /**
  * The mechanism to use for lazy-loading stylesheets.
- * _[JS]_ indicates that a strategy requires JavaScript (falls back to `<noscript>`).
+ *
+ * Note: <kbd>JS</kbd> indicates a strategy requiring JavaScript (falls back to `<noscript>` unless disabled).
  *
  * - **default:** Move stylesheet links to the end of the document and insert preload meta tags in their place.
  * - **"body":** Move all external stylesheet links to the end of the document.
- * - **"media":** Load stylesheets asynchronously by adding `media="not x"` and removing once loaded. _[JS]_
- * - **"swap":** Convert stylesheet links to preloads that swap to `rel="stylesheet"` once loaded. _[JS]_
- * - **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. _[JS]_
+ * - **"media":** Load stylesheets asynchronously by adding `media="not x"` and removing once loaded. <kbd>JS</kbd>
+ * - **"swap":** Convert stylesheet links to preloads that swap to `rel="stylesheet"` once loaded ([details](https://www.filamentgroup.com/lab/load-css-simpler/#the-code)). <kbd>JS</kbd>
+ * - **"swap-high":** Use `<link rel="alternate stylesheet preload">` and swap to `rel="stylesheet"` once loaded ([details](http://filamentgroup.github.io/loadCSS/test/new-high.html)). <kbd>JS</kbd>
+ * - **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. <kbd>JS</kbd>
  * - **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
- * @typedef {(default|'body'|'media'|'swap'|'js'|'js-lazy')} PreloadStrategy
+ * @typedef {(default|'body'|'media'|'swap'|'swap-high'|'js'|'js-lazy')} PreloadStrategy
  * @public
  */
 
@@ -371,6 +373,12 @@ export default class Critters {
         link.removeAttribute('as');
         link.setAttribute('media', 'print');
         link.setAttribute('onload', `this.media='${media || 'all'}'`);
+        noscriptFallback = true;
+      } else if (preloadMode === 'swap-high') {
+        // @see http://filamentgroup.github.io/loadCSS/test/new-high.html
+        link.setAttribute('rel', 'alternate stylesheet preload');
+        link.setAttribute('title', 'styles');
+        link.setAttribute('onload', `this.title='';this.rel='stylesheet'`);
         noscriptFallback = true;
       } else if (preloadMode === 'swap') {
         link.setAttribute('onload', "this.rel='stylesheet'");
