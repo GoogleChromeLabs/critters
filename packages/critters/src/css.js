@@ -14,29 +14,63 @@
  * the License.
  */
 
-import css from 'css';
+import { parse, stringify } from 'postcss';
 
 /**
  * Parse a textual CSS Stylesheet into a Stylesheet instance.
- * Stylesheet is a mutable ReworkCSS AST with format similar to CSSOM.
- * @see https://github.com/reworkcss/css
+ * Stylesheet is a mutable postcss AST with format similar to CSSOM.
+ * @see https://github.com/postcss/postcss/
  * @private
  * @param {String} stylesheet
  * @returns {css.Stylesheet} ast
  */
-export function parseStylesheet (stylesheet) {
-  return css.parse(stylesheet);
+export function parseStylesheet(stylesheet) {
+  return parse(stylesheet);
 }
 
 /**
- * Serialize a ReworkCSS Stylesheet to a String of CSS.
+ * Serialize a postcss Stylesheet to a String of CSS.
  * @private
  * @param {css.Stylesheet} ast          A Stylesheet to serialize, such as one returned from `parseStylesheet()`
- * @param {Object} options              Options to pass to `css.stringify()`
+ * @param {Object} options              Options used by the stringify logic
  * @param {Boolean} [options.compress]  Compress CSS output (removes comments, whitespace, etc)
  */
-export function serializeStylesheet (ast, options) {
-  return css.stringify(ast, options);
+export function serializeStylesheet(ast, options) {
+  let cssStr = '';
+
+  stringify(ast, (result, node, type) => {
+    if (!options.compress) {
+      cssStr += result;
+      return;
+    }
+
+    // Simple minification logic
+    if (node?.type === 'comment') return;
+
+    if (node?.type === 'decl') {
+      const prefix = node.prop + node.raws.between;
+
+      cssStr += result.replace(prefix, prefix.trim());
+      return;
+    }
+
+    if (type === 'start') {
+      if (node.type === 'rule' && node.selectors) {
+        cssStr += node.selectors.join(',') + '{';
+      } else {
+        cssStr += result.replace(/\s\{$/, '{');
+      }
+      return;
+    }
+
+    if (type === 'end' && result === '}' && node?.raws?.semicolon) {
+      cssStr = cssStr.slice(0, -1);
+    }
+
+    cssStr += result.trim();
+  });
+
+  return cssStr;
 }
 
 /**
@@ -46,8 +80,8 @@ export function serializeStylesheet (ast, options) {
  * @param {Function} iterator   Invoked on each node in the tree. Return `false` to remove that node.
  * @returns {(rule) => void} nonDestructiveIterator
  */
-export function markOnly (predicate) {
-  return rule => {
+export function markOnly(predicate) {
+  return (rule) => {
     const sel = rule.selectors;
     if (predicate(rule) === false) {
       rule.$$remove = true;
@@ -64,8 +98,8 @@ export function markOnly (predicate) {
  * Apply filtered selectors to a rule from a previous markOnly run.
  * @private
  * @param {css.Rule} rule The Rule to apply marked selectors to (if they exist).
-*/
-export function applyMarkedSelectors (rule) {
+ */
+export function applyMarkedSelectors(rule) {
   if (rule.$$markedSelectors) {
     rule.selectors = rule.$$markedSelectors;
   }
@@ -80,11 +114,9 @@ export function applyMarkedSelectors (rule) {
  * @param {css.Rule} node       A Stylesheet or Rule to descend into.
  * @param {Function} iterator   Invoked on each node in the tree. Return `false` to remove that node.
  */
-export function walkStyleRules (node, iterator) {
-  if (node.stylesheet) return walkStyleRules(node.stylesheet, iterator);
-
-  node.rules = node.rules.filter(rule => {
-    if (rule.rules) {
+export function walkStyleRules(node, iterator) {
+  node.nodes = node.nodes.filter((rule) => {
+    if (hasNestedRules(rule)) {
       walkStyleRules(rule, iterator);
     }
     rule._other = undefined;
@@ -100,25 +132,38 @@ export function walkStyleRules (node, iterator) {
  * @param {css.Rule} node2      A second tree identical to `node`
  * @param {Function} iterator   Invoked on each node in the tree. Return `false` to remove that node from the first tree, true to remove it from the second.
  */
-export function walkStyleRulesWithReverseMirror (node, node2, iterator) {
+export function walkStyleRulesWithReverseMirror(node, node2, iterator) {
   if (node2 === null) return walkStyleRules(node, iterator);
 
-  if (node.stylesheet) return walkStyleRulesWithReverseMirror(node.stylesheet, node2.stylesheet, iterator);
-
-  [node.rules, node2.rules] = splitFilter(node.rules, node2.rules, (rule, index, rules, rules2) => {
-    const rule2 = rules2[index];
-    if (rule.rules) {
-      walkStyleRulesWithReverseMirror(rule, rule2, iterator);
+  [node.nodes, node2.nodes] = splitFilter(
+    node.nodes,
+    node2.nodes,
+    (rule, index, rules, rules2) => {
+      const rule2 = rules2[index];
+      if (hasNestedRules(rule)) {
+        walkStyleRulesWithReverseMirror(rule, rule2, iterator);
+      }
+      rule._other = rule2;
+      rule.filterSelectors = filterSelectors;
+      return iterator(rule) !== false;
     }
-    rule._other = rule2;
-    rule.filterSelectors = filterSelectors;
-    return iterator(rule) !== false;
-  });
+  );
+}
+
+// Checks if a node has nested rules, like @media
+// @keyframes are an exception since they are evaluated as a whole
+function hasNestedRules(rule) {
+  return (
+    rule.nodes &&
+    rule.nodes.length &&
+    rule.nodes.some((n) => n.type === 'rule' || n.type === 'atrule') &&
+    rule.name !== 'keyframes'
+  );
 }
 
 // Like [].filter(), but applies the opposite filtering result to a second copy of the Array without a second pass.
 // This is just a quicker version of generating the compliment of the set returned from a filter operation.
-function splitFilter (a, b, predicate) {
+function splitFilter(a, b, predicate) {
   const aOut = [];
   const bOut = [];
   for (let index = 0; index < a.length; index++) {
@@ -132,9 +177,13 @@ function splitFilter (a, b, predicate) {
 }
 
 // can be invoked on a style rule to subset its selectors (with reverse mirroring)
-function filterSelectors (predicate) {
+function filterSelectors(predicate) {
   if (this._other) {
-    const [a, b] = splitFilter(this.selectors, this._other.selectors, predicate);
+    const [a, b] = splitFilter(
+      this.selectors,
+      this._other.selectors,
+      predicate
+    );
     this.selectors = a;
     this._other.selectors = b;
   } else {

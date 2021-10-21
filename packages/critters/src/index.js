@@ -118,7 +118,7 @@ export default class Critters {
         publicPath: '',
         reduceInlineStyles: true,
         pruneSource: false,
-        additionalStylesheets: [],
+        additionalStylesheets: []
       },
       options || {}
     );
@@ -476,25 +476,23 @@ export default class Critters {
               return false;
             }
           });
+
           // If there are no matched selectors, remove the rule:
-          if (rule.selectors.length === 0) {
+          if (!rule.selector) {
             return false;
           }
 
-          if (rule.declarations) {
-            for (let i = 0; i < rule.declarations.length; i++) {
-              const decl = rule.declarations[i];
+          if (rule.nodes) {
+            for (let i = 0; i < rule.nodes.length; i++) {
+              const decl = rule.nodes[i];
 
               // detect used fonts
-              if (decl.property && decl.property.match(/\bfont(-family)?\b/i)) {
+              if (decl.prop && decl.prop.match(/\bfont(-family)?\b/i)) {
                 criticalFonts += ' ' + decl.value;
               }
 
               // detect used keyframes
-              if (
-                decl.property === 'animation' ||
-                decl.property === 'animation-name'
-              ) {
+              if (decl.prop === 'animation' || decl.prop === 'animation-name') {
                 // @todo: parse animation declarations and extract only the name. for now we'll do a lazy match.
                 const names = decl.value.split(/\s+/);
                 for (let j = 0; j < names.length; j++) {
@@ -507,10 +505,10 @@ export default class Critters {
         }
 
         // keep font rules, they're handled in the second pass:
-        if (rule.type === 'font-face') return;
+        if (rule.type === 'atrule' && rule.name === 'font-face') return;
 
         // If there are no remaining rules, remove the whole rule:
-        const rules = rule.rules && rule.rules.filter((rule) => !rule.$$remove);
+        const rules = rule.nodes && rule.nodes.filter((rule) => !rule.$$remove);
         return !rules || rules.length !== 0;
       })
     );
@@ -539,21 +537,21 @@ export default class Critters {
       applyMarkedSelectors(rule);
 
       // prune @keyframes rules
-      if (rule.type === 'keyframes') {
+      if (rule.type === 'atrule' && rule.name === 'keyframes') {
         if (keyframesMode === 'none') return false;
         if (keyframesMode === 'all') return true;
-        return criticalKeyframeNames.indexOf(rule.name) !== -1;
+        return criticalKeyframeNames.indexOf(rule.params) !== -1;
       }
 
       // prune @font-face rules
-      if (rule.type === 'font-face') {
+      if (rule.type === 'atrule' && rule.name === 'font-face') {
         let family, src;
-        for (let i = 0; i < rule.declarations.length; i++) {
-          const decl = rule.declarations[i];
-          if (decl.property === 'src') {
+        for (let i = 0; i < rule.nodes.length; i++) {
+          const decl = rule.nodes[i];
+          if (decl.prop === 'src') {
             // @todo parse this properly and generate multiple preloads with type="font/woff2" etc
             src = (decl.value.match(/url\s*\(\s*(['"]?)(.+?)\1\s*\)/) || [])[2];
-          } else if (decl.property === 'font-family') {
+          } else if (decl.prop === 'font-family') {
             family = decl.value;
           }
         }
@@ -582,7 +580,7 @@ export default class Critters {
 
     sheet = serializeStylesheet(ast, {
       compress: this.options.compress !== false
-    }).trim();
+    });
 
     // If all rules were removed, get rid of the style element entirely
     if (sheet.trim().length === 0) {

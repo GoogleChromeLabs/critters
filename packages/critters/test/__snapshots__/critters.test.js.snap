@@ -2,7 +2,7 @@
 
 exports[`Critters Basic Usage 1`] = `
 "<html><head>
-    <style>h1{color:blue;}p{color:purple;}</style><link rel=\\"preload\\" href=\\"/style.css\\" as=\\"style\\">
+    <style>h1{color:blue}p{color:purple}</style><link rel=\\"preload\\" href=\\"/style.css\\" as=\\"style\\">
   </head>
   <body>
     <h1>Hello World!</h1>

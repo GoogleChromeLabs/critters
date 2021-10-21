@@ -47,7 +47,7 @@ describe('Critters', () => {
         </body>
       </html>
     `);
-    expect(result).toMatch('<style>h1{color:blue;}p{color:purple;}</style>');
+    expect(result).toMatch('<style>h1{color:blue}p{color:purple}</style>');
     expect(result).toMatch('<link rel="stylesheet" href="/style.css">');
     expect(result).toMatchSnapshot();
   });
