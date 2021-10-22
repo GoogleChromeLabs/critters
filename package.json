@@ -26,9 +26,10 @@
     ]
   },
   "scripts": {
-    "build": "npm run -s build:main && npm run -s build:webpack",
-    "build:main": "cd packages/critters && npm run -s build",
-    "build:webpack": "cd packages/critters-webpack-plugin && npm run -s build",
+    "build": "yarn workspaces run build",
+    "build:main": "yarn workspace critters run build",
+    "build:webpack": "yarn workspace critters-webpack-plugin run build",
+    "docs": "yarn workspaces run docs",
     "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "test": "jest --coverage"
   },

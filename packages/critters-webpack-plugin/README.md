@@ -57,7 +57,7 @@ Create a Critters plugin instance with the given options.
 
 #### Parameters
 
-*   `options` **Options** Options to control how Critters inlines CSS. See <https://github.com/GoogleChromeLabs/critters#critters-2>
+*   `options` **Options** Options to control how Critters inlines CSS. See <https://github.com/GoogleChromeLabs/critters#usage>
 
 #### Examples
 

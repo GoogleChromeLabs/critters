@@ -29,7 +29,7 @@ const PLUGIN_NAME = 'critters-webpack-plugin';
 /**
  * Create a Critters plugin instance with the given options.
  * @public
- * @param {Options} options Options to control how Critters inlines CSS. See https://github.com/GoogleChromeLabs/critters#critters-2
+ * @param {Options} options Options to control how Critters inlines CSS. See https://github.com/GoogleChromeLabs/critters#usage
  * @example
  * // webpack.config.js
  * module.exports = {
