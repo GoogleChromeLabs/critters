@@ -62,7 +62,23 @@ export default class CrittersWebpackPlugin extends Critters {
     tap(compiler, 'compilation', PLUGIN_NAME, false, (compilation) => {
       this.options.path = compiler.options.output.path;
       this.options.publicPath = compiler.options.output.publicPath;
-      // ... which is how we get an "after" hook into html-webpack-plugin's HTML generation.
+
+      const hasHtmlPlugin = compilation.options.plugins.find(p => p.constructor && p.constructor.name === 'HtmlWebpackPlugin');
+      try {
+        var htmlPluginHooks = require('html-webpack-plugin').getHooks(compilation);
+      } catch (err) {}
+      
+      const handleHtmlPluginData = (htmlPluginData, callback) => {
+        this.fs = compilation.outputFileSystem;
+        this.compilation = compilation;
+        this.process(htmlPluginData.html)
+          .then((html) => {
+            callback(null, { html });
+          })
+          .catch(callback);
+      };
+
+      // get an "after" hook into html-webpack-plugin's HTML generation.
       if (
         compilation.hooks &&
         compilation.hooks.htmlWebpackPluginAfterHtmlProcessing
@@ -72,16 +88,10 @@ export default class CrittersWebpackPlugin extends Critters {
           'html-webpack-plugin-after-html-processing',
           PLUGIN_NAME,
           true,
-          (htmlPluginData, callback) => {
-            this.fs = compilation.outputFileSystem;
-            this.compilation = compilation;
-            this.process(htmlPluginData.html)
-              .then((html) => {
-                callback(null, { html });
-              })
-              .catch(callback);
-          }
+          handleHtmlPluginData
         );
+      } else if (hasHtmlPlugin && htmlPluginHooks) {
+        htmlPluginHooks.beforeEmit.tapAsync(PLUGIN_NAME, handleHtmlPluginData);
       } else {
         // If html-webpack-plugin isn't used, process the first HTML asset as an optimize step
         tap(
