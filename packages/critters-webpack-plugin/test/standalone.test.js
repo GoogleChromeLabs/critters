@@ -32,7 +32,7 @@ function configure(config) {
 test('webpack compilation', async () => {
   const info = await compile('fixtures/raw/index.js', configure);
   expect(info.assets).toHaveLength(2);
-  expect(await readFile('fixtures/basic/dist/index.html')).toMatchSnapshot();
+  expect(await readFile('fixtures/raw/dist/index.html')).toMatchSnapshot();
 });
 
 describe('Usage without html-webpack-plugin', () => {
