@@ -1,11 +1,11 @@
 <p align="center">
-  <img src="https://i.imgur.com/J0jv1Sz.png" width="240" height="240" alt="critters-webpack-plugin">
+  <img src="https://i.imgur.com/J0jv1Sz.png" width="240" height="240" alt="critters">
   <h1 align="center">Critters</h1>
 </p>
 
 > Critters is a plugin that inlines your app's [critical CSS] and lazy-loads the rest.
 
-## critters [![npm](https://img.shields.io/npm/v/critters-webpack-plugin.svg?style=flat)](https://www.npmjs.org/package/critters)
+## critters [![npm](https://img.shields.io/npm/v/critters.svg)](https://www.npmjs.org/package/critters)
 
 It's a little different from [other options](#similar-libraries), because it **doesn't use a headless browser** to render content. This tradeoff allows Critters to be very **fast and lightweight**. It also means Critters inlines all CSS rules used by your document, rather than only those needed for above-the-fold content. For alternatives, see [Similar Libraries](#similar-libraries).
 
@@ -45,6 +45,10 @@ yarn add -D critters
 ```
 
 ## Usage with webpack
+
+Critters is also available as a Webpack plugin called [critters-webpack-plugin](https://www.npmjs.org/package/critters-webpack-plugin).  [![npm](https://img.shields.io/npm/v/critters-webpack-plugin.svg)](https://www.npmjs.org/package/critters-webpack-plugin)
+
+The Webpack plugin supports the same configuration options as the main `critters` package:
 
 ```diff
 // webpack.config.js
