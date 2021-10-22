@@ -64,7 +64,7 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script type=\\"text/javascript\\" src=\\"bundle.js\\"></script>
+  <script src=\\"bundle.js\\"></script>
 
 <link rel=\\"stylesheet\\" href=\\"main.css\\"></body></html>"
 `;
@@ -156,7 +156,7 @@ exports[`Inline <style> pruning should remove unused rules 1`] = `
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script type=\\"text/javascript\\" src=\\"bundle.js\\"></script>
+  <script src=\\"bundle.js\\"></script>
 
 </body></html>"
 `;
@@ -225,7 +225,7 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script type=\\"text/javascript\\" src=\\"bundle.js\\"></script>
+  <script src=\\"bundle.js\\"></script>
 
 <link rel=\\"stylesheet\\" href=\\"main.css\\"></body></html>"
 `;
@@ -294,7 +294,7 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script type=\\"text/javascript\\" src=\\"/_public/bundle.js\\"></script>
+  <script src=\\"/_public/bundle.js\\"></script>
 
 <link rel=\\"stylesheet\\" href=\\"/_public/main.css\\"></body></html>"
 `;
@@ -386,7 +386,7 @@ exports[`webpack compilation 1`] = `
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script type=\\"text/javascript\\" src=\\"bundle.js\\"></script></body>
+  <script src=\\"bundle.js\\"></script></body>
 </html>
 "
 `;
