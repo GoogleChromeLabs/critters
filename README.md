@@ -13,11 +13,11 @@ Critters' design makes it a good fit when inlining critical CSS for prerendered/
 
 ## Features
 
-- Fast - no browser, few dependencies
-- Integrates with Webpack [critters-webpack-plugin]
-- Supports preloading and/or inlining critical fonts
-- Prunes unused CSS keyframes and media queries
-- Removes inlined CSS rules from lazy-loaded stylesheets
+*   Fast - no browser, few dependencies
+*   Integrates with Webpack [critters-webpack-plugin]
+*   Supports preloading and/or inlining critical fonts
+*   Prunes unused CSS keyframes and media queries
+*   Removes inlined CSS rules from lazy-loaded stylesheets
 
 ## Installation
 
@@ -33,20 +33,32 @@ or
 yarn add -D critters
 ```
 
-## Usage
+## Simple Example
 
-```diff
-+    const Critters = require('critters');
+```js
+import Critters from 'critters';
 
-+    const c = new Critters({
-+      // optional configuration (see below)
-+    })
-+    const res = c.process(html)
+const critters = new Critters({
+  // optional configuration (see below)
+});
+
+const html = `
+  <style>
+    .red { color: red }
+    .blue { color: blue }
+  </style>
+  <div class="blue">I'm Blue</div>
+`;
+
+const inlined = await critters.process(html);
+
+console.log(inlined);
+// "<style>.blue{color:blue}</style><div class=\"blue\">I'm Blue</div>"
 ```
 
 ## Usage with webpack
 
-Critters is also available as a Webpack plugin called [critters-webpack-plugin](https://www.npmjs.org/package/critters-webpack-plugin).  [![npm](https://img.shields.io/npm/v/critters-webpack-plugin.svg)](https://www.npmjs.org/package/critters-webpack-plugin)
+Critters is also available as a Webpack plugin called [critters-webpack-plugin](https://www.npmjs.org/package/critters-webpack-plugin). [![npm](https://img.shields.io/npm/v/critters-webpack-plugin.svg)](https://www.npmjs.org/package/critters-webpack-plugin)
 
 The Webpack plugin supports the same configuration options as the main `critters` package:
 
@@ -71,59 +83,50 @@ That's it! The resultant html will have its critical CSS inlined and the stylesh
 
 ### Critters
 
-Create a Critters plugin instance with the given options.
-
-**Parameters**
-
-- `options` **Options** Options to control how Critters inlines CSS.
-
-**Examples**
-
-```javascript
-// webpack.config.js
-module.exports = {
-  plugins: [
-    new Critters({
-      // Outputs: <link rel="preload" onload="this.rel='stylesheet'">
-      preload: 'swap',
-
-      // Don't inline critical font-face rules, but preload the font URLs:
-      preloadFonts: true
-    })
-  ]
-};
-```
-
-### Critters
-
 All optional. Pass them to `new Critters({ ... })`.
 
-**Parameters**
+#### Parameters
 
-- `options`
+*   `options`  
 
-**Properties**
+#### Properties
 
-- `external` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline styles from external stylesheets _(default: `true`)_
-- `inlineThreshold` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Inline external stylesheets smaller than a given size _(default: `0`)_
-- `minimumExternalSize` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
-- `pruneSource` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Remove inlined rules from the external stylesheet _(default: `true`)_
-- `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merged inlined stylesheets into a
-  single \<style\> tag _(default: `true`)_
-- `additionalStylesheets` **[String[]](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Glob for matching other stylesheets which should be used to evaluate critical CSS _(default: '')_
-- `preload` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [preload strategy](#preloadstrategy) to use
-- `noscriptFallback` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Add `<noscript>` fallback to JS-based strategies
-- `inlineFonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline critical font-face rules _(default: `false`)_
-- `preloadFonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Preloads critical fonts _(default: `true`)_
-- `fonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Shorthand for setting `inlineFonts`+`preloadFonts`- Values:
-  - `true` to inline critical font-face rules and preload the fonts
-  - `false` to don't inline any font-face rules and don't preload fonts
-- `keyframes` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Controls which keyframes rules are inlined.- Values:
-  - `"critical"`: _(default)_ inline keyframes rules used by the critical CSS
-  - `"all"` inline all keyframes rules
-  - `"none"` remove all keyframes rules
-- `compress` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Compress resulting critical CSS _(default: `true`)_
-- `logLevel` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Controls [log level](#loglevel) of the plugin _(default: `"info"`)_
+*   `path` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Base path location of the CSS files *(default: `''`)*
+*   `publicPath` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Public path of the CSS resources. This prefix is removed from the href *(default: `''`)*
+*   `external` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline styles from external stylesheets *(default: `true`)*
+*   `inlineThreshold` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** Inline external stylesheets smaller than a given size *(default: `0`)*
+*   `minimumExternalSize` **[Number](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Number)** If the non-critical external stylesheet would be below this size, just inline it *(default: `0`)*
+*   `pruneSource` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Remove inlined rules from the external stylesheet *(default: `false`)*
+*   `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merged inlined stylesheets into a single `<style>` tag *(default: `true`)*
+*   `additionalStylesheets` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>** Glob for matching other stylesheets to be used while looking for critical CSS.
+*   `preload` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [preload strategy](#preloadstrategy) to use
+*   `noscriptFallback` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Add `<noscript>` fallback to JS-based strategies
+*   `inlineFonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline critical font-face rules *(default: `false`)*
+*   `preloadFonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Preloads critical fonts *(default: `true`)*
+*   `fonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Shorthand for setting `inlineFonts` + `preloadFonts`*   Values:
+    *   `true` to inline critical font-face rules and preload the fonts
+    *   `false` to don't inline any font-face rules and don't preload fonts
+*   `keyframes` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Controls which keyframes rules are inlined.*   Values:
+    *   `"critical"`: *(default)* inline keyframes rules used by the critical CSS
+    *   `"all"` inline all keyframes rules
+    *   `"none"` remove all keyframes rules
+*   `compress` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Compress resulting critical CSS *(default: `true`)*
+*   `logLevel` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Controls [log level](#loglevel) of the plugin *(default: `"info"`)*
+*   `logger` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Provide a custom logger interface [logger](#logger)
+
+### Logger
+
+Custom logger interface:
+
+Type: [object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)
+
+#### Properties
+
+*   `trace` **function ([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** Prints a trace message
+*   `debug` **function ([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** Prints a debug message
+*   `info` **function ([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** Prints an information message
+*   `warn` **function ([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** Prints a warning message
+*   `error` **function ([String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String))** Prints an error message
 
 ### LogLevel
 
@@ -131,39 +134,41 @@ Controls log level of the plugin. Specifies the level the logger should use. A l
 not produce output for any log level beneath the specified level. Available levels and order
 are:
 
-- **"info"** _(default)_
-- **"warn"**
-- **"error"**
-- **"trace"**
-- **"debug"**
-- **"silent"**
+*   **"info"** *(default)*
+*   **"warn"**
+*   **"error"**
+*   **"trace"**
+*   **"debug"**
+*   **"silent"**
 
-Type: (`"info"` \| `"warn"` \| `"error"` \| `"trace"` \| `"debug"` \| `"silent"`)
+Type: (`"info"` | `"warn"` | `"error"` | `"trace"` | `"debug"` | `"silent"`)
 
 ### PreloadStrategy
 
 The mechanism to use for lazy-loading stylesheets.
-_[JS]_ indicates that a strategy requires JavaScript (falls back to `<noscript>`).
 
-- **default:** Move stylesheet links to the end of the document and insert preload meta tags in their place.
-- **"body":** Move all external stylesheet links to the end of the document.
-- **"media":** Load stylesheets asynchronously by adding `media="not x"` and removing once loaded. _[JS]_
-- **"swap":** Convert stylesheet links to preloads that swap to `rel="stylesheet"` once loaded. _[JS]_
-- **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. _[JS]_
-- **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
+Note: <kbd>JS</kbd> indicates a strategy requiring JavaScript (falls back to `<noscript>` unless disabled).
 
-Type: (default | `"body"` \| `"media"` \| `"swap"` \| `"js"` \| `"js-lazy"`)
+*   **default:** Move stylesheet links to the end of the document and insert preload meta tags in their place.
+*   **"body":** Move all external stylesheet links to the end of the document.
+*   **"media":** Load stylesheets asynchronously by adding `media="not x"` and removing once loaded. <kbd>JS</kbd>
+*   **"swap":** Convert stylesheet links to preloads that swap to `rel="stylesheet"` once loaded ([details](https://www.filamentgroup.com/lab/load-css-simpler/#the-code)). <kbd>JS</kbd>
+*   **"swap-high":** Use `<link rel="alternate stylesheet preload">` and swap to `rel="stylesheet"` once loaded ([details](http://filamentgroup.github.io/loadCSS/test/new-high.html)). <kbd>JS</kbd>
+*   **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. <kbd>JS</kbd>
+*   **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
+
+Type: (default | `"body"` | `"media"` | `"swap"` | `"swap-high"` | `"js"` | `"js-lazy"`)
 
 ## Similar Libraries
 
 There are a number of other libraries that can inline Critical CSS, each with a slightly different approach. Here are a few great options:
 
-- [Critical](https://github.com/addyosmani/critical)
-- [Penthouse](https://github.com/pocketjoso/penthouse)
-- [webpack-critical](https://github.com/lukeed/webpack-critical)
-- [webpack-plugin-critical](https://github.com/nrwl/webpack-plugin-critical)
-- [html-critical-webpack-plugin](https://github.com/anthonygore/html-critical-webpack-plugin)
-- [react-snap](https://github.com/stereobooster/react-snap)
+*   [Critical](https://github.com/addyosmani/critical)
+*   [Penthouse](https://github.com/pocketjoso/penthouse)
+*   [webpack-critical](https://github.com/lukeed/webpack-critical)
+*   [webpack-plugin-critical](https://github.com/nrwl/webpack-plugin-critical)
+*   [html-critical-webpack-plugin](https://github.com/anthonygore/html-critical-webpack-plugin)
+*   [react-snap](https://github.com/stereobooster/react-snap)
 
 ## License
 
@@ -172,5 +177,7 @@ There are a number of other libraries that can inline Critical CSS, each with a 
 This is not an official Google product.
 
 [critters-webpack-plugin]: https://github.com/GoogleChromeLabs/critters/tree/main/packages/critters-webpack-plugin
+
 [critical css]: https://www.smashingmagazine.com/2015/08/understanding-critical-css/
+
 [html-webpack-plugin]: https://github.com/jantimon/html-webpack-plugin

@@ -90,13 +90,13 @@ import { createLogger } from './util';
  * @property {Number} inlineThreshold Inline external stylesheets smaller than a given size _(default: `0`)_
  * @property {Number} minimumExternalSize If the non-critical external stylesheet would be below this size, just inline it _(default: `0`)_
  * @property {Boolean} pruneSource  Remove inlined rules from the external stylesheet _(default: `false`)_
- * @property {Boolean} mergeStylesheets Merged inlined stylesheets into a single <style> tag _(default: `true`)_
- * @property {String[]} additionalStylesheets Glob for matching other stylesheets to be used while looking for critical CSS _(default: ``)_.
+ * @property {Boolean} mergeStylesheets Merged inlined stylesheets into a single `<style>` tag _(default: `true`)_
+ * @property {String[]} additionalStylesheets Glob for matching other stylesheets to be used while looking for critical CSS.
  * @property {String} preload       Which {@link PreloadStrategy preload strategy} to use
  * @property {Boolean} noscriptFallback Add `<noscript>` fallback to JS-based strategies
  * @property {Boolean} inlineFonts  Inline critical font-face rules _(default: `false`)_
  * @property {Boolean} preloadFonts Preloads critical fonts _(default: `true`)_
- * @property {Boolean} fonts        Shorthand for setting `inlineFonts`+`preloadFonts`
+ * @property {Boolean} fonts        Shorthand for setting `inlineFonts` + `preloadFonts`
  *  - Values:
  *  - `true` to inline critical font-face rules and preload the fonts
  *  - `false` to don't inline any font-face rules and don't preload fonts

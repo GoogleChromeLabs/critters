@@ -78,7 +78,6 @@
     "@types/jest": "^26.0.23",
     "babel-core": "^6.26.0",
     "babel-jest": "^26.3.0",
-    "documentation": "^13.0.2",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",

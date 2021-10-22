@@ -24,10 +24,12 @@ import { tap } from './util';
 // Used to annotate this plugin's hooks in Tappable invocations
 const PLUGIN_NAME = 'critters-webpack-plugin';
 
+/** @typedef {import('critters').Options} Options */
+
 /**
  * Create a Critters plugin instance with the given options.
  * @public
- * @param {Options} options Options to control how Critters inlines CSS.
+ * @param {Options} options Options to control how Critters inlines CSS. See https://github.com/GoogleChromeLabs/critters#critters-2
  * @example
  * // webpack.config.js
  * module.exports = {
@@ -63,11 +65,15 @@ export default class CrittersWebpackPlugin extends Critters {
       this.options.path = compiler.options.output.path;
       this.options.publicPath = compiler.options.output.publicPath;
 
-      const hasHtmlPlugin = compilation.options.plugins.find(p => p.constructor && p.constructor.name === 'HtmlWebpackPlugin');
+      const hasHtmlPlugin = compilation.options.plugins.find(
+        (p) => p.constructor && p.constructor.name === 'HtmlWebpackPlugin'
+      );
       try {
-        var htmlPluginHooks = require('html-webpack-plugin').getHooks(compilation);
+        var htmlPluginHooks = require('html-webpack-plugin').getHooks(
+          compilation
+        );
       } catch (err) {}
-      
+
       const handleHtmlPluginData = (htmlPluginData, callback) => {
         this.fs = compilation.outputFileSystem;
         this.compilation = compilation;
@@ -205,9 +211,9 @@ export default class CrittersWebpackPlugin extends Critters {
         return;
       }
       styleSheetsIncluded.push(cssFile);
-      const webpackCssAssets = Object.keys(
-        this.compilation.assets
-      ).filter((file) => minimatch(file, cssFile));
+      const webpackCssAssets = Object.keys(this.compilation.assets).filter(
+        (file) => minimatch(file, cssFile)
+      );
       webpackCssAssets.map((asset) => {
         const style = document.createElement('style');
         style.$$external = true;
@@ -233,13 +239,12 @@ export default class CrittersWebpackPlugin extends Critters {
         delete this.compilation.assets[style.$$assetName];
         return true;
       }
-      this.compilation.assets[
-        style.$$assetName
-      ] = new sources.LineToLineMappedSource(
-        sheetInverse,
-        style.$$assetName,
-        before
-      );
+      this.compilation.assets[style.$$assetName] =
+        new sources.LineToLineMappedSource(
+          sheetInverse,
+          style.$$assetName,
+          before
+        );
     } else {
       this.logger.warn(
         'pruneSource is enabled, but a style (' +
