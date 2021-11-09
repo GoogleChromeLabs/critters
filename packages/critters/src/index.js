@@ -440,7 +440,6 @@ export default class Critters {
     const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
     const options = this.options;
     // const document = style.ownerDocument;
-    const head = document.querySelector('head');
     let keyframesMode = options.keyframes || 'critical';
     // we also accept a boolean value for options.keyframes
     if (keyframesMode === true) keyframesMode = 'all';
@@ -577,7 +576,7 @@ export default class Critters {
           preload.setAttribute('as', 'font');
           preload.setAttribute('crossorigin', 'anonymous');
           preload.setAttribute('href', src.trim());
-          head.appendChild(preload);
+          document.head.appendChild(preload);
         }
 
         // if we're missing info, if the font is unused, or if critical font inlining is disabled, remove the rule:

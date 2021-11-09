@@ -176,6 +176,12 @@ const DocumentExtensions = {
     }
   },
 
+  head: {
+    get() {
+      return this.querySelector('head');
+    }
+  },
+
   body: {
     get() {
       return this.querySelector('body');
