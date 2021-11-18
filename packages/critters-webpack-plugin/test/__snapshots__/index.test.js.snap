@@ -161,6 +161,39 @@ exports[`Inline <style> pruning should remove unused rules 1`] = `
 </body></html>"
 `;
 
+exports[`options { additionalStylesheets:["*.css"] } should match snapshot 1`] = `
+"<!DOCTYPE html><html><head>
+    <title>Additional Stylesheet CSS Demo</title>
+  <style>html {
+  padding: 0px;
+}
+
+html {
+  padding: 0px;
+}
+
+.additional-style {
+  font-size: 200%;
+}
+
+</style><link href=\\"main.css\\" rel=\\"preload\\" as=\\"style\\"></head>
+  <body>
+    <ul class=\\"navbar\\">
+      <li>
+        <a href=\\"index.html\\">Home page</a>
+      </li>
+      <li>
+        <a href=\\"musings.html\\">Musings</a>
+      </li>
+    </ul>
+    <h1 class=\\"additional-style\\">My first styled page</h1>
+    <p>Welcome to my styled page!</p>
+    <footer>Made 5 April 2004</footer>
+  <script src=\\"bundle.js\\"></script>
+
+<link rel=\\"stylesheet\\" href=\\"main.css\\"></body></html>"
+`;
+
 exports[`options { async:true } should match snapshot 1`] = `
 "<!DOCTYPE html><html><head>
     <title>External CSS Demo</title>
