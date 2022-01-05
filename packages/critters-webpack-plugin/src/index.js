@@ -15,11 +15,17 @@
  */
 
 import path from 'path';
+import { createRequire } from 'module';
 import minimatch from 'minimatch';
 import sources from 'webpack-sources';
 import log from 'webpack-log';
 import Critters from 'critters';
 import { tap } from './util';
+
+const $require =
+  typeof require !== 'undefined'
+    ? require
+    : createRequire(eval('import.meta.url'));
 
 // Used to annotate this plugin's hooks in Tappable invocations
 const PLUGIN_NAME = 'critters-webpack-plugin';
@@ -69,7 +75,7 @@ export default class CrittersWebpackPlugin extends Critters {
         (p) => p.constructor && p.constructor.name === 'HtmlWebpackPlugin'
       );
       try {
-        var htmlPluginHooks = require('html-webpack-plugin').getHooks(
+        var htmlPluginHooks = $require('html-webpack-plugin').getHooks(
           compilation
         );
       } catch (err) {}
