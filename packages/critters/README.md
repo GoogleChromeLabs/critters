@@ -156,6 +156,7 @@ Note: <kbd>JS</kbd> indicates a strategy requiring JavaScript (falls back to `<n
 *   **"swap-high":** Use `<link rel="alternate stylesheet preload">` and swap to `rel="stylesheet"` once loaded ([details](http://filamentgroup.github.io/loadCSS/test/new-high.html)). <kbd>JS</kbd>
 *   **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. <kbd>JS</kbd>
 *   **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
+*   **false:** Disables adding preload tags.
 
 Type: (default | `"body"` | `"media"` | `"swap"` | `"swap-high"` | `"js"` | `"js-lazy"`)
 

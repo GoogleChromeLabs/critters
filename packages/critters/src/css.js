@@ -157,7 +157,8 @@ function hasNestedRules(rule) {
     rule.nodes &&
     rule.nodes.length &&
     rule.nodes.some((n) => n.type === 'rule' || n.type === 'atrule') &&
-    rule.name !== 'keyframes'
+    rule.name !== 'keyframes' &&
+    rule.name !== '-webkit-keyframes'
   );
 }
 

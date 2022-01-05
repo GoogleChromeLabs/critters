@@ -137,6 +137,23 @@ describe('publicPath', () => {
 });
 
 describe('options', () => {
+  describe('{ additionalStylesheets:["*.css"] }', () => {
+    let output;
+    beforeAll(async () => {
+      output = await compileToHtml('additionalStylesheets', configure, {
+        additionalStylesheets: ['*.css'],
+      });
+    });
+
+    it('should include additional styles', () => {
+      expect(output.html).toMatch(/\.additional-style/);
+    });
+
+    it('should match snapshot', () => {
+      expect(output.html).toMatchSnapshot();
+    });
+  });
+
   describe('{ async:true }', () => {
     let output;
     beforeAll(async () => {

@@ -39,6 +39,7 @@ import { createLogger } from './util';
  * - **"swap-high":** Use `<link rel="alternate stylesheet preload">` and swap to `rel="stylesheet"` once loaded ([details](http://filamentgroup.github.io/loadCSS/test/new-high.html)). <kbd>JS</kbd>
  * - **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. <kbd>JS</kbd>
  * - **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
+ * - **false:** Disables adding preload tags.
  * @typedef {(default|'body'|'media'|'swap'|'swap-high'|'js'|'js-lazy')} PreloadStrategy
  * @public
  */
@@ -440,7 +441,6 @@ export default class Critters {
     const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
     const options = this.options;
     // const document = style.ownerDocument;
-    const head = document.querySelector('head');
     let keyframesMode = options.keyframes || 'critical';
     // we also accept a boolean value for options.keyframes
     if (keyframesMode === true) keyframesMode = 'all';
@@ -577,7 +577,7 @@ export default class Critters {
           preload.setAttribute('as', 'font');
           preload.setAttribute('crossorigin', 'anonymous');
           preload.setAttribute('href', src.trim());
-          head.appendChild(preload);
+          document.head.appendChild(preload);
         }
 
         // if we're missing info, if the font is unused, or if critical font inlining is disabled, remove the rule:
