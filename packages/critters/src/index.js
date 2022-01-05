@@ -15,6 +15,7 @@
  */
 
 import path from 'path';
+import { readFile } from 'fs';
 import prettyBytes from 'pretty-bytes';
 import { createDocument, serializeDocument } from './dom';
 import {
@@ -147,7 +148,7 @@ export default class Critters {
       if (fs && fs.readFile) {
         fs.readFile(filename, callback);
       } else {
-        require('fs').readFile(filename, 'utf8', callback);
+        readFile(filename, 'utf8', callback);
       }
     });
   }
