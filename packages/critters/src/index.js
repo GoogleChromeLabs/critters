@@ -27,6 +27,7 @@ import {
   applyMarkedSelectors
 } from './css';
 import { createLogger } from './util';
+import picocolors from 'picocolors';
 
 /**
  * The mechanism to use for lazy-loading stylesheets.
@@ -271,7 +272,7 @@ export default class Critters {
       const href = style.$$name;
       style.$$reduce = false;
       this.logger.info(
-        `\u001b[32mInlined all of ${href} (${sheet.length} was below the threshold of ${this.options.inlineThreshold})\u001b[39m`
+        picocolors.green(`Inlined all of ${href} (${sheet.length} was below the threshold of ${this.options.inlineThreshold})`)
       );
       link.remove();
       return true;
@@ -416,7 +417,7 @@ export default class Critters {
     const name = style.$$name;
     if (minSize && sheetInverse.length < minSize) {
       this.logger.info(
-        `\u001b[32mInlined all of ${name} (non-critical external stylesheet would have been ${sheetInverse.length}b, which was below the threshold of ${minSize})\u001b[39m`
+        picocolors.green(`Inlined all of ${name} (non-critical external stylesheet would have been ${sheetInverse.length}b, which was below the threshold of ${minSize})`)
       );
       style.textContent = before;
       // remove any associated external resources/loaders:
@@ -630,7 +631,8 @@ export default class Critters {
     // output stats
     const percent = ((sheet.length / before.length) * 100) | 0;
     this.logger.info(
-      '\u001b[32mInlined ' +
+      picocolors.green(
+        'Inlined ' +
         prettyBytes(sheet.length) +
         ' (' +
         percent +
@@ -639,7 +641,8 @@ export default class Critters {
         ') of ' +
         name +
         afterText +
-        '.\u001b[39m'
+        '.'
+      )
     );
   }
 }

@@ -1,4 +1,4 @@
-import chalk from 'chalk';
+import picocolors from 'picocolors';
 
 const LOG_LEVELS = ['trace', 'debug', 'info', 'warn', 'error', 'silent'];
 
@@ -12,15 +12,15 @@ export const defaultLogger = {
   },
 
   warn(msg) {
-    console.warn(chalk.yellow(msg));
+    console.warn(picocolors.yellow(msg));
   },
 
   error(msg) {
-    console.error(chalk.bold.red(msg));
+    console.error(picocolors.bold(picocolors.red(msg)));
   },
 
   info(msg) {
-    console.info(chalk.bold.blue(msg));
+    console.info(picocolors.bold(picocolors.blue(msg)));
   },
 
   silent() {}
