@@ -154,6 +154,7 @@ Note: <kbd>JS</kbd> indicates a strategy requiring JavaScript (falls back to `<n
 *   **"media":** Load stylesheets asynchronously by adding `media="not x"` and removing once loaded. <kbd>JS</kbd>
 *   **"swap":** Convert stylesheet links to preloads that swap to `rel="stylesheet"` once loaded ([details](https://www.filamentgroup.com/lab/load-css-simpler/#the-code)). <kbd>JS</kbd>
 *   **"swap-high":** Use `<link rel="alternate stylesheet preload">` and swap to `rel="stylesheet"` once loaded ([details](http://filamentgroup.github.io/loadCSS/test/new-high.html)). <kbd>JS</kbd>
+*   **"swap-low":** Use `<link rel="alternate stylesheet">` (no `preload` in `rel` here!) and swap to `rel="stylesheet"` once loaded ([details](http://filamentgroup.github.io/loadCSS/test/new-low.html)). It ensures lowest priority compare to `swap-high`. <kbd>JS</kbd>
 *   **"js":** Inject an asynchronous CSS loader similar to [LoadCSS](https://github.com/filamentgroup/loadCSS) and use it to load stylesheets. <kbd>JS</kbd>
 *   **"js-lazy":** Like `"js"`, but the stylesheet is disabled until fully loaded.
 *   **false:** Disables adding preload tags.
