@@ -1,0 +1,72 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Usage with comp.assets and pruneSource should process the first html asset 1`] = `
+"<!DOCTYPE html><html lang=\\"en\\"><head>
+    <title>Loading asset from disk</title>
+    <style>:root {
+  font-size: 10px;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+}
+</style><link rel=\\"preload\\" href=\\"style.css\\" as=\\"style\\">
+  </head>
+  <body>
+    <h1>Some HTML Here</h1>
+  
+
+<link rel=\\"stylesheet\\" href=\\"style.css\\"></body></html>"
+`;
+
+exports[`Usage with comp.assets should process the first html asset 1`] = `
+"<!DOCTYPE html><html lang=\\"en\\"><head>
+    <title>Loading asset from disk</title>
+    <style>:root {
+  font-size: 10px;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+}
+</style><link rel=\\"preload\\" href=\\"style.css\\" as=\\"style\\">
+  </head>
+  <body>
+    <h1>Some HTML Here</h1>
+  
+
+<link rel=\\"stylesheet\\" href=\\"style.css\\"></body></html>"
+`;
+
+exports[`Usage without comp.assets with loading from disk should process the first html asset 1`] = `
+"<!DOCTYPE html><html lang=\\"en\\"><head>
+    <title>Loading asset from disk</title>
+    <style>:root {
+  font-size: 10px;
+}
+html, body {
+  width: 100%;
+  height: 100%;
+}
+</style><link rel=\\"preload\\" href=\\"style.css\\" as=\\"style\\">
+  </head>
+  <body>
+    <h1>Some HTML Here</h1>
+  
+
+<link rel=\\"stylesheet\\" href=\\"style.css\\"></body></html>"
+`;
+
+exports[`webpack compilation 1`] = `
+"<!DOCTYPE html>
+<html lang=\\"en\\">
+  <head>
+    <title>Loading asset from disk</title>
+    <link rel=\\"stylesheet\\" href=\\"style.css\\">
+  </head>
+  <body>
+    <h1>Some HTML Here</h1>
+  </body>
+</html>
+"
+`;
