@@ -1,5 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Critters \`.foo + *\` selector should not raise warnings 1`] = `"<!DOCTYPE html><html><head></head><body></body></html>"`;
+
 exports[`Critters Basic Usage 1`] = `
 "<html><head>
     <style>h1{color:blue}p{color:purple}</style><link rel=\\"preload\\" href=\\"/style.css\\" as=\\"style\\">

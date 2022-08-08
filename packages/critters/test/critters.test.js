@@ -51,4 +51,34 @@ describe('Critters', () => {
     expect(result).toMatch('<link rel="stylesheet" href="/style.css">');
     expect(result).toMatchSnapshot();
   });
+
+  test('`.foo + *` selector should not raise warnings', async () => {
+    const warnOrError = jest.fn();
+    const noop = () => null;
+
+    const critters = new Critters({
+      logger: {
+        trace: noop,
+        debug: noop,
+        info: noop,
+        warn: warnOrError,
+        error: warnOrError
+      }
+    });
+
+    const result = await critters.process(trim`
+      <!DOCTYPE html>
+      <style>
+        .foo + * {
+        color: red;
+      }
+      </style>
+    `);
+
+    expect(result).toMatchSnapshot();
+    expect(warnOrError.mock.calls).toEqual([
+        ['Merging inline stylesheets into a single <style> tag skipped, no inline stylesheets to merge']
+      ]
+    );
+  });
 });
