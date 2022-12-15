@@ -113,6 +113,7 @@ All optional. Pass them to `new Critters({ ... })`.
 *   `compress` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Compress resulting critical CSS *(default: `true`)*
 *   `logLevel` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Controls [log level](#loglevel) of the plugin *(default: `"info"`)*
 *   `logger` **[object](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Object)** Provide a custom logger interface [logger](#logger)
+*   `additionalDataTags` **[Array](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Array)** Search for classes inside data tags. Example the value [animations] search for classes inside data-animations attributes *(default: `[]`)
 
 ### Logger
 

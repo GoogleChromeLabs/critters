@@ -51,4 +51,37 @@ describe('Critters', () => {
     expect(result).toMatch('<link rel="stylesheet" href="/style.css">');
     expect(result).toMatchSnapshot();
   });
+
+  test('With Data Attributes Usage', async () => {
+    const critters = new Critters({
+      reduceInlineStyles: false,
+      path: '/',
+      additionalDataTags: ['colors']
+    });
+    const assets = {
+      '/style.css': trim`
+        h1 { color: blue; }
+        h2.unused { color: red; }
+        p { color: purple; }
+        p.unused { color: orange; }
+        .red { color: red }
+        .green { color: green }
+      `
+    };
+    critters.readFile = (filename) => assets[filename];
+    const result = await critters.process(trim`
+      <html>
+        <head>
+          <link rel="stylesheet" href="/style.css">
+        </head>
+        <body>
+          <h1 data-colors="red green">Hello World!</h1>
+          <p>This is a paragraph</p>
+        </body>
+      </html>
+    `);
+    expect(result).toMatch('<style>h1{color:blue}p{color:purple}.red{color:red}.green{color:green}</style>');
+    expect(result).toMatch('<link rel="stylesheet" href="/style.css">');
+    expect(result).toMatchSnapshot()
+  });
 });

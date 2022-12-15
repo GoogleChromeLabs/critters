@@ -10,3 +10,14 @@ exports[`Critters Basic Usage 1`] = `
   
 <link rel=\\"stylesheet\\" href=\\"/style.css\\"></body></html>"
 `;
+
+exports[`Critters With Data Attributes Usage 1`] = `
+"<html><head>
+    <style>h1{color:blue}p{color:purple}.red{color:red}.green{color:green}</style><link rel=\\"preload\\" href=\\"/style.css\\" as=\\"style\\">
+  </head>
+  <body>
+    <h1 data-colors=\\"red green\\">Hello World!</h1>
+    <p>This is a paragraph</p>
+  
+<link rel=\\"stylesheet\\" href=\\"/style.css\\"></body></html>"
+`;

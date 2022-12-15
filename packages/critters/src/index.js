@@ -110,6 +110,7 @@ import { createLogger } from './util';
  * @property {Boolean} compress     Compress resulting critical CSS _(default: `true`)_
  * @property {String} logLevel      Controls {@link LogLevel log level} of the plugin _(default: `"info"`)_
  * @property {object} logger        Provide a custom logger interface {@link Logger logger}
+ * @property {array} additionalDataTags      Array of data attributes that contains classes (example [foo] for data-foo attribute).
  */
 
 export default class Critters {
@@ -122,7 +123,8 @@ export default class Critters {
         publicPath: '',
         reduceInlineStyles: true,
         pruneSource: false,
-        additionalStylesheets: []
+        additionalStylesheets: [],
+        additionalDataTags: [],
       },
       options || {}
     );
@@ -160,7 +162,9 @@ export default class Critters {
     const start = process.hrtime.bigint();
 
     // Parse the generated HTML in a DOM we can mutate
-    const document = createDocument(html);
+    let document = createDocument(html);
+
+    document = this.createHelperDiv(document);
 
     if (this.options.additionalStylesheets.length > 0) {
       this.embedAdditionalStylesheet(document);
@@ -188,6 +192,8 @@ export default class Critters {
       await this.mergeStylesheets(document);
     }
 
+    this.removeHelperDiv(document);
+
     // serialize the document back to HTML and we're done
     const output = serializeDocument(document);
     const end = process.hrtime.bigint();
@@ -206,6 +212,39 @@ export default class Critters {
       return styles.filter((style) => style.$$external);
     }
     return styles;
+  }
+
+  /**
+   * Create a new div with the classes from the data attributes
+   * defined in the option 
+   */
+  createHelperDiv(document) {
+    const dataTags = this.options.additionalDataTags || [];
+    const tagsClasses = [];
+    for (let i = 0; i < dataTags.length; i++) {
+      const tag = dataTags[i]
+      const tags = [].slice.call(document.querySelectorAll(`[data-${tag}]`));
+      for (let j = 0; j < tags.length; j++) {
+        const tag = tags[j];
+        const classes = Object.values(tag.attribs)[0];
+        tagsClasses.push(...classes.split(' '));
+      }
+    };
+
+    if(tagsClasses.length > 0) {
+      const div = document.createElement('div');
+      document.body.appendChild(div);
+      div.className = `${tagsClasses.join(' ')} remove-me-please`;
+    }
+
+    return document;
+  };
+
+  removeHelperDiv(document) {
+    const div = document.querySelector('div.remove-me-please');
+    if(div) {
+      div.remove();
+    }
   }
 
   async mergeStylesheets(document) {
