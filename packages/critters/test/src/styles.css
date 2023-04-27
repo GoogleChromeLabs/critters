@@ -1,0 +1,15 @@
+h1 {
+  color: blue;
+}
+
+h2.unused {
+  color: red;
+}
+
+p {
+  color: purple;
+}
+
+p.unused {
+  color: orange;
+}

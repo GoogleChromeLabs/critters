@@ -14,14 +14,10 @@
  * the License.
  */
 
-import parse5 from 'parse5';
 import { selectAll, selectOne } from 'css-select';
-import treeAdapter from 'parse5-htmlparser2-tree-adapter';
-
-// htmlparser2 has a relatively DOM-like tree format, which we'll massage into a DOM elsewhere
-const PARSE5_OPTS = {
-  treeAdapter
-};
+import { parseDocument, DomUtils } from 'htmlparser2';
+import { Element, Text } from 'domhandler';
+import render from 'dom-serializer';
 
 /**
  * Parse HTML into a mutable, serializable DOM Document.
@@ -29,19 +25,12 @@ const PARSE5_OPTS = {
  * @param {String} html   HTML to parse into a Document instance
  */
 export function createDocument(html) {
-  const document = /** @type {HTMLDocument} */ (
-    parse5.parse(html, PARSE5_OPTS)
-  );
+  const document = /** @type {HTMLDocument} */ (parseDocument(html));
 
   defineProperties(document, DocumentExtensions);
 
   // Extend Element.prototype with DOM manipulation methods.
-  const scratch = document.createElement('div');
-  // Get a reference to the base Node class - used by createTextNode()
-  document.$$Node = scratch.constructor;
-  const elementProto = Object.getPrototypeOf(scratch);
-  defineProperties(elementProto, ElementExtensions);
-  elementProto.ownerDocument = document;
+  defineProperties(Element.prototype, ElementExtensions);
 
   return document;
 }
@@ -51,7 +40,7 @@ export function createDocument(html) {
  * @param {HTMLDocument} document   A Document, such as one created via `createDocument()`
  */
 export function serializeDocument(document) {
-  return parse5.serialize(document, PARSE5_OPTS);
+  return render(document);
 }
 
 /** @typedef {treeAdapter.Document & typeof ElementExtensions} HTMLDocument */
@@ -75,31 +64,31 @@ const ElementExtensions = {
 
   insertBefore(child, referenceNode) {
     if (!referenceNode) return this.appendChild(child);
-    treeAdapter.insertBefore(this, child, referenceNode);
+    DomUtils.prepend(referenceNode, child);
     return child;
   },
 
   appendChild(child) {
-    treeAdapter.appendChild(this, child);
+    DomUtils.appendChild(this, child);
     return child;
   },
 
   removeChild(child) {
-    treeAdapter.detachNode(child);
+    DomUtils.removeElement(child);
   },
 
   remove() {
-    treeAdapter.detachNode(this);
+    DomUtils.removeElement(this);
   },
 
   textContent: {
     get() {
-      return getText(this);
+      return DomUtils.getText(this);
     },
 
     set(text) {
       this.children = [];
-      treeAdapter.insertText(this, text);
+      DomUtils.appendChild(this, new Text(text));
     }
   },
 
@@ -159,20 +148,9 @@ const DocumentExtensions = {
   documentElement: {
     get() {
       // Find the first <html> element within the document
-      return this.childNodes.filter(
+      return this.filter(
         (child) => String(child.tagName).toLowerCase() === 'html'
       );
-    }
-  },
-
-  compatMode: {
-    get() {
-      const compatMode = {
-        'no-quirks': 'CSS1Compat',
-        quirks: 'BackCompat',
-        'limited-quirks': 'CSS1Compat'
-      };
-      return compatMode[treeAdapter.getDocumentMode(this)];
     }
   },
 
@@ -189,30 +167,23 @@ const DocumentExtensions = {
   },
 
   createElement(name) {
-    return treeAdapter.createElement(name, null, []);
+    return new Element(name);
   },
 
   createTextNode(text) {
     // there is no dedicated createTextNode equivalent exposed in htmlparser2's DOM
-    const Node = this.$$Node;
-    return new Node({
-      type: 'text',
-      data: text,
-      parent: null,
-      prev: null,
-      next: null
-    });
+    return new Text(text);
   },
 
   querySelector(sel) {
-    return selectOne(sel, this.documentElement);
+    return selectOne(sel, this);
   },
 
   querySelectorAll(sel) {
     if (sel === ':root') {
       return this;
     }
-    return selectAll(sel, this.documentElement);
+    return selectAll(sel, this);
   }
 };
 
@@ -244,17 +215,4 @@ function reflectedProperty(attributeName) {
       this.setAttribute(attributeName, value);
     }
   };
-}
-
-/**
- * Helper to get the text content of a node
- * https://github.com/fb55/domutils/blob/master/src/stringify.ts#L21
- * @private
- */
-function getText(node) {
-  if (Array.isArray(node)) return node.map(getText).join('');
-  if (treeAdapter.isElementNode(node))
-    return node.name === 'br' ? '\n' : getText(node.children);
-  if (treeAdapter.isTextNode(node)) return node.data;
-  return '';
 }

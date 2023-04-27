@@ -39,7 +39,8 @@
       "text"
     ],
     "moduleNameMapper": {
-      "^critters$": "<rootDir>/packages/critters/src/index.js"
+      "^critters$": "<rootDir>/packages/critters/src/index.js",
+      "#(.*)": "<rootDir>/node_modules/$1"
     },
     "collectCoverageFrom": [
       "packages/*/src/**/*.js"
@@ -51,6 +52,8 @@
     "watchPathIgnorePatterns": [
       "node_modules",
       "dist"
+    ],
+    "transformIgnorePatterns": [
     ]
   },
   "prettier": {
