@@ -148,7 +148,7 @@ const DocumentExtensions = {
   documentElement: {
     get() {
       // Find the first <html> element within the document
-      return this.filter(
+      return this.children.filter(
         (child) => String(child.tagName).toLowerCase() === 'html'
       );
     }
