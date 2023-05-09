@@ -16,7 +16,7 @@ exports[`Critters Run on HTML file 1`] = `
 "<html>
   <head>
     <title>Testing</title>
-    <style>h1{color:blue}p{color:purple}.custom-element::part(tab){color:#0c0dcc;border-bottom:transparent solid 2px}.custom-element::part(tab):hover:active{background-color:#0c0d33;color:#ffffff}.custom-element::part(tab):focus{box-shadow:0 0 0 1px #0a84ff inset, 0 0 0 1px #0a84ff,
+    <style>h1{color:blue}p{color:purple}.contents{padding:50px;text-align:center}.custom-element::part(tab){color:#0c0dcc;border-bottom:transparent solid 2px}.custom-element::part(tab):hover:active{background-color:#0c0d33;color:#ffffff}.custom-element::part(tab):focus{box-shadow:0 0 0 1px #0a84ff inset, 0 0 0 1px #0a84ff,
     0 0 0 4px rgba(10, 132, 255, 0.3)}</style><link rel=\\"preload\\" href=\\"styles.css\\" as=\\"style\\">
   </head>
   <body>
@@ -25,11 +25,11 @@ exports[`Critters Run on HTML file 1`] = `
         <div class=\\"banner\\">Lorem ipsum dolor sit amet</div>
       </header>
     </div>
-    <div class>
+    <div class data-critters-container>
       <h1>Hello World!</h1>
       <p>This is a paragraph</p>
+      <div class=\\"contents\\"></div>
     </div>
-    <div class></div>
     <footer class></footer>
   <link rel=\\"stylesheet\\" href=\\"styles.css\\"></body>
 </html>

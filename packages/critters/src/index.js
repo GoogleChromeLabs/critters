@@ -442,7 +442,9 @@ export default class Critters {
 
     const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
     const options = this.options;
-    // const document = style.ownerDocument;
+    // Critters container is the viewport to evaluate critical CSS
+    const crittersContainer =
+      document.querySelector('[data-critters-container]') || document;
     let keyframesMode = options.keyframes || 'critical';
     // we also accept a boolean value for options.keyframes
     if (keyframesMode === true) keyframesMode = 'all';
@@ -547,7 +549,7 @@ export default class Critters {
             if (!sel) return false;
 
             try {
-              return document.querySelector(sel) != null;
+              return crittersContainer.querySelector(sel) != null;
             } catch (e) {
               failedSelectors.push(sel + ' -> ' + e.message);
               return false;

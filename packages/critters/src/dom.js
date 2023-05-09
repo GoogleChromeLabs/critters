@@ -115,6 +115,14 @@ const ElementExtensions = {
   getAttributeNode(name) {
     const value = this.getAttribute(name);
     if (value != null) return { specified: true, value };
+  },
+
+  querySelector(sel) {
+    return selectOne(sel, this);
+  },
+
+  querySelectorAll(sel) {
+    return selectAll(sel, this);
   }
 };
 
@@ -148,7 +156,7 @@ const DocumentExtensions = {
   documentElement: {
     get() {
       // Find the first <html> element within the document
-      return this.children.filter(
+      return this.children.find(
         (child) => String(child.tagName).toLowerCase() === 'html'
       );
     }

@@ -14,6 +14,19 @@ p.unused {
   color: orange;
 }
 
+header {
+  padding: 0 50px;
+}
+
+.banner {
+  font-family: sans-serif;
+}
+
+.contents {
+  padding: 50px;
+  text-align: center;
+}
+
 /* critters:exclude */
 .container {
   border: 1px solid;
