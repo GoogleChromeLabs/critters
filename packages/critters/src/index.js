@@ -442,9 +442,7 @@ export default class Critters {
 
     const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
     const options = this.options;
-    // Critters container is the viewport to evaluate critical CSS
-    const crittersContainer =
-      document.querySelector('[data-critters-container]') || document;
+    const crittersContainer = document.crittersContainer;
     let keyframesMode = options.keyframes || 'critical';
     // we also accept a boolean value for options.keyframes
     if (keyframesMode === true) keyframesMode = 'all';
@@ -539,7 +537,12 @@ export default class Critters {
 
             // Strip pseudo-elements and pseudo-classes, since we only care that their associated elements exist.
             // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
-            if (sel === ':root' || sel.match(/^::?(before|after)$/)) {
+            if (
+              sel === ':root' ||
+              sel.match(/^::?(before|after)$/) ||
+              sel === 'html' ||
+              sel === 'body'
+            ) {
               return true;
             }
             sel = sel
@@ -549,7 +552,7 @@ export default class Critters {
             if (!sel) return false;
 
             try {
-              return crittersContainer.querySelector(sel) != null;
+              return crittersContainer.exists(sel);
             } catch (e) {
               failedSelectors.push(sel + ' -> ' + e.message);
               return false;

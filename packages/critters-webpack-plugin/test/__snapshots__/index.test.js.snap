@@ -2,7 +2,7 @@
 
 exports[`External CSS should match snapshot 1`] = `
 "<!DOCTYPE html>
-<html>
+<html data-critters-container>
   <head>
     <title>External CSS Demo</title>
   <style>:root {
@@ -90,7 +90,7 @@ exports[`Inline <style> pruning should remove entire unused stylesheets 1`] = `
 
 exports[`Inline <style> pruning should remove unused rules 1`] = `
 "<!DOCTYPE html>
-<html>
+<html data-critters-container>
   <head>
     <title>Basic Demo</title>
     <style>
@@ -167,7 +167,7 @@ exports[`Inline <style> pruning should remove unused rules 1`] = `
 
 exports[`options { additionalStylesheets:["*.css"] } should match snapshot 1`] = `
 "<!DOCTYPE html>
-<html>
+<html data-critters-container>
   <head>
     <title>Additional Stylesheet CSS Demo</title>
   <style>html {
@@ -202,7 +202,7 @@ html {
 
 exports[`options { async:true } should match snapshot 1`] = `
 "<!DOCTYPE html>
-<html>
+<html data-critters-container>
   <head>
     <title>External CSS Demo</title>
   <style>:root {
@@ -273,7 +273,7 @@ footer {
 
 exports[`publicPath should match snapshot 1`] = `
 "<!DOCTYPE html>
-<html>
+<html data-critters-container>
   <head>
     <title>External CSS Demo</title>
   <style>:root {

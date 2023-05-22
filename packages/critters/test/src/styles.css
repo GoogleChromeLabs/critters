@@ -27,6 +27,14 @@ header {
   text-align: center;
 }
 
+.input-field {
+  padding: 10px;
+}
+
+footer {
+  margin-top: 10px;
+}
+
 /* critters:exclude */
 .container {
   border: 1px solid;

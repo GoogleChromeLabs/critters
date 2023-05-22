@@ -15,9 +15,84 @@
  */
 
 import { selectAll, selectOne } from 'css-select';
-import { parseDocument, DomUtils } from 'htmlparser2';
-import { Element, Text } from 'domhandler';
+import { Parser, parseDocument, DomUtils } from 'htmlparser2';
+import { parse as selectorParser } from 'css-what';
+import { DomHandler, Element, Text } from 'domhandler';
 import render from 'dom-serializer';
+
+let classCache = null;
+let idCache = null;
+// class CrittersDomHandler extends DomHandler {
+//   constructor() {
+//     super();
+//     this.criticalWrapper = undefined;
+//   }
+
+//   onopentag(name, attributes) {
+//     super.onopentag(name, attributes);
+
+//     if (this.criticalWrapper) {
+//       this.criticalWrapper += 1;
+//     } else if (
+//       Object.prototype.hasOwnProperty.call(
+//         attributes,
+//         'data-critters-container'
+//       )
+//     ) {
+//       if (this.criticalWrapper === undefined) {
+//         classCache = new Set();
+//       }
+//       this.criticalWrapper = 1;
+//     }
+//     if (attributes.class) {
+//       const classList = attributes.class.trim().split(' ');
+//       classList.forEach((cls) => {
+//         if (this.criticalWrapper === undefined || this.criticalWrapper > 0) {
+//           classCache.add(cls);
+//         }
+//       });
+//     }
+
+//     if (attributes.id) {
+//       if (this.criticalWrapper === undefined || this.criticalWrapper > 0) {
+//         idCache.add(attributes.id);
+//       }
+//     }
+//   }
+
+//   onclosetag(name) {
+//     super.onclosetag();
+
+//     if (this.criticalWrapper) {
+//       this.criticalWrapper -= 1;
+//       console.log(name);
+//     }
+//   }
+// }
+
+function buildCache(container) {
+  classCache = new Set();
+  idCache = new Set();
+  const queue = [container];
+
+  while (queue.length) {
+    const node = queue.shift();
+
+    if (node.hasAttribute('class')) {
+      const classList = node.getAttribute('class').trim().split(' ');
+      classList.forEach((cls) => {
+        classCache.add(cls);
+      });
+    }
+
+    if (node.hasAttribute('id')) {
+      const id = node.getAttribute('id').trim();
+      idCache.add(id);
+    }
+
+    queue.push(...node.children.filter((child) => child.type === 'tag'));
+  }
+}
 
 /**
  * Parse HTML into a mutable, serializable DOM Document.
@@ -27,10 +102,27 @@ import render from 'dom-serializer';
 export function createDocument(html) {
   const document = /** @type {HTMLDocument} */ (parseDocument(html));
 
+  // classCache = new Set();
+  // idCache = new Set();
+  // const handler = new CrittersDomHandler();
+  // new Parser(handler).end(html);
+  // const document = handler.root;
+
   defineProperties(document, DocumentExtensions);
 
   // Extend Element.prototype with DOM manipulation methods.
   defineProperties(Element.prototype, ElementExtensions);
+
+  // Critters container is the viewport to evaluate critical CSS
+  let crittersContainer = document.querySelector('[data-critters-container]');
+
+  if (!crittersContainer) {
+    document.documentElement.setAttribute('data-critters-container', '');
+    crittersContainer = document.documentElement;
+  }
+
+  document.crittersContainer = crittersContainer;
+  buildCache(crittersContainer);
 
   return document;
 }
@@ -117,6 +209,10 @@ const ElementExtensions = {
     if (value != null) return { specified: true, value };
   },
 
+  exists(sel) {
+    return cachedQuerySelector(sel, this);
+  },
+
   querySelector(sel) {
     return selectOne(sel, this);
   },
@@ -183,6 +279,10 @@ const DocumentExtensions = {
     return new Text(text);
   },
 
+  exists(sel) {
+    return cachedQuerySelector(sel, this);
+  },
+
   querySelector(sel) {
     return selectOne(sel, this);
   },
@@ -223,4 +323,21 @@ function reflectedProperty(attributeName) {
       this.setAttribute(attributeName, value);
     }
   };
+}
+
+function cachedQuerySelector(sel, node) {
+  const selectorTokens = selectorParser(sel);
+  for (const tokens of selectorTokens) {
+    // Check if the selector is a class selector
+    if (tokens.length === 1) {
+      const token = tokens[0];
+      if (token.type === 'attribute' && token.name === 'class') {
+        return classCache.has(token.value);
+      }
+      if (token.type === 'attribute' && token.name === 'id') {
+        return idCache.has(token.value);
+      }
+    }
+  }
+  return !!selectOne(sel, node);
 }
