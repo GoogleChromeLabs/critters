@@ -15,60 +15,13 @@
  */
 
 import { selectAll, selectOne } from 'css-select';
-import { Parser, parseDocument, DomUtils } from 'htmlparser2';
+import { parseDocument, DomUtils } from 'htmlparser2';
 import { parse as selectorParser } from 'css-what';
-import { DomHandler, Element, Text } from 'domhandler';
+import { Element, Text } from 'domhandler';
 import render from 'dom-serializer';
 
 let classCache = null;
 let idCache = null;
-// class CrittersDomHandler extends DomHandler {
-//   constructor() {
-//     super();
-//     this.criticalWrapper = undefined;
-//   }
-
-//   onopentag(name, attributes) {
-//     super.onopentag(name, attributes);
-
-//     if (this.criticalWrapper) {
-//       this.criticalWrapper += 1;
-//     } else if (
-//       Object.prototype.hasOwnProperty.call(
-//         attributes,
-//         'data-critters-container'
-//       )
-//     ) {
-//       if (this.criticalWrapper === undefined) {
-//         classCache = new Set();
-//       }
-//       this.criticalWrapper = 1;
-//     }
-//     if (attributes.class) {
-//       const classList = attributes.class.trim().split(' ');
-//       classList.forEach((cls) => {
-//         if (this.criticalWrapper === undefined || this.criticalWrapper > 0) {
-//           classCache.add(cls);
-//         }
-//       });
-//     }
-
-//     if (attributes.id) {
-//       if (this.criticalWrapper === undefined || this.criticalWrapper > 0) {
-//         idCache.add(attributes.id);
-//       }
-//     }
-//   }
-
-//   onclosetag(name) {
-//     super.onclosetag();
-
-//     if (this.criticalWrapper) {
-//       this.criticalWrapper -= 1;
-//       console.log(name);
-//     }
-//   }
-// }
 
 function buildCache(container) {
   classCache = new Set();
@@ -101,12 +54,6 @@ function buildCache(container) {
  */
 export function createDocument(html) {
   const document = /** @type {HTMLDocument} */ (parseDocument(html));
-
-  // classCache = new Set();
-  // idCache = new Set();
-  // const handler = new CrittersDomHandler();
-  // new Parser(handler).end(html);
-  // const document = handler.root;
 
   defineProperties(document, DocumentExtensions);
 
