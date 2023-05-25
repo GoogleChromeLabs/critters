@@ -122,7 +122,8 @@ export default class Critters {
         publicPath: '',
         reduceInlineStyles: true,
         pruneSource: false,
-        additionalStylesheets: []
+        additionalStylesheets: [],
+        allowRules: []
       },
       options || {}
     );
@@ -441,7 +442,7 @@ export default class Critters {
 
     const name = style.$$name ? style.$$name.replace(/^\//, '') : 'inline CSS';
     const options = this.options;
-    // const document = style.ownerDocument;
+    const crittersContainer = document.crittersContainer;
     let keyframesMode = options.keyframes || 'critical';
     // we also accept a boolean value for options.keyframes
     if (keyframesMode === true) keyframesMode = 'all';
@@ -465,17 +466,83 @@ export default class Critters {
 
     const criticalKeyframeNames = [];
 
+    let includeNext = false;
+    let includeAll = false;
+    let excludeNext = false;
+    let excludeAll = false;
+
     // Walk all CSS rules, marking unused rules with `.$$remove=true` for removal in the second pass.
     // This first pass is also used to collect font and keyframe usage used in the second pass.
     walkStyleRules(
       ast,
       markOnly((rule) => {
+        if (rule.type === 'comment') {
+          const comment = rule.text.trim();
+
+          if (comment.startsWith('critters')) {
+            const command = comment.replace(/^critters:/, '');
+            switch (command) {
+              case 'include':
+                includeNext = true;
+                break;
+              case 'exclude':
+                excludeNext = true;
+                break;
+              case 'include start':
+                includeAll = true;
+                break;
+              case 'include end':
+                includeAll = false;
+                break;
+              case 'exclude start':
+                excludeAll = true;
+                break;
+              case 'exclude end':
+                excludeAll = false;
+                break;
+            }
+          }
+        }
+
         if (rule.type === 'rule') {
+          // Handle comment based markers
+          if (includeNext) {
+            includeNext = false;
+            return true;
+          }
+
+          if (excludeNext) {
+            excludeNext = false;
+            return false;
+          }
+
+          if (includeAll) {
+            return true;
+          }
+
+          if (excludeAll) {
+            return false;
+          }
+
           // Filter the selector list down to only those match
           rule.filterSelectors((sel) => {
+            // Validate rule with 'allowRules' option
+            const isAllowedRule = options.allowRules.some((exp) => {
+              if (exp instanceof RegExp) {
+                return exp.test(sel);
+              }
+              return exp === sel;
+            });
+            if (isAllowedRule) return true;
+
             // Strip pseudo-elements and pseudo-classes, since we only care that their associated elements exist.
             // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
-            if (sel === ':root' || sel.match(/^::?(before|after)$/)) {
+            if (
+              sel === ':root' ||
+              sel.match(/^::?(before|after)$/) ||
+              sel === 'html' ||
+              sel === 'body'
+            ) {
               return true;
             }
             sel = sel
@@ -485,7 +552,7 @@ export default class Critters {
             if (!sel) return false;
 
             try {
-              return document.querySelector(sel) != null;
+              return crittersContainer.exists(sel);
             } catch (e) {
               failedSelectors.push(sel + ' -> ' + e.message);
               return false;

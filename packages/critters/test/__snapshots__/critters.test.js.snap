@@ -1,12 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Critters Basic Usage 1`] = `
-"<html><head>
+"<html data-critters-container>
+  <head>
     <style>h1{color:blue}p{color:purple}</style><link rel=\\"preload\\" href=\\"/style.css\\" as=\\"style\\">
   </head>
   <body>
     <h1>Hello World!</h1>
     <p>This is a paragraph</p>
-  
-<link rel=\\"stylesheet\\" href=\\"/style.css\\"></body></html>"
+  <link rel=\\"stylesheet\\" href=\\"/style.css\\"></body>
+</html>"
+`;
+
+exports[`Critters Run on HTML file 1`] = `
+"<html>
+  <head>
+    <title>Testing</title>
+    <style>h1{color:blue}p{color:purple}.contents{padding:50px;text-align:center}.input-field{padding:10px}.custom-element::part(tab){color:#0c0dcc;border-bottom:transparent solid 2px}.custom-element::part(tab):hover:active{background-color:#0c0d33;color:#ffffff}.custom-element::part(tab):focus{box-shadow:0 0 0 1px #0a84ff inset, 0 0 0 1px #0a84ff,
+    0 0 0 4px rgba(10, 132, 255, 0.3)}</style><link rel=\\"preload\\" href=\\"styles.css\\" as=\\"style\\">
+  </head>
+  <body>
+    <div class=\\"container\\">
+      <header>
+        <div class=\\"banner\\">Lorem ipsum dolor sit amet</div>
+      </header>
+    </div>
+    <div class data-critters-container>
+      <h1>Hello World!</h1>
+      <p>This is a paragraph</p>
+      <input class=\\"input-field\\">
+      <div class=\\"contents\\"></div>
+    </div>
+    <footer class></footer>
+  <link rel=\\"stylesheet\\" href=\\"styles.css\\"></body>
+</html>
+"
 `;

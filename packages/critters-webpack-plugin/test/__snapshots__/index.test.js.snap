@@ -1,7 +1,9 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`External CSS should match snapshot 1`] = `
-"<!DOCTYPE html><html><head>
+"<!DOCTYPE html>
+<html data-critters-container>
+  <head>
     <title>External CSS Demo</title>
   <style>:root {
   font-size: 10px;
@@ -64,9 +66,9 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script>
-
-<link rel=\\"stylesheet\\" href=\\"main.css\\"></body></html>"
+  <script src=\\"bundle.js\\"></script><link rel=\\"stylesheet\\" href=\\"main.css\\"></body>
+</html>
+"
 `;
 
 exports[`External CSS should prune external sheet 1`] = `
@@ -87,7 +89,9 @@ exports[`Inline <style> pruning should remove entire unused stylesheets 1`] = `
 `;
 
 exports[`Inline <style> pruning should remove unused rules 1`] = `
-"<!DOCTYPE html><html><head>
+"<!DOCTYPE html>
+<html data-critters-container>
+  <head>
     <title>Basic Demo</title>
     <style>
       body {
@@ -156,13 +160,15 @@ exports[`Inline <style> pruning should remove unused rules 1`] = `
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script>
-
-</body></html>"
+  <script src=\\"bundle.js\\"></script></body>
+</html>
+"
 `;
 
 exports[`options { additionalStylesheets:["*.css"] } should match snapshot 1`] = `
-"<!DOCTYPE html><html><head>
+"<!DOCTYPE html>
+<html data-critters-container>
+  <head>
     <title>Additional Stylesheet CSS Demo</title>
   <style>html {
   padding: 0px;
@@ -189,13 +195,15 @@ html {
     <h1 class=\\"additional-style\\">My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script>
-
-<link rel=\\"stylesheet\\" href=\\"main.css\\"></body></html>"
+  <script src=\\"bundle.js\\"></script><link rel=\\"stylesheet\\" href=\\"main.css\\"></body>
+</html>
+"
 `;
 
 exports[`options { async:true } should match snapshot 1`] = `
-"<!DOCTYPE html><html><head>
+"<!DOCTYPE html>
+<html data-critters-container>
+  <head>
     <title>External CSS Demo</title>
   <style>:root {
   font-size: 10px;
@@ -258,13 +266,15 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script>
-
-<link rel=\\"stylesheet\\" href=\\"main.css\\"></body></html>"
+  <script src=\\"bundle.js\\"></script><link rel=\\"stylesheet\\" href=\\"main.css\\"></body>
+</html>
+"
 `;
 
 exports[`publicPath should match snapshot 1`] = `
-"<!DOCTYPE html><html><head>
+"<!DOCTYPE html>
+<html data-critters-container>
+  <head>
     <title>External CSS Demo</title>
   <style>:root {
   font-size: 10px;
@@ -327,9 +337,9 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"/_public/bundle.js\\"></script>
-
-<link rel=\\"stylesheet\\" href=\\"/_public/main.css\\"></body></html>"
+  <script src=\\"/_public/bundle.js\\"></script><link rel=\\"stylesheet\\" href=\\"/_public/main.css\\"></body>
+</html>
+"
 `;
 
 exports[`publicPath should prune external sheet 1`] = `

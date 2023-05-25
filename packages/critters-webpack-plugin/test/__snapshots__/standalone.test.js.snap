@@ -9,7 +9,9 @@ exports[`Usage without html-webpack-plugin should process the first html asset 1
 `;
 
 exports[`Usage without html-webpack-plugin should process the first html asset 2`] = `
-"<!DOCTYPE html><html><head>
+"<!DOCTYPE html>
+<html data-critters-container>
+  <head>
     <title>Basic Demo</title>
     
     <style id=\\"used\\">
@@ -20,9 +22,9 @@ exports[`Usage without html-webpack-plugin should process the first html asset 2
   </head>
   <body>
     <h1>Some HTML Here</h1>
-  
-
-</body></html>"
+  </body>
+</html>
+"
 `;
 
 exports[`webpack compilation 1`] = `

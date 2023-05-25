@@ -15,6 +15,8 @@
  */
 
 import Critters from '../src/index';
+import fs from 'fs';
+import path from 'path';
 
 const trim = (s) =>
   s[0]
@@ -49,6 +51,21 @@ describe('Critters', () => {
     `);
     expect(result).toMatch('<style>h1{color:blue}p{color:purple}</style>');
     expect(result).toMatch('<link rel="stylesheet" href="/style.css">');
+    expect(result).toMatchSnapshot();
+  });
+
+  test('Run on HTML file', async () => {
+    const critters = new Critters({
+      reduceInlineStyles: false,
+      path: path.join(__dirname, 'src')
+    });
+
+    const html = fs.readFileSync(
+      path.join(__dirname, 'src/index.html'),
+      'utf8'
+    );
+
+    const result = await critters.process(html);
     expect(result).toMatchSnapshot();
   });
 });

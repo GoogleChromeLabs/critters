@@ -141,7 +141,7 @@ describe('options', () => {
     let output;
     beforeAll(async () => {
       output = await compileToHtml('additionalStylesheets', configure, {
-        additionalStylesheets: ['*.css'],
+        additionalStylesheets: ['*.css']
       });
     });
 
@@ -177,7 +177,7 @@ describe('options', () => {
       const link = output.document.querySelector('link[rel="stylesheet"]');
       expect(link).not.toBeNull();
       expect(link).toHaveProperty('href', 'main.css');
-      expect(output.document.body.lastChild).toBe(link);
+      expect(output.document.body.lastElementChild).toBe(link);
     });
 
     it('should match snapshot', () => {
