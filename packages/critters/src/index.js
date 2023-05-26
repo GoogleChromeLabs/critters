@@ -123,7 +123,7 @@ export default class Critters {
         reduceInlineStyles: true,
         pruneSource: false,
         additionalStylesheets: [],
-        allowRules: []
+        includeSelectors: []
       },
       options || {}
     );
@@ -526,8 +526,8 @@ export default class Critters {
 
           // Filter the selector list down to only those match
           rule.filterSelectors((sel) => {
-            // Validate rule with 'allowRules' option
-            const isAllowedRule = options.allowRules.some((exp) => {
+            // Validate rule with 'includeSelectors' option
+            const isAllowedRule = options.includeSelectors.some((exp) => {
               if (exp instanceof RegExp) {
                 return exp.test(sel);
               }
