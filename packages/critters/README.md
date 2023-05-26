@@ -101,7 +101,7 @@ All optional. Pass them to `new Critters({ ... })`.
 - `pruneSource` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Remove inlined rules from the external stylesheet _(default: `false`)_
 - `mergeStylesheets` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Merged inlined stylesheets into a single `<style>` tag _(default: `true`)_
 - `additionalStylesheets` **[Array](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Array)<[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)>** Glob for matching other stylesheets to be used while looking for critical CSS.
-- `reduceInlineStyles` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option indicates if inline styles shouldbe evaluated for critical CSS. By default inline style tags will be evaluated and rewritten to only contain critical CSS. Set it to `false` to skip processing inline styles. _(default: `true`)_
+- `reduceInlineStyles` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Option indicates if inline styles should be evaluated for critical CSS. By default inline style tags will be evaluated and rewritten to only contain critical CSS. Set it to `false` to skip processing inline styles. _(default: `true`)_
 - `preload` **[String](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/String)** Which [preload strategy](#preloadstrategy) to use
 - `noscriptFallback` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Add `<noscript>` fallback to JS-based strategies
 - `inlineFonts` **[Boolean](https://developer.mozilla.org/docs/Web/JavaScript/Reference/Global_Objects/Boolean)** Inline critical font-face rules _(default: `false`)_
@@ -178,7 +178,7 @@ Including/Excluding multiple rules by adding start and end markers
 
 By default Critters evaluates the CSS against the entire input HTML. Critters evaluates the Critical CSS by reconstructing the entire DOM and evaluating the CSS selectors to find matching nodes. Usually this works well as Critters is lightweight and fast.
 
-For some cases the input HTML can be very large or deeply nested which makes the reconstructed DOM much larger which in turn can slow down the critical CSS generation. Critters is not aware of viewport size and what specific nodes are above the fold since there is not headless browser involved.
+For some cases, the input HTML can be very large or deeply nested which makes the reconstructed DOM much larger, which in turn can slow down the critical CSS generation. Critters is not aware of viewport size and what specific nodes are above the fold since there is not a headless browser involved.
 
 To overcome this issue Critters makes use of **Critters containers**.
 
