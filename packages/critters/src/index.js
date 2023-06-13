@@ -547,7 +547,15 @@ export default class Critters {
             }
             sel = sel
               .replace(/(?<!\\)::?[a-z-]+(?![a-z-(])/gi, '')
-              .replace(/::?not\(\s*\)/g, '')
+              .replace(/(::?not)\(([^)]*)\)/g, (_, p1, p2) => {
+                const params = (p2 || '')
+                  .split(',')
+                  .map((item) => item.trim())
+                  .filter(Boolean)
+                  .join(',');
+
+                return Boolean(params) ? `${p1}(${params})` : '';
+              })
               .trim();
             if (!sel) return false;
 
