@@ -548,6 +548,9 @@ export default class Critters {
             sel = sel
               .replace(/(?<!\\)::?[a-z-]+(?![a-z-(])/gi, '')
               .replace(/::?not\(\s*\)/g, '')
+               // Remove tailing or leading commas from cleaned sub selector `is(.active, :hover)` -> `is(.active)`.
+              .replace(/\(\s*,/g, '(')
+              .replace(/,\s*\)/g, ')')
               .trim();
             if (!sel) return false;
 
