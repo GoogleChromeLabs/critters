@@ -1,6 +1,6 @@
 {
   "name": "critters",
-  "version": "0.0.17",
+  "version": "0.0.18",
   "description": "Inline critical CSS and lazy-load the rest.",
   "main": "dist/critters.js",
   "module": "dist/critters.mjs",
@@ -46,13 +46,13 @@
     "prepare": "npm run -s build"
   },
   "dependencies": {
-    "chalk": "^5.2.0",
+    "chalk": "^4.1.0",
     "css-select": "^5.1.0",
     "dom-serializer": "^2.0.0",
     "domhandler": "^5.0.2",
     "htmlparser2": "^8.0.2",
     "postcss": "^8.4.23",
-    "pretty-bytes": "^6.1.0"
+    "pretty-bytes": "^5.3.0"
   },
   "devDependencies": {
     "documentation": "^13.0.2",
