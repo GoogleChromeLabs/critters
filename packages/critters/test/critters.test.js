@@ -68,4 +68,31 @@ describe('Critters', () => {
     const result = await critters.process(html);
     expect(result).toMatchSnapshot();
   });
+
+  test('Does not encode HTML', async () => {
+    const critters = new Critters({
+      reduceInlineStyles: false,
+      path: '/'
+    });
+    const assets = {
+      '/style.css': trim`
+        h1 { color: blue; }
+      `
+    };
+    critters.readFile = (filename) => assets[filename];
+    const result = await critters.process(trim`
+      <html>
+        <head>
+          <title>$title</title>
+          <link rel="stylesheet" href="/style.css">
+        </head>
+        <body>
+          <h1>Hello World!</h1>
+        </body>
+      </html>
+    `);
+    expect(result).toMatch('<style>h1{color:blue}</style>');
+    expect(result).toMatch('<link rel="stylesheet" href="/style.css">');
+    expect(result).toMatch('<title>$title</title>');
+  });
 });

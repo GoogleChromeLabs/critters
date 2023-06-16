@@ -79,7 +79,7 @@ export function createDocument(html) {
  * @param {HTMLDocument} document   A Document, such as one created via `createDocument()`
  */
 export function serializeDocument(document) {
-  return render(document);
+  return render(document, { decodeEntities: false });
 }
 
 /** @typedef {treeAdapter.Document & typeof ElementExtensions} HTMLDocument */
