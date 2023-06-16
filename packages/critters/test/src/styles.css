@@ -69,3 +69,11 @@ footer {
   color: #0060df;
   border-color: #0a84ff !important;
 }
+
+div:is(:hover, .active) {
+  color: #000;
+}
+
+div:is(.selected, :hover) {
+  color: #fff;
+}
