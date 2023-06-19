@@ -64,7 +64,6 @@ footer {
 }
 /* critters:include end */
 
-
 .custom-element::part(active) {
   color: #0060df;
   border-color: #0a84ff !important;
@@ -75,5 +74,13 @@ div:is(:hover, .active) {
 }
 
 div:is(.selected, :hover) {
+  color: #fff;
+}
+
+div:is(:focus-within, :hover, .input-field) {
+  color: #fff;
+}
+
+div:not(:focus, .contents, :hover, .input-field) {
   color: #fff;
 }
