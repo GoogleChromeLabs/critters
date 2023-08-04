@@ -95,4 +95,19 @@ describe('Critters', () => {
     expect(result).toMatch('<link rel="stylesheet" href="/style.css">');
     expect(result).toMatch('<title>$title</title>');
   });
+
+  test('Does not decode entities in HTML document', async () => {
+    const critters = new Critters({
+      path: '/'
+    });
+    critters.readFile = (filename) => assets[filename];
+    const result = await critters.process(trim`
+      <html>
+        <body>
+          &lt;h1&gt;Hello World!&lt;/h1&gt;
+        </body>
+      </html>
+    `);
+    expect(result).toMatch('&lt;h1&gt;Hello World!&lt;/h1&gt;');
+  });
 });
