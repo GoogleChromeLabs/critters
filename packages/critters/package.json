@@ -1,6 +1,6 @@
 {
   "name": "critters",
-  "version": "0.0.19",
+  "version": "0.0.20",
   "description": "Inline critical CSS and lazy-load the rest.",
   "main": "dist/critters.js",
   "module": "dist/critters.mjs",
