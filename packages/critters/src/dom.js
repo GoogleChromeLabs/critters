@@ -53,7 +53,7 @@ function buildCache(container) {
  * @param {String} html   HTML to parse into a Document instance
  */
 export function createDocument(html) {
-  const document = /** @type {HTMLDocument} */ (parseDocument(html));
+  const document = /** @type {HTMLDocument} */ (parseDocument(html, {decodeEntities: false}));
 
   defineProperties(document, DocumentExtensions);
 
