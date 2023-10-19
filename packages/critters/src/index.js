@@ -14,17 +14,17 @@
  * the License.
  */
 
-import path from 'path';
 import { readFile } from 'fs';
 import { createDocument, serializeDocument } from './dom';
+import path from 'path';
 import {
+  applyMarkedSelectors,
+  markOnly,
   parseStylesheet,
   serializeStylesheet,
+  validateMediaQuery,
   walkStyleRules,
   walkStyleRulesWithReverseMirror,
-  markOnly,
-  applyMarkedSelectors,
-  validateMediaQuery
 } from './css';
 import { createLogger, isSubpath } from './util';
 
@@ -495,10 +495,12 @@ export default class Critters {
       ast,
       markOnly((rule) => {
         if (rule.type === 'comment') {
-          const comment = rule.text.trim();
+          // we might want to remove a leading ! on comment blocks
+          // critters can be part of "legal comments" which aren't striped on build
+          const crittersComment = rule.text.match(/^(?<!\! )critters:(.*)/);
+          const command = crittersComment && crittersComment[1];
 
-          if (comment.startsWith('critters')) {
-            const command = comment.replace(/^critters:/, '');
+          if (command) {
             switch (command) {
               case 'include':
                 includeNext = true;
