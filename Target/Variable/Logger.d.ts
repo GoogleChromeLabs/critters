@@ -1,10 +1,10 @@
 declare const _default: {
-    trace(msg: any): void;
-    debug(msg: any): void;
-    warn(msg: any): void;
-    error(msg: any): void;
-    info(msg: any): void;
-    silent(): void;
+    Trace: (Message: any) => void;
+    Debug: (Message: any) => void;
+    Warn: (Message: any) => void;
+    Error: (Message: any) => void;
+    Info: (Message: any) => void;
+    Silent: () => {};
 };
 /**
  * @module Utility

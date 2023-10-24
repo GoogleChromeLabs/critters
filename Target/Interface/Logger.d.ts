@@ -3,9 +3,11 @@
  *
  */
 export default interface Type {
-    trace?: (message: string) => void;
-    debug?: (message: string) => void;
-    info?: (message: string) => void;
-    warn?: (message: string) => void;
-    error?: (message: string) => void;
+    Trace?: Message;
+    Debug?: Message;
+    Info?: Message;
+    Warn?: Message;
+    Error?: Message;
+    Silent?: Message;
 }
+import type Message from "./Message.js";

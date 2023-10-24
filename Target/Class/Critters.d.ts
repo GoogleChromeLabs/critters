@@ -33,13 +33,13 @@
  * not produce output for any log level beneath the specified level. Available levels and order
  * are:
  *
- * - **"info"** _(default)_
- * - **"warn"**
- * - **"error"**
- * - **"trace"**
- * - **"debug"**
- * - **"silent"**
- * @typedef {('info'|'warn'|'error'|'trace'|'debug'|'silent')} LogLevel
+ * - **"Info"** _(default)_
+ * - **"Warn"**
+ * - **"Error"**
+ * - **"Trace"**
+ * - **"Debug"**
+ * - **"Silent"**
+ * @typedef {('Info'|'Warn'|'Error'|'Trace'|'Debug'|'Silent')} LogLevel
  * @public
  */
 /**
