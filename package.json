@@ -19,30 +19,28 @@
 		"url": "git+https://github.com/NikolaRHristov/Critters.git"
 	},
 	"license": "Apache-2.0",
+	"author": {
+		"name": "Nikola Hristov",
+		"email": "nikola@nikolahristov.tech",
+		"url": "https://nikolahristov.tech"
+	},
+	"type": "module",
+	"main": "./Target/Function/Component.js",
+	"types": "./Target/Function/Component.d.ts",
 	"scripts": {
 		"build": "yarn workspaces run build",
 		"build:main": "yarn workspace critters run build",
 		"build:webpack": "yarn workspace critters-webpack-plugin run build",
 		"docs": "yarn workspaces run docs",
-		"release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
-		"test": "jest --coverage"
+		"release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
 	},
 	"devDependencies": {
-		"@babel/preset-env": "^7.11.0",
-		"@types/jest": "^26.0.23",
-		"babel-core": "^6.26.0",
-		"babel-jest": "^26.3.0",
-		"eslint": "^7.6.0",
-		"eslint-config-prettier": "^6.11.0",
-		"eslint-config-standard": "^14.1.1",
-		"eslint-plugin-import": "^2.11.0",
-		"eslint-plugin-jest": "^23.20.0",
-		"eslint-plugin-node": "^11.1.0",
-		"eslint-plugin-promise": "^4.2.1",
-		"eslint-plugin-standard": "^4.0.1",
-		"jest": "^26.3.0",
-		"jsdom": "^16.6.0",
-		"microbundle": "^0.12.3",
-		"prettier": "^2.3.0"
+		"@babel/preset-env": "7.11.0",
+		"babel-core": "6.26.0",
+		"jsdom": "16.6.0",
+		"microbundle": "0.12.3"
+	},
+	"publishConfig": {
+		"access": "public"
 	}
 }

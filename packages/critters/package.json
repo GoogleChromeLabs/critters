@@ -1,37 +1,34 @@
 {
-  "name": "critters",
-  "version": "0.0.20",
-  "description": "Inline critical CSS and lazy-load the rest.",
-  "main": "dist/critters.js",
-  "module": "dist/critters.mjs",
-  "source": "src/index.js",
-  
-  "types": "./src/index.d.ts",
-  "typings": "src/index.d.ts",
-
-  "license": "Apache-2.0",
- 
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/GoogleChromeLabs/critters",
-    "directory": "packages/critters"
-  },
-  "scripts": {
-    "build": "microbundle --target node --no-sourcemap -f cjs,esm",
-    "docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
-    "prepare": "npm run -s build"
-  },
-  "dependencies": {
-    "chalk": "^4.1.0",
-    "css-select": "^5.1.0",
-    "dom-serializer": "^2.0.0",
-    "domhandler": "^5.0.2",
-    "htmlparser2": "^8.0.2",
-    "postcss": "^8.4.23",
-    "pretty-bytes": "^5.3.0"
-  },
-  "devDependencies": {
-    "documentation": "^13.0.2",
-    "microbundle": "^0.12.3"
-  }
+	"name": "critters",
+	"version": "0.0.20",
+	"description": "Inline critical CSS and lazy-load the rest.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/GoogleChromeLabs/critters",
+		"directory": "packages/critters"
+	},
+	"license": "Apache-2.0",
+	"main": "dist/critters.js",
+	"module": "dist/critters.mjs",
+	"source": "src/index.js",
+	"types": "./src/index.d.ts",
+	"typings": "src/index.d.ts",
+	"scripts": {
+		"build": "microbundle --target node --no-sourcemap -f cjs,esm",
+		"docs": "documentation readme -q --no-markdown-toc -a public -s Usage --sort-order alpha src",
+		"prepare": "npm run -s build"
+	},
+	"dependencies": {
+		"chalk": "4.1.0",
+		"css-select": "5.1.0",
+		"dom-serializer": "2.0.0",
+		"domhandler": "5.0.2",
+		"htmlparser2": "8.0.2",
+		"postcss": "8.4.23",
+		"pretty-bytes": "5.3.0"
+	},
+	"devDependencies": {
+		"documentation": "13.0.2",
+		"microbundle": "0.12.3"
+	}
 }
