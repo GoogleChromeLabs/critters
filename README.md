@@ -25,7 +25,6 @@ Applications.
 ## Features
 
 -   Fast - no browser, few dependencies
--   Integrates with Webpack [critters-webpack-plugin]
 -   Supports preloading and/or inlining critical fonts
 -   Prunes unused CSS keyframes and media queries
 -   Removes inlined CSS rules from lazy-loaded stylesheets
@@ -325,9 +324,6 @@ slightly different approach. Here are a few great options:
 
 -   [Critical](https://github.com/addyosmani/critical)
 -   [Penthouse](https://github.com/pocketjoso/penthouse)
--   [webpack-critical](https://github.com/lukeed/webpack-critical)
--   [webpack-plugin-critical](https://github.com/nrwl/webpack-plugin-critical)
--   [html-critical-webpack-plugin](https://github.com/anthonygore/html-critical-webpack-plugin)
 -   [react-snap](https://github.com/stereobooster/react-snap)
 
 ## License
@@ -336,8 +332,5 @@ slightly different approach. Here are a few great options:
 
 This is not an official Google product.
 
-[critters-webpack-plugin]:
-	https://github.com/GoogleChromeLabs/critters/tree/main/packages/critters-webpack-plugin
 [critical css]:
 	https://www.smashingmagazine.com/2015/08/understanding-critical-css/
-[html-webpack-plugin]: https://github.com/jantimon/html-webpack-plugin
