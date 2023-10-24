@@ -14,37 +14,37 @@
  * the License.
  */
 
-import { selectAll, selectOne } from 'css-select';
-import { parseDocument, DomUtils } from 'htmlparser2';
-import { parse as selectorParser } from 'css-what';
-import { Element, Text } from 'domhandler';
-import render from 'dom-serializer';
+import { selectAll, selectOne } from "css-select";
+import { parseDocument, DomUtils } from "htmlparser2";
+import { parse as selectorParser } from "css-what";
+import { Element, Text } from "domhandler";
+import render from "dom-serializer";
 
 let classCache = null;
 let idCache = null;
 
 function buildCache(container) {
-  classCache = new Set();
-  idCache = new Set();
-  const queue = [container];
+	classCache = new Set();
+	idCache = new Set();
+	const queue = [container];
 
-  while (queue.length) {
-    const node = queue.shift();
+	while (queue.length) {
+		const node = queue.shift();
 
-    if (node.hasAttribute('class')) {
-      const classList = node.getAttribute('class').trim().split(' ');
-      classList.forEach((cls) => {
-        classCache.add(cls);
-      });
-    }
+		if (node.hasAttribute("class")) {
+			const classList = node.getAttribute("class").trim().split(" ");
+			classList.forEach((cls) => {
+				classCache.add(cls);
+			});
+		}
 
-    if (node.hasAttribute('id')) {
-      const id = node.getAttribute('id').trim();
-      idCache.add(id);
-    }
+		if (node.hasAttribute("id")) {
+			const id = node.getAttribute("id").trim();
+			idCache.add(id);
+		}
 
-    queue.push(...node.children.filter((child) => child.type === 'tag'));
-  }
+		queue.push(...node.children.filter((child) => child.type === "tag"));
+	}
 }
 
 /**
@@ -53,25 +53,27 @@ function buildCache(container) {
  * @param {String} html   HTML to parse into a Document instance
  */
 export function createDocument(html) {
-  const document = /** @type {HTMLDocument} */ (parseDocument(html, {decodeEntities: false}));
+	const document = /** @type {HTMLDocument} */ (
+		parseDocument(html, { decodeEntities: false })
+	);
 
-  defineProperties(document, DocumentExtensions);
+	defineProperties(document, DocumentExtensions);
 
-  // Extend Element.prototype with DOM manipulation methods.
-  defineProperties(Element.prototype, ElementExtensions);
+	// Extend Element.prototype with DOM manipulation methods.
+	defineProperties(Element.prototype, ElementExtensions);
 
-  // Critters container is the viewport to evaluate critical CSS
-  let crittersContainer = document.querySelector('[data-critters-container]');
+	// Critters container is the viewport to evaluate critical CSS
+	let crittersContainer = document.querySelector("[data-critters-container]");
 
-  if (!crittersContainer) {
-    document.documentElement.setAttribute('data-critters-container', '');
-    crittersContainer = document.documentElement;
-  }
+	if (!crittersContainer) {
+		document.documentElement.setAttribute("data-critters-container", "");
+		crittersContainer = document.documentElement;
+	}
 
-  document.crittersContainer = crittersContainer;
-  buildCache(crittersContainer);
+	document.crittersContainer = crittersContainer;
+	buildCache(crittersContainer);
 
-  return document;
+	return document;
 }
 
 /**
@@ -79,7 +81,7 @@ export function createDocument(html) {
  * @param {HTMLDocument} document   A Document, such as one created via `createDocument()`
  */
 export function serializeDocument(document) {
-  return render(document, { decodeEntities: false });
+	return render(document, { decodeEntities: false });
 }
 
 /** @typedef {treeAdapter.Document & typeof ElementExtensions} HTMLDocument */
@@ -89,84 +91,84 @@ export function serializeDocument(document) {
  * @private
  */
 const ElementExtensions = {
-  /** @extends treeAdapter.Element.prototype */
+	/** @extends treeAdapter.Element.prototype */
 
-  nodeName: {
-    get() {
-      return this.tagName.toUpperCase();
-    }
-  },
+	nodeName: {
+		get() {
+			return this.tagName.toUpperCase();
+		},
+	},
 
-  id: reflectedProperty('id'),
+	id: reflectedProperty("id"),
 
-  className: reflectedProperty('class'),
+	className: reflectedProperty("class"),
 
-  insertBefore(child, referenceNode) {
-    if (!referenceNode) return this.appendChild(child);
-    DomUtils.prepend(referenceNode, child);
-    return child;
-  },
+	insertBefore(child, referenceNode) {
+		if (!referenceNode) return this.appendChild(child);
+		DomUtils.prepend(referenceNode, child);
+		return child;
+	},
 
-  appendChild(child) {
-    DomUtils.appendChild(this, child);
-    return child;
-  },
+	appendChild(child) {
+		DomUtils.appendChild(this, child);
+		return child;
+	},
 
-  removeChild(child) {
-    DomUtils.removeElement(child);
-  },
+	removeChild(child) {
+		DomUtils.removeElement(child);
+	},
 
-  remove() {
-    DomUtils.removeElement(this);
-  },
+	remove() {
+		DomUtils.removeElement(this);
+	},
 
-  textContent: {
-    get() {
-      return DomUtils.getText(this);
-    },
+	textContent: {
+		get() {
+			return DomUtils.getText(this);
+		},
 
-    set(text) {
-      this.children = [];
-      DomUtils.appendChild(this, new Text(text));
-    }
-  },
+		set(text) {
+			this.children = [];
+			DomUtils.appendChild(this, new Text(text));
+		},
+	},
 
-  setAttribute(name, value) {
-    if (this.attribs == null) this.attribs = {};
-    if (value == null) value = '';
-    this.attribs[name] = value;
-  },
+	setAttribute(name, value) {
+		if (this.attribs == null) this.attribs = {};
+		if (value == null) value = "";
+		this.attribs[name] = value;
+	},
 
-  removeAttribute(name) {
-    if (this.attribs != null) {
-      delete this.attribs[name];
-    }
-  },
+	removeAttribute(name) {
+		if (this.attribs != null) {
+			delete this.attribs[name];
+		}
+	},
 
-  getAttribute(name) {
-    return this.attribs != null && this.attribs[name];
-  },
+	getAttribute(name) {
+		return this.attribs != null && this.attribs[name];
+	},
 
-  hasAttribute(name) {
-    return this.attribs != null && this.attribs[name] != null;
-  },
+	hasAttribute(name) {
+		return this.attribs != null && this.attribs[name] != null;
+	},
 
-  getAttributeNode(name) {
-    const value = this.getAttribute(name);
-    if (value != null) return { specified: true, value };
-  },
+	getAttributeNode(name) {
+		const value = this.getAttribute(name);
+		if (value != null) return { specified: true, value };
+	},
 
-  exists(sel) {
-    return cachedQuerySelector(sel, this);
-  },
+	exists(sel) {
+		return cachedQuerySelector(sel, this);
+	},
 
-  querySelector(sel) {
-    return selectOne(sel, this);
-  },
+	querySelector(sel) {
+		return selectOne(sel, this);
+	},
 
-  querySelectorAll(sel) {
-    return selectAll(sel, this);
-  }
+	querySelectorAll(sel) {
+		return selectAll(sel, this);
+	},
 };
 
 /**
@@ -174,72 +176,72 @@ const ElementExtensions = {
  * @private
  */
 const DocumentExtensions = {
-  /** @extends treeAdapter.Document.prototype */
+	/** @extends treeAdapter.Document.prototype */
 
-  // document is just an Element in htmlparser2, giving it a nodeType of ELEMENT_NODE.
-  // TODO: verify if these are needed for css-select
-  nodeType: {
-    get() {
-      return 9;
-    }
-  },
+	// document is just an Element in htmlparser2, giving it a nodeType of ELEMENT_NODE.
+	// TODO: verify if these are needed for css-select
+	nodeType: {
+		get() {
+			return 9;
+		},
+	},
 
-  contentType: {
-    get() {
-      return 'text/html';
-    }
-  },
+	contentType: {
+		get() {
+			return "text/html";
+		},
+	},
 
-  nodeName: {
-    get() {
-      return '#document';
-    }
-  },
+	nodeName: {
+		get() {
+			return "#document";
+		},
+	},
 
-  documentElement: {
-    get() {
-      // Find the first <html> element within the document
-      return this.children.find(
-        (child) => String(child.tagName).toLowerCase() === 'html'
-      );
-    }
-  },
+	documentElement: {
+		get() {
+			// Find the first <html> element within the document
+			return this.children.find(
+				(child) => String(child.tagName).toLowerCase() === "html"
+			);
+		},
+	},
 
-  head: {
-    get() {
-      return this.querySelector('head');
-    }
-  },
+	head: {
+		get() {
+			return this.querySelector("head");
+		},
+	},
 
-  body: {
-    get() {
-      return this.querySelector('body');
-    }
-  },
+	body: {
+		get() {
+			return this.querySelector("body");
+		},
+	},
 
-  createElement(name) {
-    return new Element(name);
-  },
+	createElement(name) {
+		return new Element(name);
+	},
 
-  createTextNode(text) {
-    // there is no dedicated createTextNode equivalent exposed in htmlparser2's DOM
-    return new Text(text);
-  },
+	createTextNode(text) {
+		// there is no dedicated createTextNode equivalent exposed in htmlparser2's DOM
+		return new Text(text);
+	},
 
-  exists(sel) {
-    return cachedQuerySelector(sel, this);
-  },
+	exists(sel) {
+		return cachedQuerySelector(sel, this);
+	},
 
-  querySelector(sel) {
-    return selectOne(sel, this);
-  },
+	querySelector(sel) {
+		return selectOne(sel, this);
+	},
 
-  querySelectorAll(sel) {
-    if (sel === ':root') {
-      return this;
-    }
-    return selectAll(sel, this);
-  }
+	querySelectorAll(sel) {
+		if (sel === ":root") {
+			return this;
+		}
+		return selectAll(sel, this);
+	},
 };
 
 /**
@@ -247,14 +249,14 @@ const DocumentExtensions = {
  * @private
  */
 function defineProperties(obj, properties) {
-  for (const i in properties) {
-    const value = properties[i];
-    Object.defineProperty(
-      obj,
-      i,
-      typeof value === 'function' ? { value } : value
-    );
-  }
+	for (const i in properties) {
+		const value = properties[i];
+		Object.defineProperty(
+			obj,
+			i,
+			typeof value === "function" ? { value } : value
+		);
+	}
 }
 
 /**
@@ -262,29 +264,29 @@ function defineProperties(obj, properties) {
  * @private
  */
 function reflectedProperty(attributeName) {
-  return {
-    get() {
-      return this.getAttribute(attributeName);
-    },
-    set(value) {
-      this.setAttribute(attributeName, value);
-    }
-  };
+	return {
+		get() {
+			return this.getAttribute(attributeName);
+		},
+		set(value) {
+			this.setAttribute(attributeName, value);
+		},
+	};
 }
 
 function cachedQuerySelector(sel, node) {
-  const selectorTokens = selectorParser(sel);
-  for (const tokens of selectorTokens) {
-    // Check if the selector is a class selector
-    if (tokens.length === 1) {
-      const token = tokens[0];
-      if (token.type === 'attribute' && token.name === 'class') {
-        return classCache.has(token.value);
-      }
-      if (token.type === 'attribute' && token.name === 'id') {
-        return idCache.has(token.value);
-      }
-    }
-  }
-  return !!selectOne(sel, node);
+	const selectorTokens = selectorParser(sel);
+	for (const tokens of selectorTokens) {
+		// Check if the selector is a class selector
+		if (tokens.length === 1) {
+			const token = tokens[0];
+			if (token.type === "attribute" && token.name === "class") {
+				return classCache.has(token.value);
+			}
+			if (token.type === "attribute" && token.name === "id") {
+				return idCache.has(token.value);
+			}
+		}
+	}
+	return !!selectOne(sel, node);
 }

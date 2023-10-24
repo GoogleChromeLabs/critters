@@ -14,7 +14,7 @@
  * the License.
  */
 
-import { parse, stringify } from 'postcss';
+import { parse, stringify } from "postcss";
 
 /**
  * Parse a textual CSS Stylesheet into a Stylesheet instance.
@@ -25,7 +25,7 @@ import { parse, stringify } from 'postcss';
  * @returns {css.Stylesheet} ast
  */
 export function parseStylesheet(stylesheet) {
-  return parse(stylesheet);
+	return parse(stylesheet);
 }
 
 /**
@@ -36,41 +36,41 @@ export function parseStylesheet(stylesheet) {
  * @param {Boolean} [options.compress]  Compress CSS output (removes comments, whitespace, etc)
  */
 export function serializeStylesheet(ast, options) {
-  let cssStr = '';
+	let cssStr = "";
 
-  stringify(ast, (result, node, type) => {
-    if (!options.compress) {
-      cssStr += result;
-      return;
-    }
+	stringify(ast, (result, node, type) => {
+		if (!options.compress) {
+			cssStr += result;
+			return;
+		}
 
-    // Simple minification logic
-    if (node?.type === 'comment') return;
+		// Simple minification logic
+		if (node?.type === "comment") return;
 
-    if (node?.type === 'decl') {
-      const prefix = node.prop + node.raws.between;
+		if (node?.type === "decl") {
+			const prefix = node.prop + node.raws.between;
 
-      cssStr += result.replace(prefix, prefix.trim());
-      return;
-    }
+			cssStr += result.replace(prefix, prefix.trim());
+			return;
+		}
 
-    if (type === 'start') {
-      if (node.type === 'rule' && node.selectors) {
-        cssStr += node.selectors.join(',') + '{';
-      } else {
-        cssStr += result.replace(/\s\{$/, '{');
-      }
-      return;
-    }
+		if (type === "start") {
+			if (node.type === "rule" && node.selectors) {
+				cssStr += node.selectors.join(",") + "{";
+			} else {
+				cssStr += result.replace(/\s\{$/, "{");
+			}
+			return;
+		}
 
-    if (type === 'end' && result === '}' && node?.raws?.semicolon) {
-      cssStr = cssStr.slice(0, -1);
-    }
+		if (type === "end" && result === "}" && node?.raws?.semicolon) {
+			cssStr = cssStr.slice(0, -1);
+		}
 
-    cssStr += result.trim();
-  });
+		cssStr += result.trim();
+	});
 
-  return cssStr;
+	return cssStr;
 }
 
 /**
@@ -81,17 +81,17 @@ export function serializeStylesheet(ast, options) {
  * @returns {(rule) => void} nonDestructiveIterator
  */
 export function markOnly(predicate) {
-  return (rule) => {
-    const sel = rule.selectors;
-    if (predicate(rule) === false) {
-      rule.$$remove = true;
-    }
-    rule.$$markedSelectors = rule.selectors;
-    if (rule._other) {
-      rule._other.$$markedSelectors = rule._other.selectors;
-    }
-    rule.selectors = sel;
-  };
+	return (rule) => {
+		const sel = rule.selectors;
+		if (predicate(rule) === false) {
+			rule.$$remove = true;
+		}
+		rule.$$markedSelectors = rule.selectors;
+		if (rule._other) {
+			rule._other.$$markedSelectors = rule._other.selectors;
+		}
+		rule.selectors = sel;
+	};
 }
 
 /**
@@ -100,12 +100,12 @@ export function markOnly(predicate) {
  * @param {css.Rule} rule The Rule to apply marked selectors to (if they exist).
  */
 export function applyMarkedSelectors(rule) {
-  if (rule.$$markedSelectors) {
-    rule.selectors = rule.$$markedSelectors;
-  }
-  if (rule._other) {
-    applyMarkedSelectors(rule._other);
-  }
+	if (rule.$$markedSelectors) {
+		rule.selectors = rule.$$markedSelectors;
+	}
+	if (rule._other) {
+		applyMarkedSelectors(rule._other);
+	}
 }
 
 /**
@@ -115,14 +115,14 @@ export function applyMarkedSelectors(rule) {
  * @param {Function} iterator   Invoked on each node in the tree. Return `false` to remove that node.
  */
 export function walkStyleRules(node, iterator) {
-  node.nodes = node.nodes.filter((rule) => {
-    if (hasNestedRules(rule)) {
-      walkStyleRules(rule, iterator);
-    }
-    rule._other = undefined;
-    rule.filterSelectors = filterSelectors;
-    return iterator(rule) !== false;
-  });
+	node.nodes = node.nodes.filter((rule) => {
+		if (hasNestedRules(rule)) {
+			walkStyleRules(rule, iterator);
+		}
+		rule._other = undefined;
+		rule.filterSelectors = filterSelectors;
+		return iterator(rule) !== false;
+	});
 }
 
 /**
@@ -133,61 +133,61 @@ export function walkStyleRules(node, iterator) {
  * @param {Function} iterator   Invoked on each node in the tree. Return `false` to remove that node from the first tree, true to remove it from the second.
  */
 export function walkStyleRulesWithReverseMirror(node, node2, iterator) {
-  if (node2 === null) return walkStyleRules(node, iterator);
+	if (node2 === null) return walkStyleRules(node, iterator);
 
-  [node.nodes, node2.nodes] = splitFilter(
-    node.nodes,
-    node2.nodes,
-    (rule, index, rules, rules2) => {
-      const rule2 = rules2[index];
-      if (hasNestedRules(rule)) {
-        walkStyleRulesWithReverseMirror(rule, rule2, iterator);
-      }
-      rule._other = rule2;
-      rule.filterSelectors = filterSelectors;
-      return iterator(rule) !== false;
-    }
-  );
+	[node.nodes, node2.nodes] = splitFilter(
+		node.nodes,
+		node2.nodes,
+		(rule, index, rules, rules2) => {
+			const rule2 = rules2[index];
+			if (hasNestedRules(rule)) {
+				walkStyleRulesWithReverseMirror(rule, rule2, iterator);
+			}
+			rule._other = rule2;
+			rule.filterSelectors = filterSelectors;
+			return iterator(rule) !== false;
+		}
+	);
 }
 
 // Checks if a node has nested rules, like @media
 // @keyframes are an exception since they are evaluated as a whole
 function hasNestedRules(rule) {
-  return (
-    rule.nodes &&
-    rule.nodes.length &&
-    rule.nodes.some((n) => n.type === 'rule' || n.type === 'atrule') &&
-    rule.name !== 'keyframes' &&
-    rule.name !== '-webkit-keyframes'
-  );
+	return (
+		rule.nodes &&
+		rule.nodes.length &&
+		rule.nodes.some((n) => n.type === "rule" || n.type === "atrule") &&
+		rule.name !== "keyframes" &&
+		rule.name !== "-webkit-keyframes"
+	);
 }
 
 // Like [].filter(), but applies the opposite filtering result to a second copy of the Array without a second pass.
 // This is just a quicker version of generating the compliment of the set returned from a filter operation.
 function splitFilter(a, b, predicate) {
-  const aOut = [];
-  const bOut = [];
-  for (let index = 0; index < a.length; index++) {
-    if (predicate(a[index], index, a, b)) {
-      aOut.push(a[index]);
-    } else {
-      bOut.push(a[index]);
-    }
-  }
-  return [aOut, bOut];
+	const aOut = [];
+	const bOut = [];
+	for (let index = 0; index < a.length; index++) {
+		if (predicate(a[index], index, a, b)) {
+			aOut.push(a[index]);
+		} else {
+			bOut.push(a[index]);
+		}
+	}
+	return [aOut, bOut];
 }
 
 // can be invoked on a style rule to subset its selectors (with reverse mirroring)
 function filterSelectors(predicate) {
-  if (this._other) {
-    const [a, b] = splitFilter(
-      this.selectors,
-      this._other.selectors,
-      predicate
-    );
-    this.selectors = a;
-    this._other.selectors = b;
-  } else {
-    this.selectors = this.selectors.filter(predicate);
-  }
+	if (this._other) {
+		const [a, b] = splitFilter(
+			this.selectors,
+			this._other.selectors,
+			predicate
+		);
+		this.selectors = a;
+		this._other.selectors = b;
+	} else {
+		this.selectors = this.selectors.filter(predicate);
+	}
 }

@@ -1,98 +1,75 @@
 {
-  "name": "critters-root",
-  "private": true,
-  "description": "Inline critical CSS and lazy-load the rest.",
-  "license": "Apache-2.0",
-  "author": "The Chromium Authors",
-  "contributors": [
-    {
-      "name": "Jason Miller",
-      "email": "developit@google.com"
-    },
-    {
-      "name": "Janicklas Ralph",
-      "email": "janicklas@google.com"
-    }
-  ],
-  "workspaces": {
-    "packages": [
-      "./packages/*"
-    ],
-    "nohoist": [
-      "**/css-loader",
-      "**/file-loader",
-      "**/mini-css-extract-plugin",
-      "**/webpack"
-    ]
-  },
-  "scripts": {
-    "build": "yarn workspaces run build",
-    "build:main": "yarn workspace critters run build",
-    "build:webpack": "yarn workspace critters-webpack-plugin run build",
-    "docs": "yarn workspaces run docs",
-    "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
-    "test": "jest --coverage"
-  },
-  "jest": {
-    "testEnvironment": "node",
-    "coverageReporters": [
-      "text"
-    ],
-    "moduleNameMapper": {
-      "^critters$": "<rootDir>/packages/critters/src/index.js",
-      "#(.*)": "<rootDir>/node_modules/$1"
-    },
-    "collectCoverageFrom": [
-      "packages/*/src/**/*.js"
-    ],
-    "modulePaths": [
-      "<rootDir>/packages/critters-webpack-plugin/node_modules",
-      "<rootDir>/packages/critters/node_modules"
-    ],
-    "watchPathIgnorePatterns": [
-      "node_modules",
-      "dist"
-    ],
-    "transformIgnorePatterns": [
-    ]
-  },
-  "prettier": {
-    "singleQuote": true,
-    "trailingComma": "none"
-  },
-  "eslintConfig": {
-    "extends": [
-      "standard",
-      "plugin:jest/recommended",
-      "prettier"
-    ],
-    "globals": {
-      "document": "readonly",
-      "DOMParser": "readonly"
-    },
-    "parserOptions": {
-      "ecmaFeatures": {
-        "jsx": true,
-        "modules": true
-      }
-    }
-  },
-  "devDependencies": {
-    "@babel/preset-env": "^7.11.0",
-    "@types/jest": "^26.0.23",
-    "babel-core": "^6.26.0",
-    "babel-jest": "^26.3.0",
-    "eslint": "^7.6.0",
-    "eslint-config-prettier": "^6.11.0",
-    "eslint-config-standard": "^14.1.1",
-    "eslint-plugin-import": "^2.11.0",
-    "eslint-plugin-jest": "^23.20.0",
-    "eslint-plugin-node": "^11.1.0",
-    "eslint-plugin-promise": "^4.2.1",
-    "eslint-plugin-standard": "^4.0.1",
-    "jest": "^26.3.0",
-    "jsdom": "^16.6.0",
-    "microbundle": "^0.12.3",
-    "prettier": "^2.3.0"
-  }
+	"name": "@nikolarhristov/critters",
+	"private": false,
+	"description": "Inline critical CSS and lazy-load the rest.",
+	"license": "Apache-2.0",
+	"author": "The Chromium Authors",
+	"contributors": [
+		{
+			"name": "Jason Miller",
+			"email": "developit@google.com"
+		},
+		{
+			"name": "Janicklas Ralph",
+			"email": "janicklas@google.com"
+		}
+	],
+	"workspaces": {
+		"packages": [
+			"./packages/*"
+		],
+		"nohoist": [
+			"**/css-loader",
+			"**/file-loader",
+			"**/mini-css-extract-plugin",
+			"**/webpack"
+		]
+	},
+	"scripts": {
+		"build": "yarn workspaces run build",
+		"build:main": "yarn workspace critters run build",
+		"build:webpack": "yarn workspace critters-webpack-plugin run build",
+		"docs": "yarn workspaces run docs",
+		"release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
+		"test": "jest --coverage"
+	},
+	"prettier": {
+		"singleQuote": true,
+		"trailingComma": "none"
+	},
+	"eslintConfig": {
+		"parserOptions": {
+			"ecmaFeatures": {
+				"jsx": true,
+				"modules": true
+			}
+		},
+		"extends": [
+			"standard",
+			"plugin:jest/recommended",
+			"prettier"
+		],
+		"globals": {
+			"DOMParser": "readonly",
+			"document": "readonly"
+		}
+	},
+	"devDependencies": {
+		"@babel/preset-env": "^7.11.0",
+		"@types/jest": "^26.0.23",
+		"babel-core": "^6.26.0",
+		"babel-jest": "^26.3.0",
+		"eslint": "^7.6.0",
+		"eslint-config-prettier": "^6.11.0",
+		"eslint-config-standard": "^14.1.1",
+		"eslint-plugin-import": "^2.11.0",
+		"eslint-plugin-jest": "^23.20.0",
+		"eslint-plugin-node": "^11.1.0",
+		"eslint-plugin-promise": "^4.2.1",
+		"eslint-plugin-standard": "^4.0.1",
+		"jest": "^26.3.0",
+		"jsdom": "^16.6.0",
+		"microbundle": "^0.12.3",
+		"prettier": "^2.3.0"
+	}
 }
