@@ -4,27 +4,7 @@
 	"description": "Inline critical CSS and lazy-load the rest.",
 	"license": "Apache-2.0",
 	"author": "The Chromium Authors",
-	"contributors": [
-		{
-			"name": "Jason Miller",
-			"email": "developit@google.com"
-		},
-		{
-			"name": "Janicklas Ralph",
-			"email": "janicklas@google.com"
-		}
-	],
-	"workspaces": {
-		"packages": [
-			"./packages/*"
-		],
-		"nohoist": [
-			"**/css-loader",
-			"**/file-loader",
-			"**/mini-css-extract-plugin",
-			"**/webpack"
-		]
-	},
+
 	"scripts": {
 		"build": "yarn workspaces run build",
 		"build:main": "yarn workspace critters run build",
