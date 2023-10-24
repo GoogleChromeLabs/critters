@@ -2,6 +2,10 @@
  * @module DOM
  *
  */
+/**
+ * Methods and descriptors to mix into Element.prototype
+ * @private
+ */
 declare const _default: {
     nodeName: {
         get(): any;
@@ -28,8 +32,4 @@ declare const _default: {
     querySelector(sel: any): any;
     querySelectorAll(sel: any): any;
 };
-/**
- * Methods and descriptors to mix into Element.prototype
- * @private
- */
 export default _default;

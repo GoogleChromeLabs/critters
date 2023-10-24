@@ -1,13 +1,7 @@
-declare const _default: {
-    Trace: (Message: any) => void;
-    Debug: (Message: any) => void;
-    Warn: (Message: any) => void;
-    Error: (Message: any) => void;
-    Info: (Message: any) => void;
-    Silent: () => {};
-};
 /**
  * @module Utility
  *
  */
+declare const _default: Type;
 export default _default;
+import type Type from "../Interface/Logger.js";

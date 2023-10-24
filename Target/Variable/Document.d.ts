@@ -2,6 +2,10 @@
  * @module DOM
  *
  */
+/**
+ * Methods and descriptors to mix into the global document instance
+ * @private
+ */
 declare const _default: {
     /** @extends treeAdapter.Document.prototype */
     nodeType: {
@@ -28,8 +32,4 @@ declare const _default: {
     querySelector(sel: any): any;
     querySelectorAll(sel: any): any;
 };
-/**
- * Methods and descriptors to mix into the global document instance
- * @private
- */
 export default _default;
