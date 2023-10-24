@@ -326,8 +326,6 @@ slightly different approach. Here are a few great options:
 -   [Penthouse](https://github.com/pocketjoso/penthouse)
 -   [react-snap](https://github.com/stereobooster/react-snap)
 
-This is not an official Google product.
-
 [critical css]:
 	https://www.smashingmagazine.com/2015/08/understanding-critical-css/
 
