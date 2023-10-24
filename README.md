@@ -278,14 +278,14 @@ Controls log level of the plugin. Specifies the level the logger should use. A
 logger will not produce output for any log level beneath the specified level.
 Available levels and order are:
 
--   **"info"** _(default)_
--   **"warn"**
--   **"error"**
--   **"trace"**
--   **"debug"**
--   **"silent"**
+-   **"Info"** _(default)_
+-   **"Warn"**
+-   **"Error"**
+-   **"Trace"**
+-   **"Debug"**
+-   **"Silent"**
 
-Type: (`"info"` | `"warn"` | `"error"` | `"trace"` | `"debug"` | `"silent"`)
+Type: (`"Info"` | `"Warn"` | `"Error"` | `"Trace"` | `"Debug"` | `"Silent"`)
 
 ### PreloadStrategy
 

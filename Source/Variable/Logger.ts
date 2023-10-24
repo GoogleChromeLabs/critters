@@ -3,25 +3,27 @@
  *
  */
 export default {
-	trace(msg) {
-		console.trace(msg);
+	Trace: (Message) => {
+		console.trace(Message);
 	},
 
-	debug(msg) {
-		console.debug(msg);
+	Debug: (Message) => {
+		console.debug(Message);
 	},
 
-	warn(msg) {
-		console.warn(chalk.yellow(msg));
+	Warn: (Message) => {
+		console.warn(chalk.yellow(Message));
 	},
 
-	error(msg) {
-		console.error(chalk.bold.red(msg));
+	Error: (Message) => {
+		console.error(chalk.bold.red(Message));
 	},
 
-	info(msg) {
-		console.info(chalk.bold.blue(msg));
+	Info: (Message) => {
+		console.info(chalk.bold.blue(Message));
 	},
 
-	silent() {},
-};
+	Silent: () => ({}),
+} satisfies Type as Type;
+
+import type Type from "../Interface/Logger.js";

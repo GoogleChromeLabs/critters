@@ -1,0 +1,1 @@
+var e={trace(o){console.trace(o)},debug(o){console.debug(o)},warn(o){console.warn(chalk.yellow(o))},error(o){console.error(chalk.bold.red(o))},info(o){console.info(chalk.bold.blue(o))},silent(){}};export{e as default};

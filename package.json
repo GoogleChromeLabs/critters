@@ -1,13 +1,13 @@
 {
 	"name": "@nikolarhristov/critters",
+	"version": "0.0.1",
 	"private": false,
-	"description": "Inline critical CSS and lazy-load the rest.",
+	"description": "🦔 Inline critical CSS and lazy-load the rest.",
 	"keywords": [
 		"critical css",
 		"inline css",
 		"critical",
 		"critters",
-		"webpack plugin",
 		"performance"
 	],
 	"homepage": "https://github.com/NikolaRHristov/Critters#readme",
@@ -25,12 +25,10 @@
 		"url": "https://nikolahristov.tech"
 	},
 	"type": "module",
-	"main": "./Target/Function/Component.js",
-	"types": "./Target/Function/Component.d.ts",
+	"main": "./Target/Class/Critters.js",
+	"types": "./Target/Class/Critters.d.ts",
 	"scripts": {
-		"build": "microbundle --target node --no-sourcemap -f cjs,esm",
-		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'",
-		"release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish"
+		"prepublishOnly": "TypeScriptESBuild 'Source/**/*.ts'"
 	},
 	"dependencies": {
 		"chalk": "4.1.0",
@@ -42,11 +40,8 @@
 		"pretty-bytes": "5.3.0"
 	},
 	"devDependencies": {
-		"@babel/preset-env": "7.11.0",
-		"babel-core": "6.26.0",
 		"jsdom": "16.6.0",
-		"microbundle": "0.12.3",
-		"typescript-esbuild": "workspace:0.2.25"
+		"typescript-esbuild": "0.2.25"
 	},
 	"publishConfig": {
 		"access": "public"
