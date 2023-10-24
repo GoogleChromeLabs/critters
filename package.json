@@ -2,9 +2,23 @@
 	"name": "@nikolarhristov/critters",
 	"private": false,
 	"description": "Inline critical CSS and lazy-load the rest.",
+	"keywords": [
+		"critical css",
+		"inline css",
+		"critical",
+		"critters",
+		"webpack plugin",
+		"performance"
+	],
+	"homepage": "https://github.com/NikolaRHristov/Critters#readme",
+	"bugs": {
+		"url": "https://github.com/NikolaRHristov/Critters/issues"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/NikolaRHristov/Critters.git"
+	},
 	"license": "Apache-2.0",
-	"author": "The Chromium Authors",
-
 	"scripts": {
 		"build": "yarn workspaces run build",
 		"build:main": "yarn workspace critters run build",
@@ -12,27 +26,6 @@
 		"docs": "yarn workspaces run docs",
 		"release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
 		"test": "jest --coverage"
-	},
-	"prettier": {
-		"singleQuote": true,
-		"trailingComma": "none"
-	},
-	"eslintConfig": {
-		"parserOptions": {
-			"ecmaFeatures": {
-				"jsx": true,
-				"modules": true
-			}
-		},
-		"extends": [
-			"standard",
-			"plugin:jest/recommended",
-			"prettier"
-		],
-		"globals": {
-			"DOMParser": "readonly",
-			"document": "readonly"
-		}
 	},
 	"devDependencies": {
 		"@babel/preset-env": "^7.11.0",

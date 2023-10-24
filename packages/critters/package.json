@@ -5,37 +5,12 @@
   "main": "dist/critters.js",
   "module": "dist/critters.mjs",
   "source": "src/index.js",
-  "exports": {
-    "import": "./dist/critters.mjs",
-    "require": "./dist/critters.js",
-    "default": "./dist/critters.mjs"
-  },
+  
   "types": "./src/index.d.ts",
   "typings": "src/index.d.ts",
-  "files": [
-    "src",
-    "dist"
-  ],
+
   "license": "Apache-2.0",
-  "author": "The Chromium Authors",
-  "contributors": [
-    {
-      "name": "Jason Miller",
-      "email": "developit@google.com"
-    },
-    {
-      "name": "Janicklas Ralph",
-      "email": "janicklas@google.com"
-    }
-  ],
-  "keywords": [
-    "critical css",
-    "inline css",
-    "critical",
-    "critters",
-    "webpack plugin",
-    "performance"
-  ],
+ 
   "repository": {
     "type": "git",
     "url": "https://github.com/GoogleChromeLabs/critters",
