@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://i.imgur.com/J0jv1Sz.png" width="240" height="240" alt="critters">
+  <img src="https://raw.githubusercontent.com/NikolaRHristov/critters/main/.github/Logo.png" width="240" height="240" alt="critters">
   <h1 align="center">Nikola Hristov's Critters</h1>
 </p>
 
