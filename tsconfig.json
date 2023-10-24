@@ -1,7 +1,12 @@
 {
 	"compilerOptions": {
 		"baseUrl": "./",
-		"outDir": "Target"
+		"outDir": "Target",
+		"lib": [
+			"DOM",
+			"DOM.Iterable",
+			"ESNext"
+		]
 	},
 	"extends": "typescript-esbuild/Target/Notation/TypeScript",
 	"include": ["Source"]

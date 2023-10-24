@@ -1,32 +1,7 @@
 /**
- * Copyright 2018 Google LLC
+ * @module Critters
  *
- * Licensed under the Apache License, Version 2.0 (the "License"); you may not
- * use this file except in compliance with the License. You may obtain a copy of
- * the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS, WITHOUT
- * WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the
- * License for the specific language governing permissions and limitations under
- * the License.
  */
-
-import path from "path";
-import { readFile } from "fs";
-import prettyBytes from "pretty-bytes";
-import { createDocument, serializeDocument } from "./dom";
-import {
-	parseStylesheet,
-	serializeStylesheet,
-	walkStyleRules,
-	walkStyleRulesWithReverseMirror,
-	markOnly,
-	applyMarkedSelectors,
-} from "./css";
-import { createLogger } from "./util";
 
 /**
  * The mechanism to use for lazy-loading stylesheets.
@@ -113,7 +88,6 @@ import { createLogger } from "./util";
  */
 
 export default class Critters {
-	/** @private */
 	constructor(options) {
 		this.options = Object.assign(
 			{
@@ -548,7 +522,10 @@ export default class Critters {
 							}
 							return exp === sel;
 						});
-						if (isAllowedRule) return true;
+
+						if (isAllowedRule) {
+							return true;
+						}
 
 						// Strip pseudo-elements and pseudo-classes, since we only care that their associated elements exist.
 						// This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
@@ -560,6 +537,7 @@ export default class Critters {
 						) {
 							return true;
 						}
+
 						sel = sel
 							.replace(/(?<!\\)::?[a-z-]+(?![a-z-(])/gi, "")
 							.replace(/::?not\(\s*\)/g, "")
@@ -567,7 +545,10 @@ export default class Critters {
 							.replace(/\(\s*,/g, "(")
 							.replace(/,\s*\)/g, ")")
 							.trim();
-						if (!sel) return false;
+
+						if (!sel) {
+							return false;
+						}
 
 						try {
 							return crittersContainer.exists(sel);
@@ -587,11 +568,8 @@ export default class Critters {
 							const decl = rule.nodes[i];
 
 							// detect used fonts
-							if (
-								decl.prop &&
-								decl.prop.match(/\bfont(-family)?\b/i)
-							) {
-								criticalFonts += " " + decl.value;
+							if (decl.prop?.match(/\bfont(-family)?\b/i)) {
+								criticalFonts += ` ${decl.value}`;
 							}
 
 							// detect used keyframes
@@ -611,7 +589,9 @@ export default class Critters {
 				}
 
 				// keep font rules, they're handled in the second pass:
-				if (rule.type === "atrule" && rule.name === "font-face") return;
+				if (rule.type === "atrule" && rule.name === "font-face") {
+					return;
+				}
 
 				// If there are no remaining rules, remove the whole rule:
 				const rules =
@@ -639,14 +619,20 @@ export default class Critters {
 		// Second pass, using data picked up from the first
 		walkStyleRulesWithReverseMirror(ast, astInverse, (rule) => {
 			// remove any rules marked in the first pass
-			if (rule.$$remove === true) return false;
+			if (rule.$$remove === true) {
+				return false;
+			}
 
 			applyMarkedSelectors(rule);
 
 			// prune @keyframes rules
 			if (rule.type === "atrule" && rule.name === "keyframes") {
-				if (keyframesMode === "none") return false;
-				if (keyframesMode === "all") return true;
+				if (keyframesMode === "none") {
+					return false;
+				}
+				if (keyframesMode === "all") {
+					return true;
+				}
 				return criticalKeyframeNames.indexOf(rule.params) !== -1;
 			}
 
@@ -681,8 +667,7 @@ export default class Critters {
 
 				// if we're missing info, if the font is unused, or if critical font inlining is disabled, remove the rule:
 				if (
-					!family ||
-					!src ||
+					!(family && src) ||
 					criticalFonts.indexOf(family) === -1 ||
 					!shouldInlineFonts
 				) {
@@ -732,16 +717,11 @@ export default class Critters {
 		// output stats
 		const percent = ((sheet.length / before.length) * 100) | 0;
 		this.logger.info(
-			"\u001b[32mInlined " +
-				prettyBytes(sheet.length) +
-				" (" +
-				percent +
-				"% of original " +
-				prettyBytes(before.length) +
-				") of " +
-				name +
-				afterText +
-				".\u001b[39m"
+			`\u001b[32mInlined ${prettyBytes(
+				sheet.length
+			)} (${percent}% of original ${prettyBytes(
+				before.length
+			)}) of ${name}${afterText}.\u001b[39m`
 		);
 	}
 }
