@@ -1,6 +1,6 @@
 /**
  * @module Utility
- * 
+ *
  */
 export default (logLevel) => {
 	const logLevelIdx = LOG_LEVELS.indexOf(logLevel);
