@@ -40,7 +40,7 @@
 		"pretty-bytes": "6.1.1"
 	},
 	"devDependencies": {
-		"jsdom": "23.0.0",
+		"jsdom": "23.0.1",
 		"typescript-esbuild": "0.3.1"
 	},
 	"publishConfig": {
