@@ -36,7 +36,7 @@
 		"dom-serializer": "2.0.0",
 		"domhandler": "5.0.3",
 		"htmlparser2": "9.0.0",
-		"postcss": "8.4.31",
+		"postcss": "8.4.32",
 		"pretty-bytes": "6.1.1"
 	},
 	"devDependencies": {
