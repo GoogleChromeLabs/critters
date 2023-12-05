@@ -1,0 +1,279 @@
+/**
+ * Large stylesheet
+ */
+
+.app-header {
+  position: relative;
+  z-index: 3
+}
+
+.app-header__body {
+  align-items: center;
+  display: flex;
+  padding: 6px 0;
+  position: relative
+}
+
+@media screen and (min-width: 576px) {
+  .app-header__body {
+    padding:12px 0
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .app-header__body {
+    padding:20px 0
+  }
+
+  .app-header__burger {
+    display: none
+  }
+}
+
+.app-header__logo {
+  left: 44px;
+  position: absolute;
+  top: 0;
+  z-index: 4
+}
+
+.app-header__logo.router-link-exact-active {
+  pointer-events: none
+}
+
+@media screen and (min-width: 992px) {
+  .app-header__logo {
+    left:0
+  }
+}
+
+.app-header__buttons {
+  align-items: center;
+  display: flex;
+  gap: 16px;
+  margin-left: auto
+}
+
+@media screen and (max-width: 575px) {
+  .app-header__buttons {
+    display:none
+  }
+}
+
+.app-header__buttons-sm {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  margin-left: auto
+}
+
+@media screen and (min-width: 576px) {
+  .app-header__buttons-sm {
+    display:none
+  }
+}
+
+.app-header__profile {
+  margin-left: 8px
+}
+
+@media screen and (min-width: 576px) {
+  .app-header__profile {
+    margin-left:24px
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .app-header__logo-image {
+    height:136px;
+    width: 130px
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .app-header__bottom {
+    display:none
+  }
+}
+
+@media screen and (min-width: 992px) {
+  .app-header__bottom {
+    align-items:center;
+    border-bottom: 1px solid #ddd;
+    border-top: 1px solid #ddd;
+    display: flex;
+    position: relative;
+    z-index: 3
+  }
+}
+
+@media screen and (min-width: 991px) and (max-width:1200px) {
+  .app-header__bottom {
+    font-size:15px
+  }
+}
+
+.app-header__contact {
+  margin-left: auto
+}
+
+.app-header__bottom-container {
+  align-items: center;
+  display: flex
+}
+
+.app-header__contact-button {
+  align-items: center;
+  border-radius: 8px;
+  color: royalblue;
+  display: inline-flex;
+  font-size: inherit;
+  font-weight: 600;
+  padding: 4px 10px;
+  transition: background-color .2s;
+  vertical-align: middle
+}
+
+.app-header__contact-button:hover {
+  background-color: royalblue;
+}
+
+.app-header__contact-icon {
+  margin-right: 6px;
+  vertical-align: text-top
+}
+
+.app-header__contact-phone {
+  color: #000;
+  vertical-align: middle
+}
+
+.footer-contacts__title {
+  color: #000;
+  font-size: 14px;
+  font-weight: 600;
+  margin-bottom: 8px
+}
+
+.footer-contacts__title:not(:first-of-type) {
+  margin-top: 16px
+}
+
+.footer-contacts__text {
+  color: #333;
+  font-size: 12px;
+  font-weight: 400;
+  margin-bottom: 0;
+  max-width: 261px
+}
+
+@media screen and (min-width: 576px) {
+  .footer-contacts__text {
+    max-width:100%
+  }
+}
+
+.footer-contacts__phone {
+  color: #000;
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 8px;
+  margin-top: 16px
+}
+
+.footer-contacts__schedule {
+  color: #555;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 400
+}
+
+.footer-contacts__button {
+  margin-top: 8px;
+  min-width: 132px
+}
+
+.app-footer {
+  background: #dedede;
+  margin-top: 204px;
+  padding: 64px 0 24px
+}
+
+@media screen and (min-width: 576px) {
+  .app-footer {
+    border-radius:104px 104px 0 0;
+    margin-top: 264px
+  }
+}
+
+@media screen and (max-width: 991px) {
+  .app-footer__body-description {
+    grid-area:Description
+  }
+}
+
+.app-footer__socials {
+  margin-top: 16px
+}
+
+@media screen and (max-width: 991px) {
+  .app-footer__advantages {
+    grid-area:AdvantageList;
+    max-width: 300px
+  }
+}
+
+.app-footer__advantages .advantages-list__item:nth-child(3) {
+  max-width: 240px
+}
+
+@media screen and (max-width: 991px) {
+  .app-footer__sitemap {
+    grid-area:Sitemap
+  }
+
+  .app-footer__links {
+    grid-area: Links
+  }
+}
+
+.app-footer__contacts {
+  min-width: 130px
+}
+
+@media screen and (max-width: 991px) {
+  .app-footer__contacts {
+    grid-area:Contacts
+  }
+}
+
+.app-footer__toggle-btn {
+  color: royalblue;
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 400
+}
+
+.app-footer__logo {
+  height: 72px;
+  width: 64px
+}
+
+@media screen and (min-width: 576px) {
+  .app-footer__logo {
+    height:92px;
+    width: 82px
+  }
+}
+
+.app-footer__title {
+  color: #000;
+  font-size: 14px;
+  font-weight: 400
+}
+
+@media screen and (min-width: 576px) {
+  .app-footer__title {
+    margin-top:24px
+  }
+}
