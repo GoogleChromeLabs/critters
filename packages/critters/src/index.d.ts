@@ -57,6 +57,7 @@ export interface Options {
   logLevel?: 'info' | 'warn' | 'error' | 'trace' | 'debug' | 'silent';
   reduceInlineStyles?: boolean;
   logger?: Logger;
+  allowRules?: (string | RegExp)[]
 }
 
 export interface Logger {
