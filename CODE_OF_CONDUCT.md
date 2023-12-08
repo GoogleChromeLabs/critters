@@ -1,19 +1,31 @@
-# Contributing Guidelines
-
-Welcome to our community! We are committed to creating a welcoming and inclusive
-environment for all contributors. Before you get started, please read and adhere
-to the following code of conduct. By participating in our community, you agree
-to abide by these guidelines.
+# Code of Conduct
 
 ## Our Pledge
 
-We, as members, contributors, and leaders, pledge to make participation in our
-community a harassment-free experience for everyone, regardless of age, body
-size, visible or invisible disability, ethnicity, sex characteristics, gender
-identity and expression, level of experience, education, socio-economic status,
-nationality, personal appearance, race, caste, color, religion, or sexual
-identity and orientation. We pledge to act and interact in ways that contribute
-to an open, welcoming, diverse, inclusive, and healthy community.
+Welcome to our community! We are committed to creating a welcoming and inclusive
+environment for all contributors. As members, contributors, and leaders, we
+pledge to make participation in our community a harassment-free experience for
+everyone, regardless of:
+
+-   Age
+-   Body size
+-   Visible or invisible disability
+-   Ethnicity
+-   Sex characteristics
+-   Gender identity and expression
+-   Level of experience
+-   Education
+-   Socio-economic status
+-   Nationality
+-   Personal appearance
+-   Race
+-   Caste
+-   Color
+-   Religion
+-   Sexual identity and orientation
+
+We promise to act and interact in ways that contribute to an open, welcoming,
+diverse, inclusive, and healthy community.
 
 ## Our Standards
 
@@ -25,7 +37,7 @@ community include:
 -   Giving and gracefully accepting constructive feedback
 -   Accepting responsibility and apologizing to those affected by our mistakes,
     and learning from the experience
--   Focusing on what is best not just for us as individuals, but for the overall
+-   Focusing on what is best not just for us as individuals but for the overall
     community
 
 Examples of unacceptable behavior include:
@@ -43,12 +55,12 @@ Examples of unacceptable behavior include:
 ## Enforcement Responsibilities
 
 Community leaders are responsible for clarifying and enforcing our standards of
-acceptable behavior and will take appropriate and fair corrective action in
-response to any behavior that they deem inappropriate, threatening, offensive,
-or harmful. Community leaders have the right and responsibility to remove, edit,
-or reject comments, commits, code, wiki edits, issues, and other contributions
-that are not aligned with this Code of Conduct, and will communicate reasons for
-moderation decisions when appropriate.
+acceptable behavior. They will take appropriate and fair corrective action in
+response to any behavior they deem inappropriate, threatening, offensive, or
+harmful. This may include removing, editing, or rejecting comments, commits,
+code, wiki edits, issues, and other contributions that do not align with this
+Code of Conduct. Community leaders will communicate reasons for moderation
+decisions when appropriate.
 
 ## Scope
 
