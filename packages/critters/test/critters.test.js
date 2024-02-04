@@ -110,4 +110,20 @@ describe('Critters', () => {
     `);
     expect(result).toMatch('&lt;h1&gt;Hello World!&lt;/h1&gt;');
   });
+
+  test('Prevent injection via media attr', async () => {
+    const critters = new Critters({
+      reduceInlineStyles: false,
+      path: path.join(__dirname, 'src'),
+      preload: 'media'
+    });
+
+    const html = fs.readFileSync(
+      path.join(__dirname, 'src/media-validation.html'),
+      'utf8'
+    );
+
+    const result = await critters.process(html);
+    expect(result).toMatchSnapshot();
+  });
 });
