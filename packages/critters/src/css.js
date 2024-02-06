@@ -193,8 +193,8 @@ function filterSelectors(predicate) {
   }
 }
 
-const MEDIA_TYPES = ['all', 'print', 'screen', 'speech'];
-const MEDIA_KEYWORDS = ['and', 'not', ','];
+const MEDIA_TYPES = new Set(['all', 'print', 'screen', 'speech']);
+const MEDIA_KEYWORDS = new Set(['and', 'not', ',']);
 const MEDIA_FEATURES = [
   'width',
   'aspect-ratio',
@@ -211,9 +211,9 @@ function validateMediaType(node) {
   const { type: nodeType, value: nodeValue } = node;
 
   if (nodeType === 'media-type') {
-    return MEDIA_TYPES.includes(nodeValue);
+    return MEDIA_TYPES.has(nodeValue);
   } else if (nodeType === 'keyword') {
-    return MEDIA_KEYWORDS.includes(nodeValue);
+    return MEDIA_KEYWORDS.has(nodeValue);
   } else if (nodeType === 'media-feature') {
     return MEDIA_FEATURES.some((feature) => {
       return (
@@ -235,20 +235,21 @@ function validateMediaType(node) {
  * is HTML safe and does not cause any injection issue
  */
 export function validateMediaQuery(query) {
-  console.log(query);
   const mediaTree = mediaParser(query);
-  const nodeTypes = ['media-type', 'keyword', 'media-feature'];
+  const nodeTypes = new Set(['media-type', 'keyword', 'media-feature']);
 
   const stack = [mediaTree];
 
   while (stack.length > 0) {
     const node = stack.pop();
 
-    if (nodeTypes.includes(node.type) && !validateMediaType(node)) {
+    if (nodeTypes.has(node.type) && !validateMediaType(node)) {
       return false;
     }
 
-    stack.push(...(node.nodes || []));
+    if (node.nodes) {
+      stack.push(...node.nodes);
+    }
   }
 
   return true;
