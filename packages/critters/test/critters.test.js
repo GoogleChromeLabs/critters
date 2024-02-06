@@ -126,4 +126,42 @@ describe('Critters', () => {
     const result = await critters.process(html);
     expect(result).toMatchSnapshot();
   });
+
+  test('Skip invalid path', async () => {
+    const consoleSpy = jest.spyOn(console, 'warn');
+
+    const critters = new Critters({
+      reduceInlineStyles: false,
+      path: path.join(__dirname, 'src')
+    });
+
+    const html = fs.readFileSync(
+      path.join(__dirname, 'src/subpath-validation.html'),
+      'utf8'
+    );
+
+    const result = await critters.process(html);
+    expect(consoleSpy).not.toHaveBeenCalledWith(
+      expect.stringContaining('Unable to locate stylesheet')
+    );
+    expect(result).toMatchSnapshot();
+  });
+
+  it('should not load stylesheets outside of the base path', async () => {
+    const critters = new Critters({ path: '/var/www' });
+    jest.spyOn(critters, 'readFile');
+    await critters.process(`
+        <html>
+            <head>
+                <link rel=stylesheet href=/file.css>
+                <link rel=stylesheet href=/../../../company-secrets/secret.css>
+            </head>
+            <body></body>
+        </html>
+    `);
+    expect(critters.readFile).toHaveBeenCalledWith('/var/www/file.css');
+    expect(critters.readFile).not.toHaveBeenCalledWith(
+      '/company-secrets/secret.css'
+    );
+  });
 });
