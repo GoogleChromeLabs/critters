@@ -53,8 +53,7 @@
       "node_modules",
       "dist"
     ],
-    "transformIgnorePatterns": [
-    ]
+    "transformIgnorePatterns": []
   },
   "prettier": {
     "singleQuote": true,
@@ -82,6 +81,7 @@
     "@types/jest": "^26.0.23",
     "babel-core": "^6.26.0",
     "babel-jest": "^26.3.0",
+    "cheerio": "^1.0.0-rc.12",
     "eslint": "^7.6.0",
     "eslint-config-prettier": "^6.11.0",
     "eslint-config-standard": "^14.1.1",

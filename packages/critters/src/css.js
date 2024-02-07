@@ -40,6 +40,12 @@ export function serializeStylesheet(ast, options) {
   let cssStr = '';
 
   stringify(ast, (result, node, type) => {
+    if (node?.type === 'decl') {
+      if (node.value.includes('</style>')) {
+        return;
+      }
+    }
+
     if (!options.compress) {
       cssStr += result;
       return;
