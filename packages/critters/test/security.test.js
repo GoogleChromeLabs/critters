@@ -52,4 +52,18 @@ describe('Critters', () => {
         `);
     expect(hasEvilScript(html)).toBeFalsy();
   });
+
+  it('should not create a new script tag by ending </script> from href', async () => {
+    const critters = new Critters({ preload: 'js' });
+    critters.readFile = () => `* { background: red }`;
+    const html = await critters.process(`
+        <html>
+            <head>
+                <link rel=stylesheet href="/abc/</script><script>alert(1)</script>/style.css">
+            </head>
+            <body>
+            </body>
+    `);
+    expect(hasEvilScript(html)).toBeFalsy();
+  });
 });
