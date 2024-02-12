@@ -66,4 +66,62 @@ describe('Critters', () => {
     `);
     expect(hasEvilScript(html)).toBeFalsy();
   });
+
+  it('should not create a new script tag by ending </noscript> from href', async () => {
+    const critters = new Critters({ preload: 'js' });
+    critters.readFile = () => `* { background: red }`;
+    const html = await critters.process(`
+        <html>
+            <head>
+                <link rel=stylesheet href="/abc/</noscript><script>alert(1)</script>/style.css">
+            </head>
+            <body>
+            </body>
+    `);
+
+    expect(hasEvilScript(html)).toBeFalsy();
+  });
+
+  it('should not create a new script tag by ending </script> from media', async () => {
+    const critters = new Critters({ preload: 'js-lazy' });
+    critters.readFile = () => `* { background: red }`;
+    const html = await critters.process(`
+        <html>
+            <head>
+                <link rel=stylesheet href="/style.css" media="</script><script>alert(1)</script>">
+            </head>
+            <body>
+            </body>
+    `);
+    expect(hasEvilScript(html)).toBeFalsy();
+  });
+
+  it('should not create a new script tag by ending </noscript> from media', async () => {
+    const critters = new Critters({ preload: 'js' });
+    critters.readFile = () => `* { background: red }`;
+    const html = await critters.process(`
+        <html>
+            <head>
+                <link rel=stylesheet href="/style.css" media="</noscript><script>alert(1)</script>">
+            </head>
+            <body>
+            </body>
+    `);
+
+    expect(hasEvilScript(html)).toBeFalsy();
+  });
+
+  it('should not create dangerous onload from media with preload == media', async () => {
+    const critters = new Critters({ preload: 'media' });
+    critters.readFile = () => `* { background: red }`;
+    const html = await critters.process(`
+        <html>
+            <head>
+                <link rel=stylesheet href=/script.css media="'-alert(1)-'">
+            </head>
+            <body x=a>
+            </body>
+    `);
+    expect(hasEvilOnload(html)).toBeFalsy();
+  });
 });

@@ -241,7 +241,6 @@ function validateMediaType(node) {
  * is HTML safe and does not cause any injection issue
  */
 export function validateMediaQuery(query) {
-  console.log(query);
   const mediaTree = mediaParser(query);
   const nodeTypes = ['media-type', 'keyword', 'media-feature'];
 
@@ -250,7 +249,10 @@ export function validateMediaQuery(query) {
   while (stack.length > 0) {
     const node = stack.pop();
 
-    if (nodeTypes.includes(node.type) && !validateMediaType(node)) {
+    if (
+      !node.type ||
+      (nodeTypes.includes(node.type) && !validateMediaType(node))
+    ) {
       return false;
     }
 
