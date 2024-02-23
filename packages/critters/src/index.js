@@ -27,7 +27,7 @@ import {
   applyMarkedSelectors,
   validateMediaQuery
 } from './css';
-import { createLogger } from './util';
+import { createLogger, isSubpath } from './util';
 
 /**
  * The mechanism to use for lazy-loading stylesheets.
@@ -253,6 +253,10 @@ export default class Critters {
     }
 
     const filename = path.resolve(outputPath, normalizedPath);
+    // Check if the resolved path is valid
+    if (!isSubpath(outputPath, filename)) {
+      return undefined;
+    }
 
     let sheet;
 

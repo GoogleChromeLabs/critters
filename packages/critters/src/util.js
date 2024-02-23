@@ -1,4 +1,5 @@
 import chalk from 'chalk';
+import path from 'path';
 
 const LOG_LEVELS = ['trace', 'debug', 'info', 'warn', 'error', 'silent'];
 
@@ -37,4 +38,8 @@ export function createLogger(logLevel) {
     }
     return logger;
   }, {});
+}
+
+export function isSubpath(basePath, currentPath) {
+  return !path.relative(basePath, currentPath).startsWith('..');
 }
