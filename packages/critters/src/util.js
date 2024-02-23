@@ -41,6 +41,5 @@ export function createLogger(logLevel) {
 }
 
 export function isSubpath(basePath, currentPath) {
-  const relative = path.relative(basePath, currentPath);
-  return relative && !relative.startsWith('..') && !path.isAbsolute(relative);
+  return !path.relative(basePath, currentPath).startsWith('..');
 }
