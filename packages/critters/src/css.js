@@ -15,6 +15,7 @@
  */
 
 import { parse, stringify } from 'postcss';
+import mediaParser from 'postcss-media-query-parser';
 
 /**
  * Parse a textual CSS Stylesheet into a Stylesheet instance.
@@ -190,4 +191,66 @@ function filterSelectors(predicate) {
   } else {
     this.selectors = this.selectors.filter(predicate);
   }
+}
+
+const MEDIA_TYPES = new Set(['all', 'print', 'screen', 'speech']);
+const MEDIA_KEYWORDS = new Set(['and', 'not', ',']);
+const MEDIA_FEATURES = [
+  'width',
+  'aspect-ratio',
+  'color',
+  'color-index',
+  'grid',
+  'height',
+  'monochrome',
+  'orientation',
+  'resolution',
+  'scan'
+];
+function validateMediaType(node) {
+  const { type: nodeType, value: nodeValue } = node;
+
+  if (nodeType === 'media-type') {
+    return MEDIA_TYPES.has(nodeValue);
+  } else if (nodeType === 'keyword') {
+    return MEDIA_KEYWORDS.has(nodeValue);
+  } else if (nodeType === 'media-feature') {
+    return MEDIA_FEATURES.some((feature) => {
+      return (
+        nodeValue === feature ||
+        nodeValue === `min-${feature}` ||
+        nodeValue === `max-${feature}`
+      );
+    });
+  }
+}
+
+/**
+ *
+ * @param {string} Media query to validate
+ * @returns {boolean}
+ *
+ * This function performs a basic media query validation
+ * to ensure the values passed as part of the 'media' config
+ * is HTML safe and does not cause any injection issue
+ */
+export function validateMediaQuery(query) {
+  const mediaTree = mediaParser(query);
+  const nodeTypes = new Set(['media-type', 'keyword', 'media-feature']);
+
+  const stack = [mediaTree];
+
+  while (stack.length > 0) {
+    const node = stack.pop();
+
+    if (nodeTypes.has(node.type) && !validateMediaType(node)) {
+      return false;
+    }
+
+    if (node.nodes) {
+      stack.push(...node.nodes);
+    }
+  }
+
+  return true;
 }

@@ -24,7 +24,8 @@ import {
   walkStyleRules,
   walkStyleRulesWithReverseMirror,
   markOnly,
-  applyMarkedSelectors
+  applyMarkedSelectors,
+  validateMediaQuery
 } from './css';
 import { createLogger } from './util';
 
@@ -311,7 +312,11 @@ export default class Critters {
    */
   async embedLinkedStylesheet(link, document) {
     const href = link.getAttribute('href');
-    const media = link.getAttribute('media');
+    let media = link.getAttribute('media');
+
+    if (media && !validateMediaQuery(media)) {
+      media = undefined;
+    }
 
     const preloadMode = this.options.preload;
 
@@ -361,9 +366,9 @@ export default class Critters {
       link.setAttribute('as', 'style');
       if (preloadMode === 'js' || preloadMode === 'js-lazy') {
         const script = document.createElement('script');
-        const js = `${cssLoaderPreamble}$loadcss(${JSON.stringify(href)}${
-          lazy ? ',' + JSON.stringify(media || 'all') : ''
-        })`;
+        script.setAttribute('data-href', href);
+        script.setAttribute('data-media', media || 'all');
+        const js = `${cssLoaderPreamble}$loadcss(document.currentScript.dataset.href,document.currentScript.dataset.media)`;
         // script.appendChild(document.createTextNode(js));
         script.textContent = js;
         link.parentNode.insertBefore(script, link.nextSibling);
@@ -548,7 +553,7 @@ export default class Critters {
             sel = sel
               .replace(/(?<!\\)::?[a-z-]+(?![a-z-(])/gi, '')
               .replace(/::?not\(\s*\)/g, '')
-               // Remove tailing or leading commas from cleaned sub selector `is(.active, :hover)` -> `is(.active)`.
+              // Remove tailing or leading commas from cleaned sub selector `is(.active, :hover)` -> `is(.active)`.
               .replace(/\(\s*,/g, '(')
               .replace(/,\s*\)/g, ')')
               .trim();

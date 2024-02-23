@@ -1,0 +1,17 @@
+@media screen and (min-width: 480px) {
+  body {
+      background-color: lightgreen;
+  }
+}
+
+#main {
+  border: 1px solid black;
+}
+
+ul li {
+padding: 5px;
+}
+
+@media print and alert('hellp') {
+  padding: 5px;
+}
