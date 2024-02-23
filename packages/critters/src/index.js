@@ -405,7 +405,12 @@ export default class Critters {
       }
     }
 
-    if (this.options.noscriptFallback !== false && noscriptFallback) {
+    if (
+      this.options.noscriptFallback !== false &&
+      noscriptFallback &&
+      // Don't parse the URL if it contains </noscript> as it might cause unexpected behavior
+      !href.includes('</noscript>')
+    ) {
       const noscript = document.createElement('noscript');
       const noscriptLink = document.createElement('link');
       noscriptLink.setAttribute('rel', 'stylesheet');
