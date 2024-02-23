@@ -40,10 +40,8 @@ export function serializeStylesheet(ast, options) {
   let cssStr = '';
 
   stringify(ast, (result, node, type) => {
-    if (node?.type === 'decl') {
-      if (node.value.includes('</style>')) {
-        return;
-      }
+    if (node?.type === 'decl' && node.value.includes('</style>')) {
+      return;
     }
 
     if (!options.compress) {
@@ -199,8 +197,8 @@ function filterSelectors(predicate) {
   }
 }
 
-const MEDIA_TYPES = ['all', 'print', 'screen', 'speech'];
-const MEDIA_KEYWORDS = ['and', 'not', ','];
+const MEDIA_TYPES = new Set(['all', 'print', 'screen', 'speech']);
+const MEDIA_KEYWORDS = new Set(['and', 'not', ',']);
 const MEDIA_FEATURES = [
   'width',
   'aspect-ratio',
@@ -217,9 +215,9 @@ function validateMediaType(node) {
   const { type: nodeType, value: nodeValue } = node;
 
   if (nodeType === 'media-type') {
-    return MEDIA_TYPES.includes(nodeValue);
+    return MEDIA_TYPES.has(nodeValue);
   } else if (nodeType === 'keyword') {
-    return MEDIA_KEYWORDS.includes(nodeValue);
+    return MEDIA_KEYWORDS.has(nodeValue);
   } else if (nodeType === 'media-feature') {
     return MEDIA_FEATURES.some((feature) => {
       return (
@@ -242,21 +240,20 @@ function validateMediaType(node) {
  */
 export function validateMediaQuery(query) {
   const mediaTree = mediaParser(query);
-  const nodeTypes = ['media-type', 'keyword', 'media-feature'];
+  const nodeTypes = new Set(['media-type', 'keyword', 'media-feature']);
 
   const stack = [mediaTree];
 
   while (stack.length > 0) {
     const node = stack.pop();
 
-    if (
-      !node.type ||
-      (nodeTypes.includes(node.type) && !validateMediaType(node))
-    ) {
+    if (nodeTypes.has(node.type) && !validateMediaType(node)) {
       return false;
     }
 
-    stack.push(...(node.nodes || []));
+    if (node.nodes) {
+      stack.push(...node.nodes);
+    }
   }
 
   return true;
