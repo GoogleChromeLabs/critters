@@ -16,7 +16,6 @@
 
 import path from 'path';
 import { readFile } from 'fs';
-import prettyBytes from 'pretty-bytes';
 import { createDocument, serializeDocument } from './dom';
 import {
   parseStylesheet,
@@ -241,7 +240,7 @@ export default class Critters {
     // path on disk (with output.publicPath removed)
     let normalizedPath = href.replace(/^\//, '');
     const pathPrefix = (publicPath || '').replace(/(^\/|\/$)/g, '') + '/';
-    if (normalizedPath.indexOf(pathPrefix) === 0) {
+    if (normalizedPath.startsWith(pathPrefix)) {
       normalizedPath = normalizedPath
         .substring(pathPrefix.length)
         .replace(/^\//, '');
@@ -325,7 +324,7 @@ export default class Critters {
     const preloadMode = this.options.preload;
 
     // skip filtered resources, or network resources if no filter is provided
-    if (this.urlFilter ? this.urlFilter(href) : !(href || '').match(/\.css$/)) {
+    if (this.urlFilter ? this.urlFilter(href) : !href?.endsWith('.css')) {
       return Promise.resolve();
     }
 
@@ -478,12 +477,17 @@ export default class Critters {
 
     const failedSelectors = [];
 
-    const criticalKeyframeNames = [];
+    const criticalKeyframeNames = new Set();
 
     let includeNext = false;
     let includeAll = false;
     let excludeNext = false;
     let excludeAll = false;
+
+    const shouldPreloadFonts =
+      options.fonts === true || options.preloadFonts === true;
+    const shouldInlineFonts =
+      options.fonts !== false && options.inlineFonts === true;
 
     // Walk all CSS rules, marking unused rules with `.$$remove=true` for removal in the second pass.
     // This first pass is also used to collect font and keyframe usage used in the second pass.
@@ -553,9 +557,9 @@ export default class Critters {
             // This means any selector for a pseudo-element or having a pseudo-class will be inlined if the rest of the selector matches.
             if (
               sel === ':root' ||
-              sel.match(/^::?(before|after)$/) ||
               sel === 'html' ||
-              sel === 'body'
+              sel === 'body' ||
+              /^::?(before|after)$/.test(sel)
             ) {
               return true;
             }
@@ -582,21 +586,22 @@ export default class Critters {
           }
 
           if (rule.nodes) {
-            for (let i = 0; i < rule.nodes.length; i++) {
-              const decl = rule.nodes[i];
-
+            for (const decl of rule.nodes) {
               // detect used fonts
-              if (decl.prop && decl.prop.match(/\bfont(-family)?\b/i)) {
+              if (
+                shouldInlineFonts &&
+                decl.prop &&
+                /\bfont(-family)?\b/i.test(decl.prop)
+              ) {
                 criticalFonts += ' ' + decl.value;
               }
 
               // detect used keyframes
               if (decl.prop === 'animation' || decl.prop === 'animation-name') {
-                // @todo: parse animation declarations and extract only the name. for now we'll do a lazy match.
-                const names = decl.value.split(/\s+/);
-                for (let j = 0; j < names.length; j++) {
-                  const name = names[j].trim();
-                  if (name) criticalKeyframeNames.push(name);
+                for (const name of decl.value.split(/\s+/)) {
+                  // @todo: parse animation declarations and extract only the name. for now we'll do a lazy match.
+                  const nameTrimmed = name.trim();
+                  if (nameTrimmed) criticalKeyframeNames.add(nameTrimmed);
                 }
               }
             }
@@ -607,7 +612,7 @@ export default class Critters {
         if (rule.type === 'atrule' && rule.name === 'font-face') return;
 
         // If there are no remaining rules, remove the whole rule:
-        const rules = rule.nodes && rule.nodes.filter((rule) => !rule.$$remove);
+        const rules = rule.nodes?.filter((rule) => !rule.$$remove);
         return !rules || rules.length !== 0;
       })
     );
@@ -622,12 +627,7 @@ export default class Critters {
       );
     }
 
-    const shouldPreloadFonts =
-      options.fonts === true || options.preloadFonts === true;
-    const shouldInlineFonts =
-      options.fonts !== false && options.inlineFonts === true;
-
-    const preloadedFonts = [];
+    const preloadedFonts = new Set();
     // Second pass, using data picked up from the first
     walkStyleRulesWithReverseMirror(ast, astInverse, (rule) => {
       // remove any rules marked in the first pass
@@ -639,14 +639,13 @@ export default class Critters {
       if (rule.type === 'atrule' && rule.name === 'keyframes') {
         if (keyframesMode === 'none') return false;
         if (keyframesMode === 'all') return true;
-        return criticalKeyframeNames.indexOf(rule.params) !== -1;
+        return criticalKeyframeNames.has(rule.params);
       }
 
       // prune @font-face rules
       if (rule.type === 'atrule' && rule.name === 'font-face') {
         let family, src;
-        for (let i = 0; i < rule.nodes.length; i++) {
-          const decl = rule.nodes[i];
+        for (const decl of rule.nodes) {
           if (decl.prop === 'src') {
             // @todo parse this properly and generate multiple preloads with type="font/woff2" etc
             src = (decl.value.match(/url\s*\(\s*(['"]?)(.+?)\1\s*\)/) || [])[2];
@@ -655,8 +654,8 @@ export default class Critters {
           }
         }
 
-        if (src && shouldPreloadFonts && preloadedFonts.indexOf(src) === -1) {
-          preloadedFonts.push(src);
+        if (src && shouldPreloadFonts && !preloadedFonts.has(src)) {
+          preloadedFonts.add(src);
           const preload = document.createElement('link');
           preload.setAttribute('rel', 'preload');
           preload.setAttribute('as', 'font');
@@ -667,10 +666,10 @@ export default class Critters {
 
         // if we're missing info, if the font is unused, or if critical font inlining is disabled, remove the rule:
         if (
+          !shouldInlineFonts ||
           !family ||
           !src ||
-          criticalFonts.indexOf(family) === -1 ||
-          !shouldInlineFonts
+          !criticalFonts.includes(family)
         ) {
           return false;
         }
@@ -702,7 +701,7 @@ export default class Critters {
         const percent = (sheetInverse.length / before.length) * 100;
         afterText = `, reducing non-inlined size ${
           percent | 0
-        }% to ${prettyBytes(sheetInverse.length)}`;
+        }% to ${formatSize(sheetInverse.length)}`;
       }
     }
 
@@ -715,15 +714,29 @@ export default class Critters {
     const percent = ((sheet.length / before.length) * 100) | 0;
     this.logger.info(
       '\u001b[32mInlined ' +
-        prettyBytes(sheet.length) +
+        formatSize(sheet.length) +
         ' (' +
         percent +
         '% of original ' +
-        prettyBytes(before.length) +
+        formatSize(before.length) +
         ') of ' +
         name +
         afterText +
         '.\u001b[39m'
     );
   }
+}
+
+function formatSize(size) {
+  if (size <= 0) {
+    return '0 bytes';
+  }
+
+  const abbreviations = ['bytes', 'kB', 'MB', 'GB'];
+  const index = Math.floor(Math.log(size) / Math.log(1024));
+  const roundedSize = size / Math.pow(1024, index);
+  // bytes don't have a fraction
+  const fractionDigits = index === 0 ? 0 : 2;
+
+  return `${roundedSize.toFixed(fractionDigits)} ${abbreviations[index]}`;
 }

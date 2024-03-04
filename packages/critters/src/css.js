@@ -159,11 +159,10 @@ export function walkStyleRulesWithReverseMirror(node, node2, iterator) {
 // @keyframes are an exception since they are evaluated as a whole
 function hasNestedRules(rule) {
   return (
-    rule.nodes &&
-    rule.nodes.length &&
-    rule.nodes.some((n) => n.type === 'rule' || n.type === 'atrule') &&
+    rule.nodes?.length &&
     rule.name !== 'keyframes' &&
-    rule.name !== '-webkit-keyframes'
+    rule.name !== '-webkit-keyframes' &&
+    rule.nodes.some((n) => n.type === 'rule' || n.type === 'atrule')
   );
 }
 
@@ -199,33 +198,29 @@ function filterSelectors(predicate) {
 
 const MEDIA_TYPES = new Set(['all', 'print', 'screen', 'speech']);
 const MEDIA_KEYWORDS = new Set(['and', 'not', ',']);
-const MEDIA_FEATURES = [
-  'width',
-  'aspect-ratio',
-  'color',
-  'color-index',
-  'grid',
-  'height',
-  'monochrome',
-  'orientation',
-  'resolution',
-  'scan'
-];
+const MEDIA_FEATURES = new Set(
+  [
+    'width',
+    'aspect-ratio',
+    'color',
+    'color-index',
+    'grid',
+    'height',
+    'monochrome',
+    'orientation',
+    'resolution',
+    'scan'
+  ].flatMap((feature) => [feature, `min-${feature}`, `max-${feature}`])
+);
+
 function validateMediaType(node) {
   const { type: nodeType, value: nodeValue } = node;
-
   if (nodeType === 'media-type') {
     return MEDIA_TYPES.has(nodeValue);
   } else if (nodeType === 'keyword') {
     return MEDIA_KEYWORDS.has(nodeValue);
   } else if (nodeType === 'media-feature') {
-    return MEDIA_FEATURES.some((feature) => {
-      return (
-        nodeValue === feature ||
-        nodeValue === `min-${feature}` ||
-        nodeValue === `max-${feature}`
-      );
-    });
+    return MEDIA_FEATURES.has(nodeValue);
   }
 }
 
