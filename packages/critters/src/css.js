@@ -234,7 +234,9 @@ function validateMediaType(node) {
  * is HTML safe and does not cause any injection issue
  */
 export function validateMediaQuery(query) {
-  const mediaTree = mediaParser(query);
+  // The below is needed for consumption with webpack.
+  const mediaParserFn = 'default' in mediaParser ? mediaParser.default : mediaParser;
+  const mediaTree = mediaParserFn(query);
   const nodeTypes = new Set(['media-type', 'keyword', 'media-feature']);
 
   const stack = [mediaTree];
