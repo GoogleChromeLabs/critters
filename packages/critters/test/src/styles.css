@@ -46,6 +46,12 @@ footer {
   border-bottom: transparent solid 2px;
 }
 
+/*! critters:include */
+.other-element::part(tab) {
+  color: #0c0dcc;
+  border-bottom: transparent solid 2px;
+}
+
 .custom-element::part(tab):hover {
   background-color: #0c0d19;
   color: #ffffff;
@@ -63,7 +69,6 @@ footer {
     0 0 0 4px rgba(10, 132, 255, 0.3);
 }
 /* critters:include end */
-
 
 .custom-element::part(active) {
   color: #0060df;
