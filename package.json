@@ -33,6 +33,11 @@
     "release": "npm run build -s && git commit -am $npm_package_version && git tag $npm_package_version && git push && git push --tags && npm publish",
     "test": "jest --coverage"
   },
+  "engines": {
+    "node": ">=18.13.0",
+    "yarn": ">=1.21.1 <2",
+    "npm": "Please use yarn instead of NPM to install dependencies"
+  },
   "jest": {
     "testEnvironment": "node",
     "coverageReporters": [
