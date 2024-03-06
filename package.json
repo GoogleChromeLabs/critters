@@ -34,6 +34,7 @@
     "test": "jest --coverage"
   },
   "engines": {
+    "node": ">=18.13.0",
     "yarn": ">=1.21.1 <2",
     "npm": "Please use yarn instead of NPM to install dependencies"
   },

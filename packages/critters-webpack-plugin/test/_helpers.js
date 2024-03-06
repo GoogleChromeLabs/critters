@@ -47,6 +47,11 @@ export function compile(entry, configDecorator) {
       resolveLoader: {
         modules: [path.resolve(__dirname, '../node_modules')]
       },
+      // Needed to resolve `Error: error:0308010C:digital envelope routines::unsupported` in webpack 4.
+      // Should remove when we drop support for webpack 4.
+      optimization: {
+        minimizer: []
+      },
       module: {
         rules: []
       },
