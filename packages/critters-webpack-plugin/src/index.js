@@ -169,7 +169,7 @@ export default class CrittersWebpackPlugin extends Critters {
 
     if (!sheet) {
       try {
-        sheet = await this.readFile(this.compilation, filename);
+        sheet = await this.readFile(filename);
         this.logger.warn(
           `Stylesheet "${relativePath}" not found in assets, but a file was located on disk.${
             this.options.pruneSource
