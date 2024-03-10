@@ -6,6 +6,7 @@
   "module": "dist/critters.mjs",
   "source": "src/index.js",
   "exports": {
+    "types": "./src/index.d.ts",
     "import": "./dist/critters.mjs",
     "require": "./dist/critters.js",
     "default": "./dist/critters.mjs"
