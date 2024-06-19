@@ -24,7 +24,7 @@ import {
   serializeStylesheet,
   validateMediaQuery,
   walkStyleRules,
-  walkStyleRulesWithReverseMirror,
+  walkStyleRulesWithReverseMirror
 } from './css';
 import { createLogger, isSubpath } from './util';
 
@@ -325,7 +325,7 @@ export default class Critters {
 
     // skip filtered resources, or network resources if no filter is provided
     if (this.urlFilter ? this.urlFilter(href) : !href?.endsWith('.css')) {
-      return Promise.resolve();
+      return undefined;
     }
 
     // the reduced critical CSS gets injected into a new <style> tag
@@ -361,12 +361,11 @@ export default class Critters {
     if (preloadMode === false) return;
 
     let noscriptFallback = false;
+    let updateLinkToPreload = false;
 
     if (preloadMode === 'body') {
       document.body.appendChild(link);
     } else {
-      link.setAttribute('rel', 'preload');
-      link.setAttribute('as', 'style');
       if (preloadMode === 'js' || preloadMode === 'js-lazy') {
         const script = document.createElement('script');
         script.setAttribute('data-href', href);
@@ -378,10 +377,9 @@ export default class Critters {
         style.$$links.push(script);
         cssLoaderPreamble = '';
         noscriptFallback = true;
+        updateLinkToPreload = true;
       } else if (preloadMode === 'media') {
         // @see https://github.com/filamentgroup/loadCSS/blob/af1106cfe0bf70147e22185afa7ead96c01dec48/src/loadCSS.js#L26
-        link.setAttribute('rel', 'stylesheet');
-        link.removeAttribute('as');
         link.setAttribute('media', 'print');
         link.setAttribute('onload', `this.media='${media || 'all'}'`);
         noscriptFallback = true;
@@ -395,12 +393,13 @@ export default class Critters {
         link.setAttribute('onload', "this.rel='stylesheet'");
         noscriptFallback = true;
       } else {
-        const bodyLink = document.createElement('link');
-        bodyLink.setAttribute('rel', 'stylesheet');
-        if (media) bodyLink.setAttribute('media', media);
-        bodyLink.setAttribute('href', href);
+        const bodyLink = link.cloneNode(false);
+
+        // If an ID is present, remove it to avoid collisions.
+        bodyLink.removeAttribute('id');
+
         document.body.appendChild(bodyLink);
-        style.$$links.push(bodyLink);
+        updateLinkToPreload = true;
       }
     }
 
@@ -411,13 +410,18 @@ export default class Critters {
       !href.includes('</noscript>')
     ) {
       const noscript = document.createElement('noscript');
-      const noscriptLink = document.createElement('link');
-      noscriptLink.setAttribute('rel', 'stylesheet');
-      noscriptLink.setAttribute('href', href);
-      if (media) noscriptLink.setAttribute('media', media);
+      const noscriptLink = link.cloneNode(false);
+      // If an ID is present, remove it to avoid collisions.
+      noscriptLink.removeAttribute('id');
       noscript.appendChild(noscriptLink);
       link.parentNode.insertBefore(noscript, link.nextSibling);
       style.$$links.push(noscript);
+    }
+
+    if (updateLinkToPreload) {
+      // Switch the current link tag to preload
+      link.setAttribute('rel', 'preload');
+      link.setAttribute('as', 'style');
     }
   }
 

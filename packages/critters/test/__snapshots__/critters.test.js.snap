@@ -17,8 +17,8 @@ exports[`Critters Prevent injection via media attr 1`] = `
   <link>
     <title>Testing</title>
     <style>h1{color:blue}p{color:purple}.contents{padding:50px;text-align:center}.input-field{padding:10px}.custom-element::part(tab){color:#0c0dcc;border-bottom:transparent solid 2px}.custom-element::part(tab):hover:active{background-color:#0c0d33;color:#ffffff}.custom-element::part(tab):focus{box-shadow:0 0 0 1px #0a84ff inset, 0 0 0 1px #0a84ff,
-    0 0 0 4px rgba(10, 132, 255, 0.3)}div:is(:hover, .active){color:#000}div:is(.selected, :hover){color:#fff}body{height:100%}</style><link rel=\\"stylesheet\\" href=\\"styles.css\\" media=\\"print\\" onload=\\"this.media='all'\\"><noscript><link rel=\\"stylesheet\\" href=\\"styles.css\\"></noscript>
-    <link rel=\\"stylesheet\\" href=\\"styles2.css\\" media=\\"print\\" onload=\\"this.media='screen and (min-width: 480px)'\\"><noscript><link rel=\\"stylesheet\\" href=\\"styles2.css\\" media=\\"screen and (min-width: 480px)\\"></noscript>
+    0 0 0 4px rgba(10, 132, 255, 0.3)}div:is(:hover, .active){color:#000}div:is(.selected, :hover){color:#fff}body{height:100%}</style><link rel=\\"stylesheet\\" href=\\"styles.css\\" media=\\"print\\" onload=\\"this.media='all'\\"><noscript><link rel=\\"stylesheet\\" href=\\"styles.css\\" media=\\"print\\" onload=\\"this.media='all'\\"></noscript>
+    <link rel=\\"stylesheet\\" href=\\"styles2.css\\" media=\\"print\\" onload=\\"this.media='screen and (min-width: 480px)'\\"><noscript><link rel=\\"stylesheet\\" href=\\"styles2.css\\" media=\\"print\\" onload=\\"this.media='screen and (min-width: 480px)'\\"></noscript>
   
   <body>
     <div class=\\"container\\">
@@ -90,4 +90,28 @@ exports[`Critters Skip invalid path 1`] = `
   <link rel=\\"stylesheet\\" href=\\"styles.css\\"></body>
 </html>
 "
+`;
+
+exports[`Critters should keep existing link tag attributes 1`] = `
+"<html data-critters-container>
+  <head>
+    <title>$title</title>
+    <style>h1{color:blue}</style><link rel=\\"preload\\" href=\\"/style.css\\" crossorigin=\\"anonymous\\" integrity=\\"sha384-j1GsrLo96tLqzfCY+\\" as=\\"style\\">
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+  <link rel=\\"stylesheet\\" href=\\"/style.css\\" crossorigin=\\"anonymous\\" integrity=\\"sha384-j1GsrLo96tLqzfCY+\\"></body>
+</html>"
+`;
+
+exports[`Critters should keep existing link tag attributes in the noscript link 1`] = `
+"<html data-critters-container>
+  <head>
+    <title>$title</title>
+    <style>h1{color:blue}</style><link rel=\\"stylesheet\\" href=\\"/style.css\\" crossorigin=\\"anonymous\\" integrity=\\"sha384-j1GsrLo96tLqzfCY+\\" media=\\"print\\" onload=\\"this.media='all'\\"><noscript><link rel=\\"stylesheet\\" href=\\"/style.css\\" crossorigin=\\"anonymous\\" integrity=\\"sha384-j1GsrLo96tLqzfCY+\\" media=\\"print\\" onload=\\"this.media='all'\\"></noscript>
+  </head>
+  <body>
+    <h1>Hello World!</h1>
+  </body>
+</html>"
 `;

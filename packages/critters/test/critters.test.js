@@ -96,6 +96,67 @@ describe('Critters', () => {
     expect(result).toMatch('<title>$title</title>');
   });
 
+  test('should keep existing link tag attributes in the noscript link', async () => {
+    const critters = new Critters({
+      reduceInlineStyles: false,
+      path: '/',
+      preload: 'media'
+    });
+    const assets = {
+      '/style.css': trim`
+        h1 { color: blue; }
+      `
+    };
+    critters.readFile = (filename) => assets[filename];
+    const result = await critters.process(trim`
+      <html>
+        <head>
+          <title>$title</title>
+          <link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+">
+        </head>
+        <body>
+          <h1>Hello World!</h1>
+        </body>
+      </html>
+    `);
+
+    expect(result).toMatch('<style>h1{color:blue}</style>');
+    expect(result).toMatch(
+      `<link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+" media="print" onload="this.media='all'">`
+    );
+    expect(result).toMatchSnapshot();
+  });
+
+  test('should keep existing link tag attributes', async () => {
+    const critters = new Critters({
+      reduceInlineStyles: false,
+      path: '/',
+    });
+    const assets = {
+      '/style.css': trim`
+        h1 { color: blue; }
+      `
+    };
+    critters.readFile = (filename) => assets[filename];
+    const result = await critters.process(trim`
+      <html>
+        <head>
+          <title>$title</title>
+          <link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+">
+        </head>
+        <body>
+          <h1>Hello World!</h1>
+        </body>
+      </html>
+    `);
+
+    expect(result).toMatch('<style>h1{color:blue}</style>');
+    expect(result).toMatch(
+      `<link rel="stylesheet" href="/style.css" crossorigin="anonymous" integrity="sha384-j1GsrLo96tLqzfCY+">`
+    );
+    expect(result).toMatchSnapshot();
+  });
+
   test('Does not decode entities in HTML document', async () => {
     const critters = new Critters({
       path: '/'
