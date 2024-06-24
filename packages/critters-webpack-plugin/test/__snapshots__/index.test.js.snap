@@ -66,7 +66,7 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script><link rel=\\"stylesheet\\" href=\\"main.css\\"></body>
+  <script src=\\"bundle.js\\"></script><link href=\\"main.css\\" rel=\\"stylesheet\\"></body>
 </html>
 "
 `;
@@ -195,7 +195,7 @@ html {
     <h1 class=\\"additional-style\\">My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script><link rel=\\"stylesheet\\" href=\\"main.css\\"></body>
+  <script src=\\"bundle.js\\"></script><link href=\\"main.css\\" rel=\\"stylesheet\\"></body>
 </html>
 "
 `;
@@ -266,7 +266,7 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"bundle.js\\"></script><link rel=\\"stylesheet\\" href=\\"main.css\\"></body>
+  <script src=\\"bundle.js\\"></script><link href=\\"main.css\\" rel=\\"stylesheet\\"></body>
 </html>
 "
 `;
@@ -337,7 +337,7 @@ footer {
     <h1>My first styled page</h1>
     <p>Welcome to my styled page!</p>
     <footer>Made 5 April 2004</footer>
-  <script src=\\"/_public/bundle.js\\"></script><link rel=\\"stylesheet\\" href=\\"/_public/main.css\\"></body>
+  <script src=\\"/_public/bundle.js\\"></script><link href=\\"/_public/main.css\\" rel=\\"stylesheet\\"></body>
 </html>
 "
 `;
