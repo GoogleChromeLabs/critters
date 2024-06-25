@@ -130,7 +130,7 @@ describe('Critters', () => {
   test('should keep existing link tag attributes', async () => {
     const critters = new Critters({
       reduceInlineStyles: false,
-      path: '/',
+      path: '/'
     });
     const assets = {
       '/style.css': trim`
@@ -185,6 +185,9 @@ describe('Critters', () => {
     );
 
     const result = await critters.process(html);
+    expect(result).toContain(
+      '<noscript><link rel="stylesheet" href="styles2.css" media="screen and (min-width: 480px)"></noscript>'
+    );
     expect(result).toMatchSnapshot();
   });
 

@@ -362,6 +362,7 @@ export default class Critters {
 
     let noscriptFallback = false;
     let updateLinkToPreload = false;
+    const noscriptLink = link.cloneNode(false);
 
     if (preloadMode === 'body') {
       document.body.appendChild(link);
@@ -410,7 +411,6 @@ export default class Critters {
       !href.includes('</noscript>')
     ) {
       const noscript = document.createElement('noscript');
-      const noscriptLink = link.cloneNode(false);
       // If an ID is present, remove it to avoid collisions.
       noscriptLink.removeAttribute('id');
       noscript.appendChild(noscriptLink);
