@@ -27,6 +27,10 @@ import {
   walkStyleRulesWithReverseMirror
 } from './css';
 import { createLogger, isSubpath } from './util';
+const NodeCache = require('node-cache');
+const CrittersCache = new NodeCache();
+const PURGE_CRITICAL_CACHE = "PURGE_CRITICAL_CACHE_";
+const PURGE_ALL_CRITICAL_CACHE = "PURGE_ALL_CRITICAL_CACHE";
 
 /**
  * The mechanism to use for lazy-loading stylesheets.
@@ -163,6 +167,11 @@ export default class Critters {
     // Parse the generated HTML in a DOM we can mutate
     const document = createDocument(html);
 
+    // Caching handling start
+    // purge cache if requested and return cache key
+    const CACHE_KEY = this.purgeCacheIfRequested(document);
+    // Caching handling end
+
     if (this.options.additionalStylesheets.length > 0) {
       this.embedAdditionalStylesheet(document);
     }
@@ -172,6 +181,15 @@ export default class Critters {
       const externalSheets = [].slice.call(
         document.querySelectorAll('link[rel="stylesheet"]')
       );
+
+      // Caching handling start
+      const documentWithCachedCSS = await this.processCachedCSS(CACHE_KEY, document, externalSheets);
+      if (documentWithCachedCSS) {
+         // returning html with cached critical css.
+         const _end = process.hrtime.bigint();
+         this.logger.info(`\x1b[33mTime Cached Serve ${parseFloat(_end - start) / 1000000.0}\x1b[0m`);
+         return documentWithCachedCSS;
+      }
 
       await Promise.all(
         externalSheets.map((link) => this.embedLinkedStylesheet(link, document))
@@ -313,7 +331,7 @@ export default class Critters {
   /**
    * Inline the target stylesheet referred to by a <link rel="stylesheet"> (assuming it passes `options.filter`)
    */
-  async embedLinkedStylesheet(link, document) {
+  async embedLinkedStylesheet(link, document, cachedStyle) {
     const href = link.getAttribute('href');
     let media = link.getAttribute('media');
 
@@ -329,21 +347,25 @@ export default class Critters {
     }
 
     // the reduced critical CSS gets injected into a new <style> tag
-    const style = document.createElement('style');
-    style.$$external = true;
-    const sheet = await this.getCssAsset(href, style);
+    let style;
+    if (!cachedStyle) {
+      style = document.createElement('style');
+    
+      style.$$external = true;
+      const sheet = await this.getCssAsset(href, style);
 
-    if (!sheet) {
-      return;
-    }
+      if (!sheet) {
+        return;
+      }
 
-    style.textContent = sheet;
-    style.$$name = href;
-    style.$$links = [link];
-    link.parentNode.insertBefore(style, link);
+      style.textContent = sheet;
+      style.$$name = href;
+      style.$$links = [link];
+      link.parentNode.insertBefore(style, link);
 
-    if (this.checkInlineThreshold(link, style, sheet)) {
-      return;
+      if (this.checkInlineThreshold(link, style, sheet)) {
+        return;
+      }
     }
 
     // CSS loader is only injected for the first sheet, then this becomes an empty string
@@ -375,7 +397,9 @@ export default class Critters {
         // script.appendChild(document.createTextNode(js));
         script.textContent = js;
         link.parentNode.insertBefore(script, link.nextSibling);
-        style.$$links.push(script);
+        if (!cachedStyle) {
+          style.$$links.push(script);
+        }
         cssLoaderPreamble = '';
         noscriptFallback = true;
         updateLinkToPreload = true;
@@ -415,7 +439,9 @@ export default class Critters {
       noscriptLink.removeAttribute('id');
       noscript.appendChild(noscriptLink);
       link.parentNode.insertBefore(noscript, link.nextSibling);
-      style.$$links.push(noscript);
+      if (!cachedStyle) {
+        style.$$links.push(noscript);
+      }
     }
 
     if (updateLinkToPreload) {
@@ -731,6 +757,63 @@ export default class Critters {
         '.\u001b[39m'
     );
   }
+
+  purgeCacheIfRequested(document) {
+    // this.logger.info(`\x1b[36mCACHED KEYS: ${CrittersCache.keys()}\x1b[0m`);
+    let CACHE_KEY = false;
+    if (this.options.cacheCriticalCSS) {
+      const _documentContainer = document.querySelector('.page_layout_nxt');
+      CACHE_KEY = _documentContainer && _documentContainer.getAttribute('data-pagetype');
+      if (CACHE_KEY && CACHE_KEY.indexOf(PURGE_CRITICAL_CACHE) > -1) {
+        CACHE_KEY = CACHE_KEY.replace(PURGE_CRITICAL_CACHE, "");
+        if (CrittersCache.has(CACHE_KEY)) {
+          CrittersCache.del(CACHE_KEY);
+          this.logger.info(`\u001b[35mPAGE CACHE PURGED: ${CACHE_KEY}\u001b[39m`);
+        } else {
+          this.logger.info(`\u001b[35mPAGE CACHE NOT AVAILABLE FOR PURGE: ${CACHE_KEY}\u001b[39m`);
+        }
+      }
+      if (CACHE_KEY === PURGE_ALL_CRITICAL_CACHE) {
+        CACHE_KEY = false;
+        CrittersCache.flushAll();
+        this.logger.info(`\u001b[35mALL CACHE PURGED\u001b[39m`);
+      }
+    }
+    return CACHE_KEY;
+  }
+
+  setCSSCache(CACHE_KEY, document) {
+    if (CACHE_KEY) {
+      const _documentStyles = [].slice.call(document.querySelectorAll('style'));
+      let _criticalCSS = _documentStyles[0] && _documentStyles[0].textContent;
+      if (_criticalCSS) {
+        if (_criticalCSS.indexOf('error-pagecont') > -1) {
+          this.logger.info(`\u001b[35m"NOT SETTING ERROR PAGE CRITICAL CSS TO CACHE FOR KEY: ${CACHE_KEY}\u001b[39m`);
+        } else {
+          if (this.options.craftedCriticalCSS) {
+            _criticalCSS += this.options.craftedCriticalCSS;
+          }
+          this.logger.info(`\u001b[35m"SET NEW CRITICAL CSS TO CACHE FOR KEY: ${CACHE_KEY}\u001b[39m`);
+          CrittersCache.set(CACHE_KEY, _criticalCSS);
+        }
+      }
+    }
+  }
+
+  async processCachedCSS(CACHE_KEY, document, externalSheets) {
+    const _cachedCSS = CACHE_KEY && CrittersCache.get(CACHE_KEY);
+    if (_cachedCSS && _cachedCSS !== "body{display:none}") {
+      this.logger.info(`\u001b[35mCACHED CSS FOUND FOR KEY: ${CACHE_KEY}\u001b[39m`);
+      const _style = document.createElement('style');
+      _style.textContent = _cachedCSS;
+      document.head.appendChild(_style);
+      await Promise.all(externalSheets.map(link => this.embedLinkedStylesheet(link, document, true)));
+      const _output = serializeDocument(document);
+      return _output;
+    }
+    return false;
+  }
+
 }
 
 function formatSize(size) {
