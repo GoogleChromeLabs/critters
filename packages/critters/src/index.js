@@ -641,8 +641,8 @@ export default class Critters {
 
       applyMarkedSelectors(rule);
 
-      // prune @keyframes rules
-      if (rule.type === 'atrule' && rule.name === 'keyframes') {
+      // prune @keyframes or @-webkit-keyframes rules
+      if (rule.type === 'atrule' && (rule.name === 'keyframes' || rule.name === '-webkit-keyframes')) {
         if (keyframesMode === 'none') return false;
         if (keyframesMode === 'all') return true;
         return criticalKeyframeNames.has(rule.params);
