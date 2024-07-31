@@ -8,9 +8,9 @@
   "exports": {
     "import": "./dist/critters.mjs",
     "require": "./dist/critters.js",
-    "default": "./dist/critters.mjs"
+    "default": "./dist/critters.mjs",
+    "types": "./src/index.d.ts"
   },
-  "typings": "src/index.d.ts",
   "files": [
     "src",
     "dist"
