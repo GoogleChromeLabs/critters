@@ -10,7 +10,6 @@
     "require": "./dist/critters.js",
     "default": "./dist/critters.mjs"
   },
-  "typings": "src/index.d.ts",
   "files": [
     "src",
     "dist"
