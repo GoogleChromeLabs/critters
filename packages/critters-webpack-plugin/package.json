@@ -51,7 +51,7 @@
     "html-webpack-plugin": "^4.5.2",
     "microbundle": "^0.12.3",
     "mini-css-extract-plugin": "^0.10.0",
-    "webpack": "^4.46.0"
+    "webpack": "^5.94.0"
   },
   "dependencies": {
     "critters": "^0.0.16",
