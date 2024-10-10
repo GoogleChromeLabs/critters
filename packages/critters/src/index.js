@@ -158,7 +158,7 @@ export default class Critters {
    * Apply critical CSS processing to the html
    */
   async process(html) {
-    const start = process.hrtime.bigint();
+    const start = Date.now();
 
     // Parse the generated HTML in a DOM we can mutate
     const document = createDocument(html);
@@ -191,8 +191,8 @@ export default class Critters {
 
     // serialize the document back to HTML and we're done
     const output = serializeDocument(document);
-    const end = process.hrtime.bigint();
-    this.logger.info('Time ' + parseFloat(end - start) / 1000000.0);
+    const end = Date.now();
+    this.logger.info(`Time ${end - start}ms`);
     return output;
   }
 
@@ -200,7 +200,7 @@ export default class Critters {
    * Get the style tags that need processing
    */
   getAffectedStyleTags(document) {
-    const styles = [].slice.call(document.querySelectorAll('style'));
+    const styles = [...document.querySelectorAll('style')];
 
     // `inline:false` skips processing of inline stylesheets
     if (this.options.reduceInlineStyles === false) {
