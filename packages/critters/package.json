@@ -51,6 +51,7 @@
     "dom-serializer": "^2.0.0",
     "domhandler": "^5.0.2",
     "htmlparser2": "^8.0.2",
+    "node-cache": "^5.1.2",
     "postcss": "^8.4.23",
     "postcss-media-query-parser": "^0.2.3"
   },

@@ -31,15 +31,15 @@ function buildCache(container) {
   while (queue.length) {
     const node = queue.shift();
 
-    if (node.hasAttribute('class')) {
-      const classList = node.getAttribute('class').trim().split(' ');
+    if (node.attribs['class']) {
+      const classList = node.attribs['class'].trim().split(' ');
       classList.forEach((cls) => {
         classCache.add(cls);
       });
     }
 
-    if (node.hasAttribute('id')) {
-      const id = node.getAttribute('id').trim();
+    if (node.attribs['id']) {
+      const id = node.attribs['id'].trim();
       idCache.add(id);
     }
 
@@ -64,7 +64,7 @@ export function createDocument(html) {
   let crittersContainer = document.querySelector('[data-critters-container]');
 
   if (!crittersContainer) {
-    document.documentElement.setAttribute('data-critters-container', '');
+    document.documentElement.attribs['data-critters-container'] = '';
     crittersContainer = document.documentElement;
   }
 
