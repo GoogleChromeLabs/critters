@@ -1,3 +1,7 @@
+
+> [!CAUTION]
+> Ownership of Critters has moved to the Nuxt team, who will be maintaining the project going forward. If you'd like to keep using Critters, please switch to the actively-maintained fork at https://github.com/danielroe/beasties. This repo is now archived and won't receive any future updates.
+
 <p align="center">
   <img src="https://i.imgur.com/J0jv1Sz.png" width="240" height="240" alt="critters">
   <h1 align="center">Critters</h1>
